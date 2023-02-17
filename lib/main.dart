@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/demos/anim/demo_anim_opacity.dart';
 import 'package:flutter_gallery_next/demos/anim/demo_anim_physics_drag.dart';
 import 'package:flutter_gallery_next/demos/anim/demo_anim_random.dart';
+import 'package:flutter_gallery_next/demos/anim/demo_anim_transition.dart';
 import 'package:flutter_gallery_next/demos/button/demo_button_inkwell.dart';
 import 'package:flutter_gallery_next/demos/button/demo_button_ontap.dart';
 import 'package:flutter_gallery_next/demos/db/demo_db_file.dart';
 import 'package:flutter_gallery_next/demos/demo_expand_floatbutton.dart';
 import 'package:flutter_gallery_next/demos/demo_form_submit.dart';
+import 'package:flutter_gallery_next/demos/demo_statusbar_color.dart';
+import 'package:flutter_gallery_next/demos/grid/demo_grid_basic.dart';
+import 'package:flutter_gallery_next/demos/image/demo_image_cache.dart';
+import 'package:flutter_gallery_next/demos/image/demo_image_network.dart';
 import 'package:flutter_gallery_next/demos/layout/demo_layout_complex.dart';
 import 'package:flutter_gallery_next/demos/demo_tabs.dart';
 import 'package:flutter_gallery_next/demos/demo_theme.dart';
@@ -14,6 +19,7 @@ import 'package:flutter_gallery_next/demos/list/demo_list_basic.dart';
 import 'package:flutter_gallery_next/demos/list/demo_list_dismiss.dart';
 import 'package:flutter_gallery_next/demos/list/demo_list_horizontal.dart';
 import 'package:flutter_gallery_next/demos/list/demo_list_long.dart';
+import 'package:flutter_gallery_next/demos/list/demo_list_refresh.dart';
 import 'package:flutter_gallery_next/demos/list/demo_list_silver_bar.dart';
 import 'package:flutter_gallery_next/demos/nav/demo_nav_hero.dart';
 import 'package:flutter_gallery_next/demos/net/demo_net_async.dart';
@@ -24,11 +30,14 @@ import 'package:flutter_gallery_next/demos/net/demo_net_complex_update.dart';
 import 'package:flutter_gallery_next/demos/page_route/page_1.dart';
 import 'package:flutter_gallery_next/demos/text/demo_text_fetch.dart';
 import 'package:flutter_gallery_next/demos/text/demo_text_focus.dart';
+import 'package:flutter_gallery_next/demos/text/demo_text_tag.dart';
 
 import 'demos/button/demo_button_download.dart';
 import 'demos/db/demo_db_sp.dart';
 import 'demos/drawer/demo_drawer.dart';
 import 'demos/drawer/demo_drawer_stagger.dart';
+import 'demos/grid/demo_grid_orientation.dart';
+import 'demos/image/demo_image_radius.dart';
 import 'demos/layout/demo_layout_scroll_parallax.dart';
 import 'demos/list/demo_list_multi.dart';
 import 'demos/nav/demo_nav_complex.dart';
@@ -39,6 +48,7 @@ import 'demos/nav/demo_nav_selection.dart';
 import 'demos/nav/demo_nav_todos.dart';
 import 'demos/state/demo_state.dart';
 import 'demos/text/demo_text_basic.dart';
+import 'demos/text/demo_text_bubble.dart';
 
 
 void main() {
@@ -116,6 +126,9 @@ Map<String, WidgetBuilder> routers = {
   "page route": (context) {
     return const DemoPageRoute();
   },
+  "status bar": (context) {
+    return const DemoStatusBarColor();
+  },
   "state": (context) {
     return const DemoState();
   },
@@ -152,6 +165,9 @@ Map<String, WidgetBuilder> routers = {
   "anim random": (context) {
     return const DemoAnimRandom();
   },
+  "anim transition": (context) {
+    return DemoAnimTransition();
+  },
   "button inkwell": (context) {
     return const DemoButtonInkWell();
   },
@@ -166,6 +182,12 @@ Map<String, WidgetBuilder> routers = {
   },
   "db sp": (context) {
     return const DemoDbSp();
+  },
+  "grid basic": (context) {
+    return const DemoGridBasic();
+  },
+  "grid orientation": (context) {
+    return const DemoGridOrientation();
   },
   "list basic": (context) {
     return const DemoListBasic();
@@ -191,6 +213,9 @@ Map<String, WidgetBuilder> routers = {
   },
   "list silver bar": (context) {
     return const DemoListSilverBar();
+  },
+  "list refresh": (context) {
+    return const DemoListRefresh();
   },
   "nav complex": (context) {
     return const DemoNavComplex();
@@ -236,5 +261,20 @@ Map<String, WidgetBuilder> routers = {
   },
   "text focus": (context) {
     return const DemoTextFocus();
+  },
+  "text bubble": (context) {
+    return DemoTextBubble();
+  },
+  "text tag": (context) {
+    return DemoTextTag();
+  },
+  "image net": (context) {
+    return const DemoImageNetwork();
+  },
+  "image cache": (context) {
+    return const DemoImageCache();
+  },
+  "image radius": (context) {
+    return const DemoImageRadius();
   },
 };

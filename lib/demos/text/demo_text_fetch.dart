@@ -26,6 +26,7 @@ class _MyCustomFormState extends State<MyCustomForm> {
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
   final myController = TextEditingController();
+  final snackBar = const SnackBar(content: Text('必须包含任意abc'));
 
   @override
   void dispose() {
@@ -44,6 +45,15 @@ class _MyCustomFormState extends State<MyCustomForm> {
         padding: const EdgeInsets.all(16.0),
         child: TextField(
           controller: myController,
+          onChanged: (value) {
+            if (value?.isNotEmpty == true) {
+              var filterPattern = RegExp(r'[abc]');
+              bool isMatch = filterPattern.hasMatch(value);
+              if (!isMatch) {
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+            }
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
