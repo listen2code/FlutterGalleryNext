@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_base/flutter_base.dart';
 import 'package:flutter_gallery_next/demos/anim/demo_anim_opacity.dart';
 import 'package:flutter_gallery_next/demos/anim/demo_anim_physics_drag.dart';
 import 'package:flutter_gallery_next/demos/anim/demo_anim_random.dart';
@@ -61,6 +62,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Calculator c = Calculator();
+    c.addOne(1);
     return MaterialApp(
       title: 'Listen Flutter Gallery',
       theme: ThemeData(
