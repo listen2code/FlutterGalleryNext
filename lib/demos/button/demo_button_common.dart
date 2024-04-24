@@ -53,7 +53,7 @@ class MyHomePage extends StatelessWidget {
                 width: 100,
                 height: 40,
                 color: Colors.white,
-                textColor: Colors.black,
+                fontColor: Colors.black,
                 fontSize: 10,
                 borderColor: Colors.black,
                 borderWidth: 0.5,
@@ -122,8 +122,8 @@ class _ButtonCheckableState extends State<ButtonCheckable> {
 class ButtonCommon extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
-  ButtonOptions? options;
-  ButtonOptions defaultOptions = ButtonOptions();
+  final ButtonOptions? options;
+  final ButtonOptions defaultOptions = ButtonOptions();
 
   ButtonCommon({
     super.key,
@@ -142,7 +142,7 @@ class ButtonCommon extends StatelessWidget {
         style: ButtonStyle(
             elevation: MaterialStateProperty.all<double>(options?.elevation ?? defaultOptions.elevation),
             padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-              const EdgeInsets.all(0),
+              options?.padding?? defaultOptions.padding,
             ),
             backgroundColor: MaterialStateProperty.all<Color>(
                 options?.color ?? Theme.of(context).primaryColor),
@@ -158,14 +158,11 @@ class ButtonCommon extends StatelessWidget {
               ),
             )
         ),
-        child: Padding(
-          padding: options?.padding ?? defaultOptions.padding,
-          child: Text(
-            text,
-            style: TextStyle(
-              color: options?.textColor ?? defaultOptions.textColor,
-              fontSize: options?.fontSize ?? defaultOptions.fontSize,
-            ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: options?.fontColor ?? defaultOptions.fontColor,
+            fontSize: options?.fontSize ?? defaultOptions.fontSize,
           ),
         ),
       ),
@@ -177,7 +174,7 @@ class ButtonOptions {
   late final double? width;
   late final double? height;
   late final Color color;
-  late final Color textColor;
+  late final Color fontColor;
   late final Color borderColor;
   late final double elevation;
   late final double borderWidth;
@@ -188,7 +185,7 @@ class ButtonOptions {
     this.width,
     this.height,
     this.color = Colors.white,
-    this.textColor = Colors.black,
+    this.fontColor = Colors.black,
     this.borderColor = Colors.white,
     this.elevation = 0.0,
     this.borderWidth = 0.0,
