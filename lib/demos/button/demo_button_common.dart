@@ -163,6 +163,7 @@ class ButtonCommon extends StatelessWidget {
           style: TextStyle(
             color: options?.fontColor ?? defaultOptions.fontColor,
             fontSize: options?.fontSize ?? defaultOptions.fontSize,
+            height: 1
           ),
         ),
       ),
