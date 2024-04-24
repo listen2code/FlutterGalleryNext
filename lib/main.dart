@@ -4,6 +4,7 @@ import 'package:flutter_gallery_next/demos/anim/demo_anim_opacity.dart';
 import 'package:flutter_gallery_next/demos/anim/demo_anim_physics_drag.dart';
 import 'package:flutter_gallery_next/demos/anim/demo_anim_random.dart';
 import 'package:flutter_gallery_next/demos/anim/demo_anim_transition.dart';
+import 'package:flutter_gallery_next/demos/button/demo_button_common.dart';
 import 'package:flutter_gallery_next/demos/button/demo_button_inkwell.dart';
 import 'package:flutter_gallery_next/demos/button/demo_button_ontap.dart';
 import 'package:flutter_gallery_next/demos/db/demo_db_file.dart';
@@ -179,6 +180,9 @@ Map<String, WidgetBuilder> routers = {
   },
   "button download": (context) {
     return const DemoButtonDownload();
+  },
+  "button common": (context) {
+    return const DemoButtonCommon();
   },
   "db file": (context) {
     return DemoDbFile(storage: CounterStorage());

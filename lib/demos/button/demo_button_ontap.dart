@@ -42,7 +42,6 @@ class ButtonOnTap extends StatelessWidget {
       // When the child is tapped, show a snackbar.
       onTap: () {
         const snackBar = SnackBar(content: Text('Tap'));
-
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
       // The custom button
