@@ -37,7 +37,7 @@ class MyHomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ButtonCommon(
-                text: 'CommonButton',
+                text: 'DefaultButton',
                 onPressed: () {
                   ScaffoldMessenger.of(context)
                       .showSnackBar(const SnackBar(content: Text('Tap')));
