@@ -23,6 +23,7 @@ import 'package:flutter_gallery_next/demos/list/demo_list_horizontal.dart';
 import 'package:flutter_gallery_next/demos/list/demo_list_long.dart';
 import 'package:flutter_gallery_next/demos/list/demo_list_refresh.dart';
 import 'package:flutter_gallery_next/demos/list/demo_list_silver_bar.dart';
+import 'package:flutter_gallery_next/demos/list/demo_list_silver_header.dart';
 import 'package:flutter_gallery_next/demos/nav/demo_nav_hero.dart';
 import 'package:flutter_gallery_next/demos/net/demo_net_async.dart';
 import 'package:flutter_gallery_next/demos/net/demo_net_basic.dart';
@@ -220,6 +221,9 @@ Map<String, WidgetBuilder> routers = {
   },
   "list silver bar": (context) {
     return const DemoListSilverBar();
+  },
+  "list fix header": (context) {
+    return const DemoListFixHeader();
   },
   "list refresh": (context) {
     return const DemoListRefresh();
