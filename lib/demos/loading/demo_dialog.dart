@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gallery_next/demos/loading/global_loading.dart';
 import 'package:flutter_gallery_next/demos/loading/toast.dart';
 
 class DemoDialog extends StatefulWidget {
@@ -53,11 +54,19 @@ class _DemoDialogState extends State<DemoDialog> {
                         );
                       });
                   print("dialogFuture=${dialogFuture}");
-                  Future.delayed(const Duration(seconds: 10), () {
+                  Future.delayed(const Duration(seconds: 1), () {
                     Navigator.of(context).pop();
                   });
                 },
                 child: Text("loading by showDialog")),
+            ElevatedButton(
+                onPressed: () async {
+                  GlobalLoading.showLoading();
+                  Future.delayed(const Duration(seconds: 1), () {
+                    GlobalLoading.dismiss();
+                  });
+                },
+                child: Text("loading by globalLoading")),
             ElevatedButton(
                 onPressed: () {
                   showDialog(
