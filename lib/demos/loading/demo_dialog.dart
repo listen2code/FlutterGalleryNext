@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gallery_next/demos/loading/toast.dart';
 
 class DemoDialog extends StatefulWidget {
   const DemoDialog({Key? key}) : super(key: key);
@@ -37,6 +38,11 @@ class _DemoDialogState extends State<DemoDialog> {
           children: [
             ElevatedButton(
                 onPressed: () {
+                  Toast.show(context, "toast");
+                },
+                child: Text("toast by overlay")),
+            ElevatedButton(
+                onPressed: () {
                   Future dialogFuture = showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -47,7 +53,7 @@ class _DemoDialogState extends State<DemoDialog> {
                         );
                       });
                   print("dialogFuture=${dialogFuture}");
-                  Future.delayed(const Duration(seconds: 1), () {
+                  Future.delayed(const Duration(seconds: 10), () {
                     Navigator.of(context).pop();
                   });
                 },
