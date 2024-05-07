@@ -11,8 +11,12 @@ class GlobalDialog {
     }
   }
 
-  static void dismissDialog(BuildContext context) {
+  static void dismissAllDialog(BuildContext context) {
     Navigator.of(context).popUntil((route) => dismissRoute(route));
+  }
+
+  static void dismissDialog(BuildContext context) {
+    Navigator.of(context).pop();
   }
 
   static void showMessageDialog(String message, BuildContext context,

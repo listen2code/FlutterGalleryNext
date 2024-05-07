@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -38,7 +39,7 @@ class DemoDialogStateless extends StatelessWidget {
                 child: Text("show confirm dialog")),
             ElevatedButton(
                 onPressed: () async {
-                  showCustomDialog(Center(child: Text("custom dialog")));
+                  showCustomDialog(context, Center(child: Text("custom dialog")));
                 },
                 child: Text("show custom dialog")),
           ],

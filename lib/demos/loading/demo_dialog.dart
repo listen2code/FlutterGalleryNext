@@ -69,12 +69,19 @@ class _DemoDialogState extends State<DemoDialog> {
                 child: Text("show message dialog")),
             ElevatedButton(
                 onPressed: () async {
-                  showConfirmDialog("message", title: "title",
-                      onCancelPressed: () {
-                    dismissDialog();
-                  }, onOkPressed: () {
+                  showMessageDialog("message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1", title: "title", onOkPressed: () {
                     dismissDialog();
                   });
+
+                  showMessageDialog("message2", title: "title", onOkPressed: () {
+                    dismissDialog();
+                  });
+                  // showConfirmDialog("message", title: "title",
+                  //     onCancelPressed: () {
+                  //   dismissDialog();
+                  // }, onOkPressed: () {
+                  //   dismissDialog();
+                  // });
                 },
                 child: Text("show confirm dialog")),
             ElevatedButton(
