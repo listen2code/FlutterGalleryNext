@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gallery_next/demos/loading/global_dialog_extension.dart';
 import 'package:flutter_gallery_next/demos/loading/global_loading.dart';
 import 'package:flutter_gallery_next/demos/loading/toast.dart';
 
@@ -15,16 +15,9 @@ class _DemoDialogState extends State<DemoDialog> {
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //   showDialog(context: context, builder: (BuildContext context){
-    //     return Center(
-    //       child: CircularProgressIndicator(color: Colors.white,),
-    //     );
-    //   });
-    //   Future.delayed(const Duration(seconds: 1), (){
-    //     Navigator.of(context).pop();
-    //   });
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      showMessageDialog("dialog show initState");
+    });
   }
 
   @override
@@ -66,7 +59,60 @@ class _DemoDialogState extends State<DemoDialog> {
                     GlobalLoading.dismiss();
                   });
                 },
-                child: Text("loading by globalLoading")),
+                child: Text("loading by global loading")),
+            ElevatedButton(
+                onPressed: () async {
+                  showMessageDialog("message", title: "title", onOkPressed: () {
+                    dismissDialog();
+                  });
+                },
+                child: Text("show message dialog")),
+            ElevatedButton(
+                onPressed: () async {
+                  showConfirmDialog("message", title: "title",
+                      onCancelPressed: () {
+                    dismissDialog();
+                  }, onOkPressed: () {
+                    dismissDialog();
+                  });
+                },
+                child: Text("show confirm dialog")),
+            ElevatedButton(
+                onPressed: () async {
+                  showCustomDialog((context) {
+                    return Center(child: Text("custom dialog"));
+                  });
+                },
+                child: Text("show custom dialog")),
+            ElevatedButton(
+                onPressed: () async {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          height: 200,
+                          width: 200,
+                          color: Theme.of(context).colorScheme.surface,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                  width: 200,
+                                  color: Colors.green,
+                                  child: Text("data1")),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                  width: 200,
+                                  color: Colors.green,
+                                  child: Text("data2")),
+                            ],
+                          ),
+                        );
+                      });
+                },
+                child: Text("show bottom sheet dialog")),
             ElevatedButton(
                 onPressed: () {
                   showDialog(
@@ -104,7 +150,7 @@ class _DemoDialogState extends State<DemoDialog> {
                                       SizedBox(width: 5),
                                       ElevatedButton(
                                           onPressed: () {
-                                            Navigator.of(context).pop();
+                                            dismissDialog();
                                           },
                                           child: Text("ok")),
                                       SizedBox(width: 5),

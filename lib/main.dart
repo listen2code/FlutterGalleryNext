@@ -25,6 +25,7 @@ import 'package:flutter_gallery_next/demos/list/demo_list_refresh.dart';
 import 'package:flutter_gallery_next/demos/list/demo_list_silver_bar.dart';
 import 'package:flutter_gallery_next/demos/list/demo_list_silver_header.dart';
 import 'package:flutter_gallery_next/demos/loading/demo_dialog.dart';
+import 'package:flutter_gallery_next/demos/loading/demo_dialog_stateless.dart';
 import 'package:flutter_gallery_next/demos/loading/global_loading.dart';
 import 'package:flutter_gallery_next/demos/nav/demo_nav_hero.dart';
 import 'package:flutter_gallery_next/demos/net/demo_net_async.dart';
@@ -133,6 +134,9 @@ class _MyHomePageState extends State<MyHomePage> {
 Map<String, WidgetBuilder> routers = {
   "demo dialog": (context) {
     return const DemoDialog();
+  },
+  "demo dialog stateless": (context) {
+    return DemoDialogStateless();
   },
   "page route": (context) {
     return const DemoPageRoute();
