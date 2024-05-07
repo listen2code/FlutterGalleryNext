@@ -35,8 +35,8 @@ extension DialogStateExtension on State {
         onCancelPressed: onCancelPressed);
   }
 
-  void showCustomDialog(WidgetBuilder builder) {
-    GlobalDialog.showCustomDialog(builder, context);
+  void showCustomDialog(Widget builder, {bool? barrierDismissible}) {
+    GlobalDialog.showCustomDialog(builder, context, barrierDismissible: barrierDismissible);
   }
 }
 
@@ -73,7 +73,7 @@ extension DialogStalessWidgetExtension on StatelessWidget {
         onCancelPressed: onCancelPressed);
   }
 
-  void showCustomDialog(context, WidgetBuilder builder) {
-    GlobalDialog.showCustomDialog(builder, context);
+  void showCustomDialog(context, Widget builder, {bool? barrierDismissible}) {
+    GlobalDialog.showCustomDialog(builder, context, barrierDismissible: barrierDismissible);
   }
 }

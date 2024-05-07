@@ -38,9 +38,7 @@ class DemoDialogStateless extends StatelessWidget {
                 child: Text("show confirm dialog")),
             ElevatedButton(
                 onPressed: () async {
-                  showCustomDialog(context, (context) {
-                    return Center(child: Text("custom dialog"));
-                  });
+                  showCustomDialog(Center(child: Text("custom dialog")));
                 },
                 child: Text("show custom dialog")),
           ],

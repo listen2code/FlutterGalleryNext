@@ -49,12 +49,16 @@ class GlobalDialog {
         }).whenComplete(() => {debugPrint("whenComplete")});
   }
 
-  static void showCustomDialog(WidgetBuilder builder, BuildContext context,
+  static void showCustomDialog(Widget builder, BuildContext context,
       {bool? barrierDismissible}) {
     showDialog(
         context: context,
         barrierDismissible: barrierDismissible ?? false,
-        builder: builder);
+        builder: (BuildContext context) {
+          return Dialog(
+            child: builder,
+          );
+        });
   }
 
   static Widget initTitle(String? title) {
