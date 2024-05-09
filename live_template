@@ -1,0 +1,5 @@
+@param版本
+groovyScript("def result=''; def data="${_1}"; def stop=false; if(data==null || data=='null' || data=='' || data=='void' ) { stop=true; }; if(!stop) { result += '\r\n' + '///@return: ' + data; }; return result;", dartReturnType())
+[] 版本
+groovyScript("def result=''; def data="${_1}"; def stop=false; if(data==null || data=='null' || data=='' || data=='void' ) { stop=true; }; if(!stop) { result += '\r\n' + '/// return: [' + data + ']'; }; return result;", dartReturnType())
+
