@@ -132,6 +132,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 Map<String, WidgetBuilder> routers = {
+  "demo proxy": (context) {
+    return const DemoDialog();
+  },
   "demo dialog": (context) {
     return const DemoDialog();
   },
