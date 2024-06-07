@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_base/flutter_base.dart';
 import 'package:flutter_gallery_next/demos/anim/demo_anim_opacity.dart';
 import 'package:flutter_gallery_next/demos/anim/demo_anim_physics_drag.dart';
 import 'package:flutter_gallery_next/demos/anim/demo_anim_random.dart';
@@ -37,6 +36,7 @@ import 'package:flutter_gallery_next/demos/page_route/page_1.dart';
 import 'package:flutter_gallery_next/demos/text/demo_text_fetch.dart';
 import 'package:flutter_gallery_next/demos/text/demo_text_focus.dart';
 import 'package:flutter_gallery_next/demos/text/demo_text_tag.dart';
+import 'package:package_base/package_base.dart';
 
 import 'demos/button/demo_button_download.dart';
 import 'demos/db/demo_db_sp.dart';
