@@ -37,6 +37,7 @@ import 'package:flutter_gallery_next/demos/text/demo_text_fetch.dart';
 import 'package:flutter_gallery_next/demos/text/demo_text_focus.dart';
 import 'package:flutter_gallery_next/demos/text/demo_text_tag.dart';
 import 'package:package_base/package_base.dart';
+import 'package:plugin_native/plugin_native.dart';
 
 import 'demos/button/demo_button_download.dart';
 import 'demos/db/demo_db_sp.dart';
@@ -57,8 +58,13 @@ import 'demos/text/demo_text_basic.dart';
 import 'demos/text/demo_text_bubble.dart';
 
 
-void main() {
+void main() async {
   runApp(const MyApp());
+  await initDebug();
+}
+
+Future<void> initDebug() async {
+  debugPrint("getPlatformVersion=${await PluginNative().getPlatformVersion()}");
 }
 
 class MyApp extends StatelessWidget {
