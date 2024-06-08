@@ -1,29 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_libs/utils/sp_util.dart';
 
-class DemoDbSp extends StatelessWidget {
+class DemoDbSp extends StatefulWidget {
   const DemoDbSp({super.key});
 
-  // This widget is the root of the application.
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Shared preferences demo',
-      home: MyHomePage(title: 'Shared preferences demo'),
-    );
-  }
+  State<DemoDbSp> createState() => _DemoDbSpState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _DemoDbSpState extends State<DemoDbSp> {
   int _counter = 0;
 
   @override
@@ -34,18 +19,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //Loading counter value on start
   Future<void> _loadCounter() async {
-    final prefs = await SharedPreferences.getInstance();
+    var counter = await SpUtil.instance.get('counter');
     setState(() {
-      _counter = (prefs.getInt('counter') ?? 0);
+      _counter = counter;
     });
   }
 
   //Incrementing counter after click
   Future<void> _incrementCounter() async {
-    final prefs = await SharedPreferences.getInstance();
+    var counter = await SpUtil.instance.get('counter');
+    debugPrint("counter=$counter");
     setState(() {
-      _counter = (prefs.getInt('counter') ?? 0) + 1;
-      prefs.setInt('counter', _counter);
+      _counter = (counter ?? 0) + 1;
+      SpUtil.instance.set('counter', _counter);
     });
   }
 
@@ -53,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text("Demo sp"),
       ),
       body: Center(
         child: Column(
