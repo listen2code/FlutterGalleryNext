@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 
 /// This class overrides the global proxy settings.
-class CustomNoProxyHttpOverride extends HttpOverrides {
+class CustomProxyHttpOverride extends HttpOverrides {
   /// The entire proxy server
   /// Format: "localhost:8888"
   final String proxyString;
@@ -13,7 +13,7 @@ class CustomNoProxyHttpOverride extends HttpOverrides {
   final bool allowBadCertificates;
 
   /// Initializer
-  CustomNoProxyHttpOverride.withProxy(
+  CustomProxyHttpOverride.withProxy(
     this.proxyString, {
     this.allowBadCertificates = false,
   });
@@ -26,7 +26,8 @@ class CustomNoProxyHttpOverride extends HttpOverrides {
         // assert(this.proxyString.isNotEmpty,
         //     'You must set a valid proxy if you enable it!');
         // return "PROXY " + this.proxyString + ";";
-        String findProxy = HttpClient.findProxyFromEnvironment(uri, environment: {"http_proxy": proxyString, "no_proxy": "16.0.1,[192.168.0.10]"});
+        String findProxy = HttpClient.findProxyFromEnvironment(uri,
+            environment: {"http_proxy": proxyString, "no_proxy": "16.0.1,[192.168.0.10]"});
         debugPrint("findProxy=$findProxy uri=$uri");
         return findProxy;
       };

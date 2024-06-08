@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gallery_next/utils/custom_no_proxy_override.dart';
+import 'package:flutter_gallery_next/utils/custom_proxy_override.dart';
 import 'package:native_flutter_proxy/custom_proxy.dart';
 import 'package:native_flutter_proxy/native_proxy_reader.dart';
 
-initProxy() async{
+initProxy() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   bool enabled = false;
@@ -22,7 +22,7 @@ initProxy() async{
   }
   if (enabled && host != null) {
     final proxy = CustomProxy(ipAddress: host, port: port);
-    HttpOverrides.global = CustomNoProxyHttpOverride.withProxy(proxy.toString());
+    HttpOverrides.global = CustomProxyHttpOverride.withProxy(proxy.toString());
     debugPrint("proxy enabled=$enabled host=$host port=$port");
   }
 }
