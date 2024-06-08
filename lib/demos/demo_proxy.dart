@@ -6,12 +6,6 @@ import 'package:flutter_gallery_next/utils/custom_no_proxy_override.dart';
 import 'package:native_flutter_proxy/custom_proxy.dart';
 import 'package:native_flutter_proxy/native_proxy_reader.dart';
 
-
-void main() async{
-  await initProxy();
-  runApp(const DemoProxy());
-}
-
 initProxy() async{
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -56,7 +50,7 @@ class _DemoProxyState extends State<DemoProxy> {
         ),
         body: ElevatedButton(
             onPressed: () {
-              Dio().get("http://172.1611.0.1");
+              Dio().get("http://172.16.0.1");
             },
             child: Text("test dio")),
       ),

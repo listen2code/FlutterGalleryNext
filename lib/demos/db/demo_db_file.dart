@@ -4,15 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
-void main() {
-  runApp(
-    MaterialApp(
-      title: 'Reading and Writing Files',
-      home: DemoDbFile(storage: CounterStorage()),
-    ),
-  );
-}
-
 class CounterStorage {
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();

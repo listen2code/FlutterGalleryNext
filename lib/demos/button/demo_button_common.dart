@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-void main() {
-  runApp(const DemoButtonCommon());
-}
-
 class DemoButtonCommon extends StatelessWidget {
   const DemoButtonCommon({super.key});
 

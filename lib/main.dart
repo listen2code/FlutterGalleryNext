@@ -9,6 +9,7 @@ import 'package:flutter_gallery_next/demos/button/demo_button_ontap.dart';
 import 'package:flutter_gallery_next/demos/db/demo_db_file.dart';
 import 'package:flutter_gallery_next/demos/demo_expand_floatbutton.dart';
 import 'package:flutter_gallery_next/demos/demo_form_submit.dart';
+import 'package:flutter_gallery_next/demos/demo_proxy.dart';
 import 'package:flutter_gallery_next/demos/demo_statusbar_color.dart';
 import 'package:flutter_gallery_next/demos/grid/demo_grid_basic.dart';
 import 'package:flutter_gallery_next/demos/image/demo_image_cache.dart';
@@ -24,7 +25,6 @@ import 'package:flutter_gallery_next/demos/list/demo_list_refresh.dart';
 import 'package:flutter_gallery_next/demos/list/demo_list_silver_bar.dart';
 import 'package:flutter_gallery_next/demos/list/demo_list_silver_header.dart';
 import 'package:flutter_gallery_next/demos/loading/demo_dialog.dart';
-import 'package:flutter_gallery_next/demos/loading/demo_dialog_stateless.dart';
 import 'package:flutter_gallery_next/demos/loading/global_loading.dart';
 import 'package:flutter_gallery_next/demos/nav/demo_nav_hero.dart';
 import 'package:flutter_gallery_next/demos/net/demo_net_async.dart';
@@ -139,13 +139,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
 Map<String, WidgetBuilder> routers = {
   "demo proxy": (context) {
-    return const DemoDialog();
+    return const DemoProxy();
   },
   "demo dialog": (context) {
     return const DemoDialog();
-  },
-  "demo dialog stateless": (context) {
-    return DemoDialogStateless();
   },
   "page route": (context) {
     return const DemoPageRoute();
