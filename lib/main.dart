@@ -1,62 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gallery_next/demos/anim/demo_anim_opacity.dart';
-import 'package:flutter_gallery_next/demos/anim/demo_anim_physics_drag.dart';
-import 'package:flutter_gallery_next/demos/anim/demo_anim_random.dart';
-import 'package:flutter_gallery_next/demos/anim/demo_anim_transition.dart';
-import 'package:flutter_gallery_next/demos/button/demo_button_common.dart';
-import 'package:flutter_gallery_next/demos/button/demo_button_inkwell.dart';
-import 'package:flutter_gallery_next/demos/button/demo_button_ontap.dart';
+import 'package:flutter_gallery_next/demos/anim/demo_anim.dart';
+import 'package:flutter_gallery_next/demos/button/demo_button.dart';
 import 'package:flutter_gallery_next/demos/db/demo_db_file.dart';
+import 'package:flutter_gallery_next/demos/demo_empty.dart';
 import 'package:flutter_gallery_next/demos/demo_expand_floatbutton.dart';
 import 'package:flutter_gallery_next/demos/demo_form_submit.dart';
 import 'package:flutter_gallery_next/demos/demo_proxy.dart';
 import 'package:flutter_gallery_next/demos/demo_statusbar_color.dart';
-import 'package:flutter_gallery_next/demos/grid/demo_grid_basic.dart';
-import 'package:flutter_gallery_next/demos/image/demo_image_cache.dart';
-import 'package:flutter_gallery_next/demos/image/demo_image_network.dart';
-import 'package:flutter_gallery_next/demos/layout/demo_layout_complex.dart';
 import 'package:flutter_gallery_next/demos/demo_tabs.dart';
 import 'package:flutter_gallery_next/demos/demo_theme.dart';
-import 'package:flutter_gallery_next/demos/list/demo_list_basic.dart';
-import 'package:flutter_gallery_next/demos/list/demo_list_dismiss.dart';
-import 'package:flutter_gallery_next/demos/list/demo_list_horizontal.dart';
-import 'package:flutter_gallery_next/demos/list/demo_list_long.dart';
-import 'package:flutter_gallery_next/demos/list/demo_list_refresh.dart';
-import 'package:flutter_gallery_next/demos/list/demo_list_silver_bar.dart';
-import 'package:flutter_gallery_next/demos/list/demo_list_silver_header.dart';
+import 'package:flutter_gallery_next/demos/grid/demo_grid.dart';
+import 'package:flutter_gallery_next/demos/image/demo_image.dart';
+import 'package:flutter_gallery_next/demos/layout/demo_layout_complex.dart';
+import 'package:flutter_gallery_next/demos/list/demo_list.dart';
 import 'package:flutter_gallery_next/demos/loading/demo_dialog.dart';
 import 'package:flutter_gallery_next/demos/loading/global_loading.dart';
-import 'package:flutter_gallery_next/demos/nav/demo_nav_hero.dart';
-import 'package:flutter_gallery_next/demos/net/demo_net_async.dart';
-import 'package:flutter_gallery_next/demos/net/demo_net_basic.dart';
-import 'package:flutter_gallery_next/demos/net/demo_net_complex_add.dart';
-import 'package:flutter_gallery_next/demos/net/demo_net_complex_del.dart';
-import 'package:flutter_gallery_next/demos/net/demo_net_complex_update.dart';
-import 'package:flutter_gallery_next/demos/page_route/page_1.dart';
-import 'package:flutter_gallery_next/demos/text/demo_text_fetch.dart';
-import 'package:flutter_gallery_next/demos/text/demo_text_focus.dart';
-import 'package:flutter_gallery_next/demos/text/demo_text_tag.dart';
+import 'package:flutter_gallery_next/demos/nav/demo_nav.dart';
+import 'package:flutter_gallery_next/demos/net/demo_net.dart';
+import 'package:flutter_gallery_next/demos/text/demo_text.dart';
 import 'package:package_base/package_base.dart';
 import 'package:plugin_native/plugin_native.dart';
 
-import 'demos/button/demo_button_download.dart';
 import 'demos/db/demo_db_sp.dart';
 import 'demos/drawer/demo_drawer.dart';
 import 'demos/drawer/demo_drawer_stagger.dart';
-import 'demos/grid/demo_grid_orientation.dart';
-import 'demos/image/demo_image_radius.dart';
 import 'demos/layout/demo_layout_scroll_parallax.dart';
-import 'demos/list/demo_list_multi.dart';
-import 'demos/nav/demo_nav_complex.dart';
-import 'demos/nav/demo_nav_name.dart';
-import 'demos/nav/demo_nav_param.dart';
-import 'demos/nav/demo_nav_push_pop.dart';
-import 'demos/nav/demo_nav_selection.dart';
-import 'demos/nav/demo_nav_todos.dart';
 import 'demos/state/demo_state.dart';
-import 'demos/text/demo_text_basic.dart';
-import 'demos/text/demo_text_bubble.dart';
-
 
 void main() async {
   runApp(const MyApp());
@@ -100,7 +69,6 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-
 class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
@@ -136,16 +104,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-
 Map<String, WidgetBuilder> routers = {
+  "demo auth": (context) {
+    return const DemoEmpty();
+  },
   "demo proxy": (context) {
     return const DemoProxy();
   },
   "demo dialog": (context) {
     return const DemoDialog();
-  },
-  "page route": (context) {
-    return const DemoPageRoute();
   },
   "status bar": (context) {
     return const DemoStatusBarColor();
@@ -159,7 +126,7 @@ Map<String, WidgetBuilder> routers = {
   "drawer stagger": (context) {
     return const DemoDrawerStagger();
   },
-  "expand float button": (context) {
+  "demo expand float button": (context) {
     return const DemoExpandFloatButton();
   },
   "form submit": (context) {
@@ -168,140 +135,43 @@ Map<String, WidgetBuilder> routers = {
   "layout complex": (context) {
     return const DemoLayoutComplex();
   },
-  "scrolling parallax": (context) {
+  "layout scrolling parallax": (context) {
     return const DemoLayoutScrollParallax();
   },
-  "tabs": (context) {
+  "demo tabs": (context) {
     return const DemoTabs();
   },
-  "theme": (context) {
+  "demo theme": (context) {
     return const DemoTheme();
   },
-  "anim opacity": (context) {
-    return const DemoAnimOpacity();
+  "demo anim": (context) {
+    return const DemoAnim();
   },
-  "anim physics drag": (context) {
-    return const DemoAnimPhysicsDrag();
+  "demo button": (context) {
+    return const DemoButton();
   },
-  "anim random": (context) {
-    return const DemoAnimRandom();
-  },
-  "anim transition": (context) {
-    return DemoAnimTransition();
-  },
-  "button inkwell": (context) {
-    return const DemoButtonInkWell();
-  },
-  "button onTap": (context) {
-    return const DemoButtonOnTap();
-  },
-  "button download": (context) {
-    return const DemoButtonDownload();
-  },
-  "button common": (context) {
-    return const DemoButtonCommon();
-  },
-  "db file": (context) {
+  "demo db file": (context) {
     return DemoDbFile(storage: CounterStorage());
   },
-  "db sp": (context) {
+  "demo db sp": (context) {
     return const DemoDbSp();
   },
-  "grid basic": (context) {
-    return const DemoGridBasic();
+  "demo grid": (context) {
+    return const DemoGrid();
   },
-  "grid orientation": (context) {
-    return const DemoGridOrientation();
+  "demo list": (context) {
+    return const DemoList();
   },
-  "list basic": (context) {
-    return const DemoListBasic();
+  "demo nav": (context) {
+    return const DemoNav();
   },
-  "list dismiss": (context) {
-    return const DemoListDismiss();
+  "demo net": (context) {
+    return const DemoNet();
   },
-  "list horizontal": (context) {
-    return const DemoListHorizontal();
+  "demo text": (context) {
+    return const DemoText();
   },
-  "list long": (context) {
-    return DemoListLong(items: List<String>.generate(10000, (i) => 'Item $i'));
-  },
-  "list multi": (context) {
-    return DemoListMulti(
-      items: List<ListItem>.generate(
-        1000,
-            (i) => i % 6 == 0
-            ? HeadingItem('Heading $i')
-            : MessageItem('Sender $i', 'Message body $i'),
-      ),
-    );
-  },
-  "list silver bar": (context) {
-    return const DemoListSilverBar();
-  },
-  "list fix header": (context) {
-    return const DemoListFixHeader();
-  },
-  "list refresh": (context) {
-    return const DemoListRefresh();
-  },
-  "nav complex": (context) {
-    return const DemoNavComplex();
-  },
-  "nav hero": (context) {
-    return const DemoNavHero();
-  },
-  "nav name": (context) {
-    return const DemoNavName();
-  },
-  "nav param": (context) {
-    return const DemoNavParam();
-  },
-  "nav push pop": (context) {
-    return const DemoNavPushPop();
-  },
-  "nav selection": (context) {
-    return const DemoNavSelection();
-  },
-  "nav todos": (context) {
-    return const DemoNavTodos();
-  },
-  "net async": (context) {
-    return const DemoNetAsync();
-  },
-  "net basic": (context) {
-    return const DemoNetBasic();
-  },
-  "net complex add": (context) {
-    return const DemoNetComplexAdd();
-  },
-  "net complex del": (context) {
-    return const DemoNetComplexDel();
-  },
-  "net complex update": (context) {
-    return const DemoNetComplexUpdate();
-  },
-  "text basic": (context) {
-    return const DemoTextBasic();
-  },
-  "text fetch": (context) {
-    return const DemoTextFetch();
-  },
-  "text focus": (context) {
-    return const DemoTextFocus();
-  },
-  "text bubble": (context) {
-    return DemoTextBubble();
-  },
-  "text tag": (context) {
-    return DemoTextTag();
-  },
-  "image net": (context) {
-    return const DemoImageNetwork();
-  },
-  "image cache": (context) {
-    return const DemoImageCache();
-  },
-  "image radius": (context) {
-    return const DemoImageRadius();
+  "demo image": (context) {
+    return const DemoImage();
   },
 };

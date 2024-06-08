@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// 圆角效果处理实现
 class DemoImageRadius extends StatelessWidget {
   const DemoImageRadius({super.key});
 
@@ -17,7 +16,7 @@ class DemoImageRadius extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text("BoxDecoration 圆角"),
+            const Text("BoxDecoration"),
             Container(
               width: 100,
               height: 100,
@@ -27,14 +26,11 @@ class DemoImageRadius extends StatelessWidget {
                     fit: BoxFit.cover,
                     image: AssetImage("images/lake.jpg"),
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Text("ClipRRect 圆角对 child"),
+            const Text("ClipRRect"),
             ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
               child: Image.asset(
                 "images/lake.jpg",
                 fit: BoxFit.cover,
