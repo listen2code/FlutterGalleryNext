@@ -8,3 +8,27 @@
 6.build apk
 7.splash
 8.rules
+
+# architecture
+
+main
+-library
+--package_base: only dart
+----package_libs: basic third util, network, sp, event_bus, theme, globalization
+------package_widget: base widgets, button, text, image, dialog, toast, loading, refreshList,
+tabView,
+--------package_biz: base biz
+----------package_webView: webView
+----------package_splash: splash module
+----------package_login: login module
+----------package_share: share module
+--plugin_native: plugin for native basic info
+--plugin_proxy: plugin for proxy
+
+# create package and plugin
+
+* flutter create --org com.listen.plugin --template=plugin --platforms=android,ios -a kotlin -i
+  swift
+  plugin_xxx
+
+* flutter create --template=package package_xxx
