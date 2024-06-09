@@ -15,8 +15,7 @@ main
 -library
 --package_base: only dart
 ----package_libs: basic third util, network, sp, event_bus, theme, globalization
-------package_widget: base widgets, button, text, image, dialog, toast, loading, refreshList,
-tabView,
+------package_widget: base widgets, button, text, image, dialog, toast, loading, refreshList, tabView,
 --------package_biz: base biz
 ----------package_webView: webView
 ----------package_splash: splash module
@@ -27,8 +26,10 @@ tabView,
 
 # create package and plugin
 
-* flutter create --org com.listen.plugin --template=plugin --platforms=android,ios -a kotlin -i
-  swift
-  plugin_xxx
+1. flutter create --org com.xxx.xxx --template=plugin --platforms=android,ios -a kotlin -i swift plugin_xxx
+2. flutter create --template=package package_xxx
 
-* flutter create --template=package package_xxx
+# tools
+
+1.FlutterJsonBeanFactory
+2.FlutterAssetsGenerator
