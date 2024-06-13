@@ -3,6 +3,7 @@ import 'package:flutter_gallery_next/demos/button/demo_button_common.dart';
 import 'package:flutter_gallery_next/demos/button/demo_button_download.dart';
 import 'package:flutter_gallery_next/demos/button/demo_button_inkwell.dart';
 import 'package:flutter_gallery_next/demos/button/demo_button_ontap.dart';
+import 'package:flutter_gallery_next/demos/button/demo_button_toggle.dart';
 
 class DemoButton extends StatefulWidget {
   const DemoButton({Key? key}) : super(key: key);
@@ -42,6 +43,11 @@ class _DemoButtonState extends State<DemoButton> {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoButtonCommon()));
                 },
                 child: const Text("button common")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoButtonToggle()));
+                },
+                child: const Text("button toggle")),
           ],
         ),
       ),
