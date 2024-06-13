@@ -8,7 +8,7 @@
 6.build apk
 7.splash
 8.rules
-9.plugin: jsonGenerator ?
+9.plugin:FlutterJsonBeanFactory, AssetsHelper, timestamp Json Parser
 
 # architecture
 
