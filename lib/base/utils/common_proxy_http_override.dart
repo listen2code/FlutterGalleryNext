@@ -1,7 +1,7 @@
 import 'dart:io';
 
 /// This class overrides the global proxy settings.
-class CustomProxyHttpOverride extends HttpOverrides {
+class CommonProxyHttpOverride extends HttpOverrides {
   /// The entire proxy server
   /// Format: "localhost:8888"
   final String proxyString;
@@ -11,7 +11,7 @@ class CustomProxyHttpOverride extends HttpOverrides {
   final bool allowBadCertificates;
 
   /// Initializer
-  CustomProxyHttpOverride.withProxy(
+  CommonProxyHttpOverride.withProxy(
     this.proxyString, {
     this.allowBadCertificates = false,
   });
