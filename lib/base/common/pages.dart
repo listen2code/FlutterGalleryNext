@@ -1,8 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
+import 'package:flutter_gallery_next/biz/demos/demo_intl.dart';
 
 class Constant {
-  static final Map<String, WidgetBuilder> routers = {
+  static final Map<String, WidgetBuilder> router = {
+    "demo intl": (context) {
+      return const DemoIntl();
+    },
     "demo auth": (context) {
       return const DemoEmpty();
     },

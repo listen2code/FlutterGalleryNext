@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gallery_next/base/common/constant.dart';
 import 'package:flutter_gallery_next/base/common/init.dart';
+import 'package:flutter_gallery_next/base/common/pages.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
-import 'package:package_base/package_base.dart';
 import 'package:plugin_native/plugin_native.dart';
 
 void main() async {
@@ -21,8 +20,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    Calculator c = Calculator();
-    c.addOne(1);
     return MaterialApp(
       title: 'Listen Flutter Gallery',
       theme: ThemeData(
@@ -33,7 +30,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const MyHomePage(title: 'Listen Flutter Gallery'),
-      routes: Constant.routers,
+      routes: Constant.router,
       builder: GlobalLoading.init(),
     );
   }
@@ -50,13 +47,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var routeLists = Constant.routers.keys.toList();
+    var routeLists = Constant.router.keys.toList();
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title!),
@@ -72,12 +64,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 alignment: Alignment.centerLeft,
                 margin: const EdgeInsets.symmetric(horizontal: 10),
                 height: 50,
-                child: Text(Constant.routers.keys.toList()[index]),
+                child: Text(Constant.router.keys.toList()[index]),
               ),
             ),
           );
         },
-        itemCount: Constant.routers.length,
+        itemCount: Constant.router.length,
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
