@@ -1,28 +1,15 @@
 import 'package:flutter/material.dart';
 
-class DemoDrawerStagger extends StatelessWidget {
-  const DemoDrawerStagger({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: ExampleStaggeredAnimations(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
-class ExampleStaggeredAnimations extends StatefulWidget {
-  const ExampleStaggeredAnimations({
+class DemoDrawerStagger extends StatefulWidget {
+  const DemoDrawerStagger({
     super.key,
   });
 
   @override
-  State<ExampleStaggeredAnimations> createState() =>
-      _ExampleStaggeredAnimationsState();
+  State<DemoDrawerStagger> createState() => _DemoDrawerStaggerState();
 }
 
-class _ExampleStaggeredAnimationsState extends State<ExampleStaggeredAnimations>
+class _DemoDrawerStaggerState extends State<DemoDrawerStagger>
     with SingleTickerProviderStateMixin {
   late AnimationController _drawerSlideController;
 
@@ -79,7 +66,7 @@ class _ExampleStaggeredAnimationsState extends State<ExampleStaggeredAnimations>
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       title: const Text(
-        'Flutter Menu',
+        'demo drawer stagger',
         style: TextStyle(
           color: Colors.black,
         ),
@@ -95,13 +82,13 @@ class _ExampleStaggeredAnimationsState extends State<ExampleStaggeredAnimations>
               onPressed: _toggleDrawer,
               icon: _isDrawerOpen() || _isDrawerOpening()
                   ? const Icon(
-                Icons.clear,
-                color: Colors.black,
-              )
+                      Icons.clear,
+                      color: Colors.black,
+                    )
                   : const Icon(
-                Icons.menu,
-                color: Colors.black,
-              ),
+                      Icons.menu,
+                      color: Colors.black,
+                    ),
             );
           },
         ),

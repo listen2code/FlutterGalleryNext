@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_intl.dart';
-import 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer_draggable.dart';
+import 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer.dart';
 
 class Constant {
   static final Map<String, WidgetBuilder> router = {
@@ -23,14 +23,8 @@ class Constant {
     "state": (context) {
       return const DemoState();
     },
-    "demo drawer draggable": (context) {
-      return const DemoDrawerDraggable();
-    },
     "demo drawer": (context) {
       return const DemoDrawer();
-    },
-    "demo drawer stagger": (context) {
-      return const DemoDrawerStagger();
     },
     "demo expand float button": (context) {
       return const DemoExpandFloatButton();

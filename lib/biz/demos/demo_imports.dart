@@ -9,7 +9,7 @@ export 'package:flutter_gallery_next/biz/demos/demo_proxy.dart';
 export 'package:flutter_gallery_next/biz/demos/demo_status_bar_color.dart';
 export 'package:flutter_gallery_next/biz/demos/demo_tabs.dart';
 export 'package:flutter_gallery_next/biz/demos/demo_theme.dart';
-export 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer.dart';
+export 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer_left.dart';
 export 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer_stagger.dart';
 export 'package:flutter_gallery_next/biz/demos/grid/demo_grid.dart';
 export 'package:flutter_gallery_next/biz/demos/image/demo_image.dart';
