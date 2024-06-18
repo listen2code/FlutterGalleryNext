@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
 import 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer_draggable.dart';
+import 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer_draggable_handler.dart';
 
 class DemoDrawer extends StatefulWidget {
   const DemoDrawer({Key? key}) : super(key: key);
@@ -32,6 +33,13 @@ class _DemoDrawerState extends State<DemoDrawer> {
                       builder: (context) => const DemoDrawerDraggable()));
                 },
                 child: const Text("drawer draggable")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          const DemoDrawerDraggableHandler()));
+                },
+                child: const Text("drawer draggable handler")),
             ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(

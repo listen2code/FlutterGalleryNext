@@ -23,15 +23,15 @@ class DemoDrawerDraggable extends StatelessWidget {
             ),
           ),
           DraggableScrollableSheet(
-            initialChildSize: 0.1,
-            // 初始高度，占屏幕高度的10%
-            minChildSize: 0.1,
-            // 最小高度，占屏幕高度的10%
+            initialChildSize: 0.15,
+            // 初始高度
+            minChildSize: 0.15,
+            // 最小高度
             maxChildSize: 1,
-            // 最大高度，占屏幕高度的80%
+            // 最大高度
             snap: true,
             snapSizes: const [0.5, 1],
-            snapAnimationDuration: const Duration(seconds: 1),
+            snapAnimationDuration: const Duration(milliseconds: 200),
             builder: (BuildContext context, ScrollController scrollController) {
               return Container(
                 color: Colors.red,
