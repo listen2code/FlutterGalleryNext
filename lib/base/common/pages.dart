@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_intl.dart';
 import 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer.dart';
+import 'package:flutter_gallery_next/biz/demos/tab/demo_tab.dart';
 
 class Constant {
   static final Map<String, WidgetBuilder> router = {
@@ -38,8 +39,8 @@ class Constant {
     "layout scrolling parallax": (context) {
       return const DemoLayoutScrollParallax();
     },
-    "demo tabs": (context) {
-      return const DemoTabs();
+    "demo tab": (context) {
+      return const DemoTab();
     },
     "demo theme": (context) {
       return const DemoTheme();

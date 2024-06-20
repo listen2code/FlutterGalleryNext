@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class DemoTabs extends StatelessWidget {
-  const DemoTabs({super.key});
+class DemoTabScrollable extends StatelessWidget {
+  const DemoTabScrollable({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class DemoTabs extends StatelessWidget {
                 Tab(icon: Icon(Icons.directions_bike)),
               ],
             ),
-            title: const Text('Tabs Demo'),
+            title: const Text('tab scrollable'),
           ),
           body: const TabBarView(
             children: [
