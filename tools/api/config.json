@@ -1,0 +1,10 @@
+[
+  {
+    "api": "follow",
+    "httpCode": 200
+  },
+  {
+    "api": "suggest",
+    "httpCode": 200
+  }
+]
