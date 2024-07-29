@@ -5,6 +5,14 @@ import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
 
 void main() async {
   await appInit();
+  assert(() {
+    FlutterError.onError = (FlutterErrorDetails details) {
+      // error
+      debugPrint("############# error ############");
+      debugPrint("${details}");
+    };
+    return true;
+  }());
   runApp(const MyApp());
 }
 
