@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:logger/logger.dart';
 
-/// [describe] Log出力
 class LoggerUtil {
   static final Logger logger = Logger(
       filter: null,
