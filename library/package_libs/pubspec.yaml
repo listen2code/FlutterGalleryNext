@@ -15,6 +15,9 @@ dependencies:
     path: ../package_base
   shared_preferences: ^2.0.15
   logger: ^2.4.0
+  local_auth: ^2.3.0
+  local_auth_android: ^1.0.38
+  local_auth_darwin: ^1.4.0
 
 dev_dependencies:
   flutter_test:
