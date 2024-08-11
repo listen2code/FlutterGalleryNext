@@ -2,6 +2,7 @@ name: package_libs
 description: "A new Flutter package project."
 version: 0.0.1
 homepage: none
+publish_to: none
 
 environment:
   sdk: '>=3.3.3 <4.0.0'

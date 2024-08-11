@@ -23,7 +23,6 @@ main
 ----------package_login: login module
 ----------package_share: share module
 --plugin_native: plugin for native basic info
---plugin_proxy: plugin for proxy
 
 # create package and plugin
 
