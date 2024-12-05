@@ -1,4 +1,3 @@
-/// [describe] アプリフォント
 class AppFontFamily {
   AppFontFamily._private();
 

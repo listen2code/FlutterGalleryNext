@@ -1,10 +1,5 @@
 import 'dart:ui';
 
-/// [author] s.igarashi0
-///
-/// [describe] ベーステーマカラー
-///
-/// [date] 2024/07/03
 abstract class BaseThemeColors {
   const BaseThemeColors({
     /// Black and White
