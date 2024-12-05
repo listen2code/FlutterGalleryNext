@@ -31,7 +31,7 @@ class _ExampleCupertinoDownloadButtonState
     super.initState();
     _downloadControllers = List<DownloadController>.generate(
       10,
-          (index) => SimulatedDownloadController(onOpenDownload: () {
+      (index) => SimulatedDownloadController(onOpenDownload: () {
         _openDownload(index);
       }),
     );
@@ -66,12 +66,12 @@ class _ExampleCupertinoDownloadButtonState
       title: Text(
         'App ${index + 1}',
         overflow: TextOverflow.ellipsis,
-        style: theme.textTheme.headline6,
+        style: theme.textTheme.headlineLarge,
       ),
       subtitle: Text(
         'Lorem ipsum dolor #${index + 1}',
         overflow: TextOverflow.ellipsis,
-        style: theme.textTheme.caption,
+        // style: theme.textTheme.caption,
       ),
       trailing: SizedBox(
         width: 96,
@@ -134,10 +134,13 @@ enum DownloadStatus {
 
 abstract class DownloadController implements ChangeNotifier {
   DownloadStatus get downloadStatus;
+
   double get progress;
 
   void startDownload();
+
   void stopDownload();
+
   void openDownload();
 }
 
@@ -152,10 +155,12 @@ class SimulatedDownloadController extends DownloadController
         _onOpenDownload = onOpenDownload;
 
   DownloadStatus _downloadStatus;
+
   @override
   DownloadStatus get downloadStatus => _downloadStatus;
 
   double _progress;
+
   @override
   double get progress => _progress;
 
@@ -265,7 +270,7 @@ class DownloadButton extends StatelessWidget {
         onDownload();
         break;
       case DownloadStatus.fetchingDownload:
-      // do nothing.
+        // do nothing.
         break;
       case DownloadStatus.downloading:
         onCancel();
@@ -360,10 +365,10 @@ class ButtonShapeWidget extends StatelessWidget {
           child: Text(
             isDownloaded ? 'OPEN' : 'GET',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.button?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: CupertinoColors.activeBlue,
-            ),
+            // style: Theme.of(context).textTheme.button?.copyWith(
+            //       fontWeight: FontWeight.bold,
+            //       color: CupertinoColors.activeBlue,
+            //     ),
           ),
         ),
       ),

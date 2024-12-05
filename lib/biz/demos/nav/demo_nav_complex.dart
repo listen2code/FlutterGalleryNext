@@ -39,7 +39,7 @@ class DemoNavComplexState extends State<DemoNavComplex> {
           page = const SettingsScreen();
         } else if (settings.name!.startsWith(routePrefixDeviceSetup)) {
           final subRoute =
-          settings.name!.substring(routePrefixDeviceSetup.length);
+              settings.name!.substring(routePrefixDeviceSetup.length);
           page = SetupFlow(
             setupPageRoute: subRoute,
           );
@@ -105,28 +105,28 @@ class SetupFlowState extends State<SetupFlow> {
 
   Future<bool> _isExitDesired() async {
     return await showDialog<bool>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Are you sure?'),
-            content: const Text(
-                'If you exit device setup, your progress will be lost.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                child: const Text('Leave'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                child: const Text('Stay'),
-              ),
-            ],
-          );
-        }) ??
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Are you sure?'),
+                content: const Text(
+                    'If you exit device setup, your progress will be lost.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: const Text('Leave'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: const Text('Stay'),
+                  ),
+                ],
+              );
+            }) ??
         false;
   }
 
@@ -214,7 +214,7 @@ class SelectDevicePage extends StatelessWidget {
             children: [
               Text(
                 'Select a nearby device:',
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
               const SizedBox(height: 24),
               SizedBox(
