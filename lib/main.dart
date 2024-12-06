@@ -9,7 +9,7 @@ void main() async {
     FlutterError.onError = (FlutterErrorDetails details) {
       // error
       debugPrint("############# error ############");
-      debugPrint("${details}");
+      debugPrint("$details");
     };
     return true;
   }());
