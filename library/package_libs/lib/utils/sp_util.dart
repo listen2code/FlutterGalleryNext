@@ -124,3 +124,9 @@ class SpUtil {
     return _prefs!.remove(key);
   }
 }
+
+class SpKey {
+  SpKey._private();
+
+  static const String uuid = "uuid";
+}
