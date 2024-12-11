@@ -6,9 +6,6 @@ import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:package_libs/utils/logger_util.dart';
 import 'package:package_libs/utils/sp_util.dart';
 
-/// [describe] 認証ステータス
-///
-/// [date] 2024/06/26
 enum AuthStatus {
   // 初期化
   init,
@@ -22,9 +19,6 @@ enum AuthStatus {
   skip,
 }
 
-/// [describe] 認証 結果
-///
-/// [date] 2024/06/26
 enum AuthResult {
   // 成功
   success,
@@ -34,16 +28,8 @@ enum AuthResult {
   fail,
 }
 
-/// [describe] アプリライフサイクル
-///
-/// [date] 2024/06/28
 AppLifecycleWatcher appLifecycleWatcher = AppLifecycleWatcher();
 
-/// [author] s.li0
-///
-/// [describe] 生体認証関連共通
-///
-/// [date] 2024/06/26
 class AuthUtil {
   static final AuthUtil _instance = AuthUtil._private();
   static final LocalAuthentication _auth = LocalAuthentication();
@@ -58,9 +44,6 @@ class AuthUtil {
 
   factory AuthUtil.instance() => _instance;
 
-  /// [describe] 生体認証 実行
-  ///
-  /// [date] 2024/07/02
   Future<AuthResult> authenticate() async {
     LoggerUtil.log("AuthUtil authenticate start", type: LoggerType.easy);
     AuthResult authResult = AuthResult.fail;
@@ -97,11 +80,6 @@ class AuthUtil {
     return authResult;
   }
 
-  /// [describe] 生体認証 チェック
-  ///
-  /// [date] 2024/07/02
-  ///
-  /// [return] 生体認証の必要有無
   Future<bool> checkAuthority() async {
     if (isStatusSkip()) {
       LoggerUtil.log("AuthUtil checkAuthority skip=true",
@@ -145,7 +123,6 @@ class AuthUtil {
     return false;
   }
 
-  /// [describe] 生体認証必要 判断
   Future<bool> shouldAuth() async {
     if (isStatusDone()) {
       LoggerUtil.log("AuthUtil shouldAuth=false isStatusDone",
@@ -175,7 +152,6 @@ class AuthUtil {
           "isRequiredIfEnabledBool=$isRequiredIfEnabledBool ",
           type: LoggerType.easy);
       if (isRequiredIfEnabledBool == true) {
-        // 生体認証へ
         LoggerUtil.log("AuthUtil shouldAuth=true isRequiredIfEnabledBool=true",
             type: LoggerType.easy);
         return true;
@@ -186,9 +162,6 @@ class AuthUtil {
     return false;
   }
 
-  /// [describe] 生体認証の lockPassWordId authenticationTime設定が有効になっているかを返します
-  ///
-  /// [date] 2024/06/26
   Future<bool> isAuthEnabled() async {
     String authenticationTime = await SpUtil.instance()
         .getStringAsync("authenticationTime", defaultValue: "");
@@ -219,9 +192,6 @@ class AuthUtil {
     return true;
   }
 
-  /// [describe] 生体認証のauthenticationTimeが有効であれば 認証が必要な状況か返します
-  ///
-  /// [date] 2024/06/27
   Future<bool> isRequiredIfEnabled(DateTime? startTime, int timeout) async {
     LoggerUtil.log(
         "AuthUtil isRequiredIfEnabled startTime=$startTime timeout=$timeout",
@@ -268,10 +238,6 @@ class AuthUtil {
     }
   }
 
-  /// [describe] 生体認証が利用できるかどうかを返します
-  /// android: keyguardManager.isDeviceSecure() && biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
-  ///
-  /// [date] 2024/06/26
   Future<bool> isAvailable() async {
     bool isDeviceSupportedBool = false;
     List<BiometricType> biometricList = [];
@@ -291,10 +257,6 @@ class AuthUtil {
     return isDeviceSupportedBool && biometricList.isNotEmpty;
   }
 
-  /// [describe] 端末では生体認証を使用するかどうか true=使用する false=使用しない
-  /// biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) != BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE
-  ///
-  /// [date] 2024/06/26
   Future<bool> canCheckBiometrics() async {
     bool canCheckBiometrics = false;
     try {
@@ -306,9 +268,6 @@ class AuthUtil {
     return canCheckBiometrics;
   }
 
-  /// [describe] Face authentication が利用できるかどうかを返します 機種によってはfalseが返される場合があります [isAvailable]で判断してください
-  ///
-  /// [date] 2024/06/28
   Future<bool> isFaceAvailable() async {
     // Android の場合、[BiometricType.weak, BiometricType.strong]を返信します
     List<BiometricType> biometricList = [];
@@ -322,9 +281,6 @@ class AuthUtil {
     return !hasNot;
   }
 
-  /// [describe] Fingerprint authentication が利用できるかどうかを返します 機種によってはfalseが返される場合があります [isAvailable]で判断してください
-  ///
-  /// [date] 2024/06/28
   Future<bool> isFingerprintAvailable() async {
     // Android の場合、[BiometricType.weak, BiometricType.strong]を返信します
     List<BiometricType> biometricList = [];
@@ -338,9 +294,6 @@ class AuthUtil {
     return !hasNot;
   }
 
-  /// [describe] 生体認証 タイプを取得
-  ///
-  /// [date] 2024/07/02
   Future<String> getAuthTypeName() async {
     bool isFaceAvailable = await AuthUtil.instance().isFaceAvailable();
     bool isFingerprintAvailable =
@@ -356,9 +309,6 @@ class AuthUtil {
     return result;
   }
 
-  /// [describe] 認証を停止
-  ///
-  /// [date] 2024/07/02
   Future<bool> stopAuthentication() async {
     bool result = false;
     try {
@@ -370,25 +320,15 @@ class AuthUtil {
     return result;
   }
 
-  /// [describe] pausedDateを取得
-  ///
-  /// [date] 2024/07/02
   DateTime? getPausedDate() {
     return _pausedDate;
   }
 
-  /// [describe] pausedDateをクリア
-  ///
-  /// [date] 2024/07/02
   void clearPauseDate() {
     LoggerUtil.log("AuthUtil clearPauseDate", type: LoggerType.easy);
     _pausedDate = null;
   }
 
-  /// [describe] パスワードを忘れた場合 関連データをクリア
-  ///
-  /// [date] 2024/07/01
-  ///
   void clearWhenForgetPassword() {
     /// reset status
     setStatus(AuthStatus.done);
@@ -400,9 +340,6 @@ class AuthUtil {
     SpUtil.instance().set("authenticationTime", "");
   }
 
-  /// [describe] pausedDateを設定
-  ///
-  /// [date] 2024/07/02
   void setPausedDate() {
     _pausedDate = DateTime.now();
     LoggerUtil.log("AuthUtil setPausedDate pausedDate=$_pausedDate",
@@ -410,45 +347,27 @@ class AuthUtil {
     setStatusTodo();
   }
 
-  /// [describe] status=doing を判断
-  ///
-  /// [date] 2024/07/02
   bool isStatusDoing() {
     return _status == AuthStatus.doing;
   }
 
-  /// [describe] status=skip を判断
-  ///
-  /// [date] 2024/07/02
   bool isStatusSkip() {
     return _status == AuthStatus.skip;
   }
 
-  /// [describe] status=init を判断
-  ///
-  /// [date] 2024/07/02
   bool isStatusInit() {
     return _status == AuthStatus.init;
   }
 
-  /// [describe] status=done を判断
-  ///
-  /// [date] 2024/07/02
   bool isStatusDone() {
     return _status == AuthStatus.done;
   }
 
-  /// [describe] statusを設定
-  ///
-  /// [date] 2024/07/02
   void setStatus(AuthStatus status) {
     log("AuthUtil setStatus from $_status to $status", type: LoggerType.easy);
     _status = status;
   }
 
-  /// [describe] status=todoを設定
-  ///
-  /// [date] 2024/07/02
   void setStatusTodo() {
     log("AuthUtil setStatusTodo from $_status to AuthStatus.todo",
         type: LoggerType.easy);
@@ -458,9 +377,6 @@ class AuthUtil {
   }
 }
 
-/// [describe] アプリライフサイクル
-///
-/// [date] 2024/07/02
 class AppLifecycleWatcher extends WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
