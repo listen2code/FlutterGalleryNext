@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'dart:developer' as developer;
+
 import 'package:logger/logger.dart';
 
 class LoggerUtil {
@@ -43,7 +44,7 @@ class LoggerUtil {
         logger.f(message);
         break;
       case LoggerType.easy:
-        debugPrint(message.toString());
+        developer.log(message.toString());
         break;
       default:
         logger.d(message);
