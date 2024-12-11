@@ -22,7 +22,7 @@ main
 ----------package_splash: splash module
 ----------package_login: login module
 ----------package_share: share module
---plugin_native: plugin for native basic info
+------plugin_native: plugin for native basic info
 
 # create package and plugin
 
