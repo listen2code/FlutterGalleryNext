@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class CommonSymbols {
   CommonSymbols._private();
 
@@ -115,4 +117,13 @@ class AppKeyboardCharacter {
     "[",
     "]"
   ];
+}
+
+class AppStoreAddress {
+  AppStoreAddress._private();
+
+  static get appStore => Platform.isAndroid ? _android : _ios;
+
+  static const String _android = "market://details?id=[package_name]";
+  static const String _ios = "https://apps.apple.com/jp/app/[app_id]";
 }
