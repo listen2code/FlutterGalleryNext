@@ -1,7 +1,8 @@
 name: plugin_native
 description: "A new Flutter plugin project."
 version: 0.0.1
-homepage:
+homepage: none
+publish_to: none
 
 environment:
   sdk: '>=3.3.3 <4.0.0'
@@ -11,6 +12,10 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
+  package_base:
+    path: ../package_base
+  package_libs:
+    path: ../package_libs
 
 dev_dependencies:
   flutter_test:
