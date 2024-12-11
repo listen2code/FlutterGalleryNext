@@ -3,7 +3,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 class ConnectivityUtil {
   ConnectivityUtil._private();
 
-  static Future<String> getStatus() async {
+  static final ConnectivityUtil _instance = ConnectivityUtil._private();
+
+  factory ConnectivityUtil.instance() => _instance;
+
+  Future<String> getStatus() async {
     List<ConnectivityResult> connectivityResult =
         await (Connectivity().checkConnectivity());
 
