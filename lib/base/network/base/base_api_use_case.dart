@@ -295,15 +295,50 @@ extension BaseEntityExtension<T> on ResponseEntity<T> {
     final Widget Function(String? error)? onNetworkError,
     final Widget? onLoading,
     final Widget? onEmpty,
+    final bool autoEmpty = false,
   }) {
     return switch (result) {
-      APIResult.success => widget(body as T),
-      APIResult.loading => onLoading ?? const Center(child: CircularProgressIndicator()),
-      APIResult.generalError => onError != null ? onError(message) : const SizedBox.shrink(),
-      APIResult.systemError => onSystemError != null ? onSystemError(message) : const SizedBox.shrink(),
-      APIResult.sessionTimeout => onSessionTimeout != null ? onSessionTimeout(message) : const SizedBox.shrink(),
-      APIResult.networkError => onNetworkError != null ? onNetworkError(message) : const SizedBox.shrink(),
-      APIResult.empty => onEmpty ?? const SizedBox.shrink(),
+      APIResult.success => autoEmpty && (T is List) && ((body as List?)?.isEmpty ?? true)
+          ? onEmpty ??
+              Container(
+                height: 1,
+              )
+          : widget(body as T),
+      APIResult.loading => onLoading ??
+          FutureBuilder(
+            future: Future.delayed(const Duration(milliseconds: 1000)),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox.shrink();
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+      APIResult.generalError => onError != null
+          ? onError(message)
+          : Container(
+              height: 1,
+            ),
+      APIResult.systemError => onSystemError != null
+          ? onSystemError(message)
+          : Container(
+              height: 1,
+            ),
+      APIResult.sessionTimeout => onSessionTimeout != null
+          ? onSessionTimeout(message)
+          : Container(
+              height: 1,
+            ),
+      APIResult.networkError => onNetworkError != null
+          ? onNetworkError(message)
+          : Container(
+              height: 1,
+            ),
+      APIResult.empty => onEmpty ??
+          Container(
+            height: 1,
+          ),
     };
   }
 }
