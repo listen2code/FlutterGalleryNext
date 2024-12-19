@@ -3,6 +3,8 @@ import 'package:flutter_gallery_next/base/common/init.dart';
 import 'package:flutter_gallery_next/base/common/pages.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
 
+const int mainRouteKey = -1;
+
 void main() async {
   await appInit();
   assert(() {

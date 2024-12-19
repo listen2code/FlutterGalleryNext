@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:package_libs/utils/sp_util.dart';
 import 'package:plugin_native/device/device_info_data.dart';
 
@@ -47,5 +49,30 @@ class DeviceUtil {
     }
     SpUtil.instance().set(SpKey.uuid, _deviceInfo?.uuid);
     return Future.value(_deviceInfo?.uuid);
+  }
+
+  Future<String> getUserAgent() async {
+    StringBuffer sb = StringBuffer("flutter_gallery/");
+    if (Platform.isIOS) {
+      sb.write("${getAppVersionName()}i(");
+    } else if (Platform.isAndroid) {
+      sb.write("${getAppVersionName()}A(");
+    } else {
+      sb.write("${getAppVersionName()}(");
+    }
+    sb.write("${getModelName()}/");
+    sb.write("${getProductName()}; ");
+    if (Platform.isIOS) {
+      sb.write("iOS/");
+    } else if (Platform.isAndroid) {
+      sb.write("Android/");
+    } else {
+      sb.write("other/");
+    }
+    sb.write("${getDeviceVersion()}");
+    sb.write(";");
+    sb.write("uid=${await getUUID()}");
+    sb.write(")");
+    return Future.value(sb.toString());
   }
 }

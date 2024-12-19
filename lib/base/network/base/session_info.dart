@@ -1,3 +1,5 @@
+import 'package:flutter_gallery_next/biz/login/model/login_entity.dart';
+
 class SessionInfo {
   SessionInfo._private();
 
@@ -9,6 +11,8 @@ class SessionInfo {
   String? userName;
   String? lastLoginTime;
   bool? isLogin;
+  String? jSessionId;
+  LoginEntity? loginInfo;
 
   bool isMember() {
     return isLogin ?? false;
@@ -23,5 +27,11 @@ class SessionInfo {
     userName = null;
     lastLoginTime = null;
     isLogin = false;
+    jSessionId = null;
+    loginInfo = null;
+  }
+
+  bool isSessionChanged(String newSessionId) {
+    return jSessionId != newSessionId;
   }
 }

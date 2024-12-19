@@ -3,4 +3,5 @@ class EventBusKeys {
 
   static const String login = "login";
   static const String logout = "logout";
+  static const String reLogin = "reLogin";
 }

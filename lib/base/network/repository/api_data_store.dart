@@ -1,0 +1,191 @@
+import 'package:dio/dio.dart';
+import 'package:package_libs/utils/logger_util.dart';
+import 'package:plugin_native/proxy/proxy_util.dart';
+
+import 'api_interceptor.dart';
+
+class APIDataStore {
+  static final APIDataStore _instance = APIDataStore._internal();
+
+  factory APIDataStore() => _instance;
+
+  static late final Dio apiDio;
+  static late final Dio httpDio;
+  static late final Dio loginDio;
+  static late final Dio retryDio;
+  final CancelToken _cancelToken = CancelToken();
+
+  static const int maxConnection = 100;
+
+  static int tasksCount = 0;
+
+  APIDataStore._internal() {
+    apiDio = Dio(BaseOptions());
+    apiDio.interceptors.add(BaseApiInterceptor());
+
+    httpDio = Dio(BaseOptions());
+    httpDio.interceptors.add(CommonInterceptor());
+
+    loginDio = Dio(BaseOptions());
+    loginDio.interceptors.add(BaseApiInterceptor());
+
+    retryDio = Dio(BaseOptions());
+    retryDio.interceptors.add(BaseApiInterceptor());
+  }
+
+  void init(
+    Dio dio, {
+    String? baseUrl,
+    required Duration connectTimeout,
+    required Duration receiveTimeout,
+    Map<String, dynamic>? headers,
+  }) {
+    dio.options = dio.options.copyWith(
+      baseUrl: baseUrl,
+      connectTimeout: connectTimeout,
+      receiveTimeout: receiveTimeout,
+      headers: headers ?? const {},
+    );
+  }
+
+  void cancelRequests({required CancelToken token}) {
+    token.cancel("cancelled");
+    log("cancel request", type: LoggerType.easy);
+  }
+
+  void tasksCountAddition() {
+    tasksCount += 1;
+  }
+
+  void tasksCountSubtraction() {
+    tasksCount -= 1;
+  }
+
+  void taskBegin() {
+    log("通信開始で通信中件数：$tasksCount", type: LoggerType.easy);
+    tasksCountAddition();
+  }
+
+  void taskEnd() {
+    tasksCountSubtraction();
+    log("通信完了で通信中件数：$tasksCount", type: LoggerType.easy);
+  }
+
+  Map<String, dynamic>? getAuthorizationHeader() {
+    return null;
+  }
+
+  Future get(
+    Dio dio,
+    String path, {
+    Map<String, dynamic>? params,
+    Options? options,
+    CancelToken? cancelToken,
+    bool refresh = false,
+    bool noCache = true,
+    String? cacheKey,
+    bool cacheDisk = false,
+  }) async {
+    try {
+      taskBegin();
+      Options requestOptions = options ?? Options();
+      requestOptions = requestOptions.copyWith(
+        extra: {
+          "refresh": refresh,
+          "noCache": noCache,
+          "cacheKey": cacheKey,
+          "cacheDisk": cacheDisk,
+        },
+      );
+      Map<String, dynamic>? authorization = getAuthorizationHeader();
+      if (authorization != null) {
+        requestOptions = requestOptions.copyWith(headers: authorization);
+      }
+      Response response;
+      await ProxyUtil.instance().findProxyAsync(Uri.parse(dio.options.baseUrl));
+      response = await dio.get(
+        path,
+        queryParameters: params,
+        options: requestOptions,
+        cancelToken: cancelToken ?? _cancelToken,
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    } finally {
+      taskEnd();
+    }
+  }
+
+  Future post(
+    Dio dio,
+    String path, {
+    Map<String, dynamic>? params,
+    Object? data,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
+    try {
+      taskBegin();
+      Options requestOptions = options ?? Options();
+      Map<String, dynamic>? authorization = getAuthorizationHeader();
+      if (authorization != null) {
+        requestOptions = requestOptions.copyWith(headers: authorization);
+      }
+      await ProxyUtil.instance().findProxyAsync(Uri.parse(dio.options.baseUrl));
+      var response = await dio.post(
+        path,
+        data: data,
+        queryParameters: params,
+        options: requestOptions,
+        cancelToken: cancelToken ?? _cancelToken,
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    } finally {
+      taskEnd();
+    }
+  }
+
+  Future request(
+    Dio dio,
+    String path, {
+    Object? data,
+    Map<String, dynamic>? params,
+    CancelToken? cancelToken,
+    Options? options,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    try {
+      taskBegin();
+      Options requestOptions = options ?? Options();
+
+      Map<String, dynamic>? authorization = getAuthorizationHeader();
+      if (authorization != null) {
+        requestOptions = requestOptions.copyWith(headers: authorization);
+      }
+      await ProxyUtil.instance().findProxyAsync(Uri.parse(dio.options.baseUrl));
+      var response = await dio.request(
+        path,
+        data: data,
+        queryParameters: params,
+        cancelToken: cancelToken ?? _cancelToken,
+        options: requestOptions,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    } finally {
+      taskEnd();
+    }
+  }
+
+  // todo 待删除
+  bool enableConnection() {
+    return tasksCount < maxConnection;
+  }
+}
