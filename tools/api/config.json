@@ -1,10 +1,10 @@
 [
   {
-    "api": "follow",
+    "api": "login",
     "httpCode": 200
   },
   {
-    "api": "suggest",
+    "api": "logout",
     "httpCode": 200
   }
 ]
