@@ -1,12 +1,16 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_intl.dart';
+import 'package:flutter_gallery_next/biz/demos/demo_repaint.dart';
 import 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer.dart';
 import 'package:flutter_gallery_next/biz/demos/event_bus/demo_event_bus.dart';
 import 'package:flutter_gallery_next/biz/demos/tab/demo_tab.dart';
 
 class Constant {
   static final Map<String, WidgetBuilder> router = {
+    "demo repaint": (context) {
+      return const DemoRepaint();
+    },
     "demo intl": (context) {
       return const DemoIntl();
     },
