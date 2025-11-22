@@ -37,6 +37,7 @@ println(">> JDK from: ${System.getProperty('java.home')}")
 println("=============================================")
 
 android {
+    namespace "com.flutter.gallery.flutter_gallery_next"
     // Print NDK version
     println(">> NDK Version (from Flutter): ${flutter.ndkVersion}")
 

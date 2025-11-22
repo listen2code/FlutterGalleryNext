@@ -6,11 +6,45 @@ allprojects {
 }
 
 rootProject.buildDir = '../build'
+
+// This block applies a set of common configurations to ALL subprojects (including the main :app and all Flutter plugins).
+// This acts as a central controller to enforce consistency and fix compatibility issues across the entire Android project.
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
-    project.evaluationDependsOn(':app')
+
+    // RULE 1: Unify Kotlin JVM Target for all subprojects.
+    // This fixes the "Inconsistent JVM-target compatibility" error by ensuring all Kotlin code compiles to the same JVM version.
+    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+    }
+
+    // The 'afterEvaluate' block ensures these rules are applied after each subproject has been configured,
+    // allowing us to inspect and modify their Android-specific settings.
+    project.afterEvaluate {
+        if (project.plugins.hasPlugin('com.android.library') || project.plugins.hasPlugin('com.android.application')) {
+            android {
+                // RULE 2: Unify the compileSdkVersion for all subprojects.
+                // This fixes errors like "Dependency 'androidx.activity' requires libraries to compile against version 35".
+                compileSdk 35
+
+                // RULE 3: Automatically set the namespace for any module that is missing one.
+                // This fixes the "Namespace not specified" error required by modern Android Gradle Plugin versions.
+                // The logic was corrected to use the 'project.group' directly, which is the standard practice.
+                if (namespace == null && project.group != null) {
+                    namespace = project.group.toString()
+                }
+
+                // RULE 4: Unify Java source and target compatibility for all subprojects.
+                // This works with RULE 1 to fully resolve "Inconsistent JVM-target compatibility" errors.
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_11
+                    targetCompatibility JavaVersion.VERSION_11
+                }
+            }
+        }
+    }
 }
 
 tasks.register("clean", Delete) {
