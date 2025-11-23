@@ -37,12 +37,13 @@ void initErrorHandler() {
   PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
     // In a real app, you would typically report the error to a service like Firebase Crashlytics here.
     // For now, we just log it.
-    print('Caught unhandled error: $error');
+    debugPrint('Caught unhandled error: $error');
 
     // Returning true tells the framework that the error has been handled,
     // which prevents the application from crashing.
     return true;
-  }
+  };
+}
 
 void initOrientations() {}
 
