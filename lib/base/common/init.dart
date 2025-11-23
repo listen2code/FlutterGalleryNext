@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:plugin_native/plugin_native.dart';
 
@@ -45,7 +46,10 @@ void initErrorHandler() {
   };
 }
 
-void initOrientations() {}
+/// force to portrait
+void initOrientations() {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+}
 
 Future<void> initDebug() async {
   // Unhandled Exception: Binding has not yet been initialized.
