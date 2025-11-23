@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/intl.dart';
 import 'package:plugin_native/device/device_util.dart';
 import 'package:plugin_native/plugin_native.dart';
 
@@ -14,28 +15,6 @@ Future<void> appInit() async {
   initDeviceInfo();
   initIntl();
   await initDebug();
-}
-
-void initIntl() {}
-
-Future<void> initEnv() async {
-  if (dotenv.isInitialized) {
-    // ENVファイル読み込み完了
-    debugPrint("ENVファイル読み込み完了");
-  } else {
-    String env = const String.fromEnvironment("env");
-    debugPrint("loadEnv=$env");
-    if (env == "stg") {
-      await dotenv.load(fileName: 'env/.env.stg');
-    } else {
-      await dotenv.load(fileName: 'env/.env');
-    }
-    debugPrint("ENVファイル読み込み中");
-  }
-}
-
-Future<void> initDeviceInfo() async {
-  await DeviceUtil.instance().init();
 }
 
 void initErrorHandler() {
@@ -70,6 +49,32 @@ void initErrorHandler() {
 /// force to portrait
 void initOrientations() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+}
+
+Future<void> initEnv() async {
+  if (dotenv.isInitialized) {
+    // ENVファイル読み込み完了
+    debugPrint("ENVファイル読み込み完了");
+  } else {
+    String env = const String.fromEnvironment("env");
+    debugPrint("loadEnv=$env");
+    if (env == "stg") {
+      await dotenv.load(fileName: 'env/.env.stg');
+    } else {
+      await dotenv.load(fileName: 'env/.env');
+    }
+    debugPrint("ENVファイル読み込み中");
+  }
+}
+
+Future<void> initDeviceInfo() async {
+  await DeviceUtil.instance().init();
+}
+
+void initIntl() {
+  // Set the default locale for the entire application to English (United States).
+  // This affects how dates, times, numbers, etc., are formatted by the `intl` package.
+  Intl.defaultLocale = 'en_US';
 }
 
 Future<void> initDebug() async {
