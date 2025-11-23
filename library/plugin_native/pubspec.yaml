@@ -16,6 +16,7 @@ dependencies:
     path: ../package_base
   package_libs:
     path: ../package_libs
+  connectivity_plus: ^6.1.5
 
 dev_dependencies:
   flutter_test:

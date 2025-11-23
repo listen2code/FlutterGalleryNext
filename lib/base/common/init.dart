@@ -4,12 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:plugin_native/device/device_util.dart';
 import 'package:plugin_native/plugin_native.dart';
 
 Future<void> appInit() async {
   initErrorHandler();
   initOrientations();
   initEnv();
+  initDeviceInfo();
   initIntl();
   await initDebug();
 }
@@ -30,6 +32,10 @@ Future<void> initEnv() async {
     }
     debugPrint("ENVファイル読み込み中");
   }
+}
+
+Future<void> initDeviceInfo() async {
+  await DeviceUtil.instance().init();
 }
 
 void initErrorHandler() {
