@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:plugin_native/plugin_native.dart';
 
 Future<void> appInit() async {
@@ -15,7 +16,21 @@ Future<void> appInit() async {
 
 void initIntl() {}
 
-Future<void> initEnv() async {}
+Future<void> initEnv() async {
+  if (dotenv.isInitialized) {
+    // ENVファイル読み込み完了
+    debugPrint("ENVファイル読み込み完了");
+  } else {
+    String env = const String.fromEnvironment("env");
+    debugPrint("loadEnv=$env");
+    if (env == "stg") {
+      await dotenv.load(fileName: 'env/.env.stg');
+    } else {
+      await dotenv.load(fileName: 'env/.env');
+    }
+    debugPrint("ENVファイル読み込み中");
+  }
+}
 
 void initErrorHandler() {
   // Ensure the Flutter framework is initialized before running the app.
