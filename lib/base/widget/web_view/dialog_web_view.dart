@@ -4,11 +4,6 @@ import 'package:get/get.dart';
 
 import 'base_web_view.dart';
 
-/// [author] g.zhang0
-///
-/// [describe] ダイアログ用ウエブビュー
-///
-/// [date] 2024/07/18
 class DialogWebView extends InnerWebView {
   const DialogWebView({
     super.key,
@@ -34,7 +29,6 @@ class DialogWebView extends InnerWebView {
 }
 
 class DialogWebViewState extends InnerWebViewState {
-  /// WebView高さ
   double _height = 0.1;
 
   @override
@@ -51,8 +45,6 @@ class DialogWebViewState extends InnerWebViewState {
     updateHeight();
   }
 
-  /// WebView高さ更新
-  ///
   void updateHeight() async {
     var calcHeight = await getPageHeight();
     debugPrint("dialog page height:$calcHeight");
@@ -65,8 +57,6 @@ class DialogWebViewState extends InnerWebViewState {
     });
   }
 
-  /// JavascriptによりWebView高さを取得
-  ///
   Future<double?> getPageHeight() async {
     String jsScript = "document.documentElement.scrollHeight;";
     var height =
@@ -79,7 +69,6 @@ class DialogWebViewState extends InnerWebViewState {
 
   @override
   bool isPageError(String url) {
-    // ダイアログなので、エラーがチェック不要
     return false;
   }
 }

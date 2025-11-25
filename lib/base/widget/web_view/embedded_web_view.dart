@@ -5,11 +5,6 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'base_web_view.dart';
 
-/// [author] g.zhang0
-///
-/// [describe] 埋め込み用ウエブビュー
-///
-/// [date] 2024/09/09
 class EmbeddedWebView extends InnerWebView {
   const EmbeddedWebView({
     super.key,
@@ -34,13 +29,8 @@ class EmbeddedWebView extends InnerWebView {
     this.updateHeightError,
   });
 
-  /// スクロールできるか
   final bool enableScrolling;
-
-  /// WebView表示した後事件
   final void Function(String url)? onEmbeddedPageFinished;
-
-  /// [緊急時お知らせ] WebView高さ更新
   final void Function()? updateHeightError;
 
   @override
@@ -48,7 +38,6 @@ class EmbeddedWebView extends InnerWebView {
 }
 
 class EmbeddedWebViewState extends InnerWebViewState<EmbeddedWebView> {
-  /// WebView高さ
   double embeddedHeight = 385;
 
   @override
@@ -76,7 +65,6 @@ class EmbeddedWebViewState extends InnerWebViewState<EmbeddedWebView> {
       }
     });
 
-    // onEmbeddedPageFinishedが存在する場合
     var onPageFinished = widget.onEmbeddedPageFinished;
     if (onPageFinished != null) {
       onPageFinished(url);
@@ -135,8 +123,6 @@ class EmbeddedWebViewState extends InnerWebViewState<EmbeddedWebView> {
     }
   }
 
-  /// WebView高さ更新
-  ///
   void updateHeight() async {
     var calcHeight = await getPageHeight();
     debugPrint("embedded height:$calcHeight");
@@ -150,8 +136,6 @@ class EmbeddedWebViewState extends InnerWebViewState<EmbeddedWebView> {
     });
   }
 
-  /// JavascriptによりWebView高さを取得
-  ///
   Future<double?> getPageHeight() async {
     String jsScript = "document.documentElement.scrollHeight;";
     var height =
@@ -162,8 +146,6 @@ class EmbeddedWebViewState extends InnerWebViewState<EmbeddedWebView> {
     return null;
   }
 
-  /// web view スクロールを無効にする
-  ///
   Future<void> setScrolling() async {
     if (widget.enableScrolling == false) {
       String bodyScript = "document.body.style.overflow = 'hidden';";

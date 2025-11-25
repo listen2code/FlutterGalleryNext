@@ -4,24 +4,16 @@ import 'package:flutter_gallery_next/base/mvvm/view_mode/view_mode.dart';
 import 'package:flutter_gallery_next/base/widget/web_view/inner_web_view.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-/// [author] yu
-///
-/// [describe] 共通ウェブビューページ
-///
-/// [date] 2024/05/20
 class WebViewPage<VM extends ViewMode> extends BaseStatelessPage<VM> {
   WebViewPage({super.key});
 
-  /// WebViewの制御
   final WebViewController controller = WebViewController();
 
-  /// タイトル
   @override
   String titleString() {
     return "";
   }
 
-  ///　ナビゲーションバーの右側にあるボタン
   @override
   List<Widget>? appBarActionWidget(BuildContext context) {
     List<Widget> result = [];
@@ -53,7 +45,6 @@ class WebViewPage<VM extends ViewMode> extends BaseStatelessPage<VM> {
     );
   }
 
-  /// 更新ボタン
   Widget? refreshButton() {
     return IconButton(
       onPressed: () {
@@ -63,7 +54,6 @@ class WebViewPage<VM extends ViewMode> extends BaseStatelessPage<VM> {
     );
   }
 
-  ///　ウェブビューウィジェット
   Widget webView() {
     return InnerWebView(
       urlString: getUrl(),
@@ -73,20 +63,14 @@ class WebViewPage<VM extends ViewMode> extends BaseStatelessPage<VM> {
     );
   }
 
-  /// [describe] ハートビートAPIを呼び出すが
-  ///
-  /// [returnType] bool
   bool isNeedHeartbeatFlg() {
     return true;
   }
 
-  /// ローディング表示するかどうか
-  ///
   bool showLoading() {
     return false;
   }
 
-  /// 戻るボタンと前進ボタン
   Widget? controlView() {
     return Positioned(
       right: 30,
