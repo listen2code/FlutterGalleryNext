@@ -1,0 +1,79 @@
+import 'dart:collection';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gallery_next/base/widget/adapter/common_default_binder.dart';
+import 'package:flutter_gallery_next/base/widget/adapter/common_item_view_binder.dart';
+
+typedef Register = Function(MultiTypeAdapter adapter);
+
+typedef Linker<T> = ItemViewBinder<T> Function(int position, dynamic item);
+typedef ItemTapEvent<T> = void Function(int position, T item);
+typedef ItemTapCallBack<T> = void Function(int position, T item,
+    [void Function([T? item])? fun]);
+
+class MultiTypeAdapter {
+  static MultiTypeAdapter newInstance(Register register) {
+    MultiTypeAdapter adapter = MultiTypeAdapter();
+    register.call(adapter);
+    return adapter;
+  }
+
+  HashMap<int, Linker> links = HashMap();
+
+  List<ItemViewBinder> itemViewBinders = [];
+
+  ItemViewBinder? _unsupportedViewBinder;
+
+  ItemViewBinder? _debugViewBinder;
+
+  void register<T>(ItemViewBinder<T> binder) {
+    itemViewBinders.add(binder);
+    binder.adapter = this;
+  }
+
+  void unregister<T>(ItemViewBinder<T> binder) {
+    itemViewBinders.remove(binder);
+    binder.adapter = null;
+  }
+
+  void registerOneToMany<T>(Linker<T> call) {
+    links[T.hashCode] = call;
+  }
+
+  void unregisterOneToMany<T>({Linker<T>? call}) {
+    links.remove(T.hashCode);
+  }
+
+  void registerUnsupportedViewBinder(ItemViewBinder unsupportedViewBinder) {
+    _unsupportedViewBinder = unsupportedViewBinder;
+  }
+
+  void unregisterUnsupportedViewBinder(ItemViewBinder unsupportedViewBinder) {
+    _unsupportedViewBinder = null;
+  }
+
+  void setDebugViewBinderEnable(
+      {bool isEnable = !kReleaseMode, ItemViewBinder? debugViewBinder}) {
+    if (isEnable && !kReleaseMode) {
+      _debugViewBinder = debugViewBinder ?? DefaultDebugViewBinder();
+    } else {
+      debugViewBinder = null;
+    }
+  }
+
+  Widget getItemBuilder(BuildContext context, int index, dynamic item) {
+    ItemViewBinder? itemViewBinder;
+    var binders =
+        itemViewBinders.where((element) => element.isMatch(item, index));
+    if (binders.isNotEmpty) {
+      itemViewBinder = binders.first;
+    } else {
+      itemViewBinder = links[item.runtimeType.hashCode]?.call(index, item);
+    }
+    Widget? widget = itemViewBinder?.buildWidget(context, item, index);
+    widget ??= _debugViewBinder?.buildWidget(context, item, index);
+    widget ??= _unsupportedViewBinder?.buildWidget(context, item, index);
+    return widget ?? const Offstage();
+  }
+}
