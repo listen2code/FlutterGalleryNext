@@ -5,13 +5,16 @@ import 'package:flutter_gallery_next/base/common/theme/app_styles.dart';
 import 'package:flutter_gallery_next/base/common/theme/color/theme_colors.dart';
 import 'package:get/get.dart';
 
+// todo
 mixin BaseView {
   SystemUiOverlayStyle systemOverLayoutStyle() {
     return SystemUiOverlayStyle.dark;
   }
 
   AppBar? createAppBar(String titleString, bool centerTitle,
-      {Widget? backButton, List<Widget>? actionWidget, Widget? customTitleWidget}) {
+      {Widget? backButton,
+      List<Widget>? actionWidget,
+      Widget? customTitleWidget}) {
     return AppBar(
       backgroundColor: ThemeColors.white,
       title: customTitleWidget ?? titleView(titleString),

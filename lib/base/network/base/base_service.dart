@@ -1,7 +1,7 @@
 import 'package:flutter_gallery_next/base/network/base/base_api_use_case.dart';
 
 class BaseService {
-  final List<BaseAPIUseCase> _useCashList = <BaseAPIUseCase>[];
+  final List<BaseAPIUseCase> _useCaseList = <BaseAPIUseCase>[];
 
   U createUseCase<U extends BaseAPIUseCase>(U useCase) {
     addToUseCaseList(useCase);
@@ -9,22 +9,23 @@ class BaseService {
   }
 
   void addToUseCaseList(BaseAPIUseCase useCase) {
-    _useCashList.add(useCase);
+    _useCaseList.add(useCase);
   }
 
   void cancelUseCase(BaseAPIUseCase useCase) {
     useCase.cancel();
-    _useCashList.remove(useCase);
+    _useCaseList.remove(useCase);
   }
 
   void cancelAllUseCase() {
-    for (var it in _useCashList) {
+    for (var it in _useCaseList) {
       it.cancel();
     }
-    _useCashList.clear();
+    _useCaseList.clear();
   }
 
-  Future<ResponseEntity<T>> getNewDataFromNet<T, R extends IRequest>(BaseAPIUseCase<T, R> apiUseCase, R? request,
+  Future<ResponseEntity<T>> getNewDataFromNet<T, R extends IRequest>(
+      BaseAPIUseCase<T, R> apiUseCase, R? request,
       {HttpMethod? method}) {
     addToUseCaseList(apiUseCase);
     switch (method) {
