@@ -46,9 +46,9 @@ function sleepSync(ms){
 function readJsonFile(api, userId, code, error, errorCode, moreInformation) {
     let fileName;
     if (code !== 200) {
-        fileName = `${userId}/api/error/${api}.json`;
+        fileName = `${userId}/error/${api}.json`;
     } else {
-        fileName = `${userId}/api/${api}.json`;
+        fileName = `${userId}/${api}.json`;
     }
     const filePath = `${__dirname}/${fileName}`;
 
