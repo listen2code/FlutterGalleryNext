@@ -13,18 +13,18 @@ class ProfileUtil {
 
   Future<LoginSettingInfoEntity> loadLoginSettingInfo() async {
     return LoginSettingInfoEntity()
-      ..loginId = await _spUtil.getStringAsync(SpKey.loginId)
+      ..userName = await _spUtil.getStringAsync(SpKey.loginId)
       ..passwd = await _spUtil.getStringAsync(SpKey.password);
   }
 
   void saveLoginSettingInfo(LoginSettingInfoEntity settingInfo) {
-    _spUtil.set(SpKey.loginId, settingInfo.loginId);
+    _spUtil.set(SpKey.loginId, settingInfo.userName);
     _spUtil.set(SpKey.password, settingInfo.passwd);
   }
 }
 
 class LoginSettingInfoEntity {
-  String? loginId = '';
+  String? userName = '';
   bool? loginIdSave = false;
   String? passwd = '';
   bool? passwdSave = false;

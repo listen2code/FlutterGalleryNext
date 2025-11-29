@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$LoginActions {
-  LoginRequest? get request => throw _privateConstructorUsedError;
+  BaseRequest? get request => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -49,4 +49,36 @@ abstract class DoLogin implements LoginActions {
 
   @override
   LoginRequest? get request;
+}
+
+/// @nodoc
+
+class _$DoLogoutImpl implements DoLogout {
+  const _$DoLogoutImpl({this.request});
+
+  @override
+  final LogoutRequest? request;
+
+  @override
+  String toString() {
+    return 'LoginActions.doLogout(request: $request)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DoLogoutImpl &&
+            (identical(other.request, request) || other.request == request));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, request);
+}
+
+abstract class DoLogout implements LoginActions {
+  const factory DoLogout({final LogoutRequest? request}) = _$DoLogoutImpl;
+
+  @override
+  LogoutRequest? get request;
 }

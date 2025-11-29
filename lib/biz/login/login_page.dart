@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/auto_load_widget.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/base_stateful_page.dart';
+import 'package:flutter_gallery_next/base/network/base/session_info.dart';
 import 'package:flutter_gallery_next/biz/login/login_view_model.dart';
 import 'package:flutter_gallery_next/biz/login/service/login_service.dart';
 import 'package:get/get.dart';
@@ -41,10 +42,19 @@ class _LoginPageState extends BaseState<LoginViewMode, LoginPage> {
           padding: const EdgeInsets.only(top: 32.0, bottom: 16.0),
           child: Text(
             'Environment: ${dotenv.env['NAME'] ?? 'Not Found'}',
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: Colors.black54),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black54),
+          ),
+        ),
+        SizedBox(
+          height: 300,
+          child: AutoLoadWidget(
+            viewMode: viewMode,
+            rxResponse: viewMode.loginState.rxLogin,
+            widget: (data) {
+              return Center(
+                child: Text("userId=${SessionInfo().loginInfo?.id}, userName=${SessionInfo().loginInfo?.name}"),
+              );
+            },
           ),
         ),
         Expanded(
@@ -80,16 +90,11 @@ class _LoginPageState extends BaseState<LoginViewMode, LoginPage> {
                   },
                   child: const Text("Login"),
                 ),
-                const SizedBox(height: 40.0),
-                AutoLoadWidget(
-                  viewMode: viewMode,
-                  rxResponse: viewMode.loginState.rxLogin,
-                  widget: (data) {
-                    return Center(
-                      child: Text("userId=${data.id}, userName=${data.name}"),
-                    );
-                  },
+                ElevatedButton(
+                  onPressed: viewMode.doLogout,
+                  child: const Text("logout"),
                 ),
+                const SizedBox(height: 40.0),
               ],
             ),
           ),

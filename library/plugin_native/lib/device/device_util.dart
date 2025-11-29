@@ -55,8 +55,7 @@ class DeviceUtil {
   }
 
   Future<String> getNetworkStatus() async {
-    List<ConnectivityResult> connectivityResult =
-        await (Connectivity().checkConnectivity());
+    List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
     switch (connectivityResult.first) {
       case ConnectivityResult.wifi:
         return Future.value("WiFi");
@@ -111,8 +110,25 @@ class DeviceUtil {
     if (isIOS()) {
       // tod
       var platform = const MethodChannel("com.xxxx.plugin/set_portrait");
-      await platform
-          .invokeListMethod("setPortrait", {"isLandscape": isLandscape});
+      await platform.invokeListMethod("setPortrait", {"isLandscape": isLandscape});
+    }
+  }
+}
+
+class DeviceType {
+  DeviceType._private();
+
+  static const String iOS = "1";
+
+  static const String android = "2";
+
+  static String getDeviceType() {
+    if (Platform.isAndroid) {
+      return android;
+    } else if (Platform.isIOS) {
+      return iOS;
+    } else {
+      throw Exception("not support DeviceType");
     }
   }
 }

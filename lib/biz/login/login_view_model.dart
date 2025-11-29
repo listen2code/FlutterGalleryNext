@@ -1,8 +1,12 @@
-import 'package:flutter_gallery_next/base/mvvm/vm/multi_net_data.dart';
+import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
+import 'package:flutter_gallery_next/base/common/event_bus/event_bus_key.dart';
 import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
+import 'package:flutter_gallery_next/base/mvvm/vm/multi_net_data.dart';
+import 'package:flutter_gallery_next/base/network/base/session_info.dart';
 import 'package:flutter_gallery_next/biz/login/login_state.dart';
 import 'package:flutter_gallery_next/biz/login/service/login_service.dart';
 import 'package:flutter_gallery_next/biz/login/use_case/login_api_use_case.dart';
+import 'package:flutter_gallery_next/biz/login/use_case/logout_api_use_case.dart';
 
 class LoginViewMode extends ViewModel<LoginActions, LoginService> {
   final LoginState loginState = LoginState();
@@ -12,9 +16,11 @@ class LoginViewMode extends ViewModel<LoginActions, LoginService> {
     switch (action) {
       case DoLogin():
         request(
-          api.memberLogin(action.request, LoginType.genLogin),
+          api.login(action.request, LoginType.login),
           action: action,
         );
+      case DoLogout():
+        request(api.logout(action.request), action: action);
     }
   }
 
@@ -23,10 +29,22 @@ class LoginViewMode extends ViewModel<LoginActions, LoginService> {
     switch (action) {
       case DoLogin():
         loginState.rxLogin.value = netData[0];
+        break;
+      case DoLogout():
+        SessionInfo().clearSessionInfo();
+        EventBus.defaultBus().post<String>(event: EventBusKeys.logout, key: EventBusKeys.logout);
+        loginState.rxLogin.refresh();
+        break;
     }
   }
 
   void doLogin({required String username, required String password}) {
-    dispatch(LoginActions.doLogin(request: LoginRequest(username, password)));
+    dispatch(
+      LoginActions.doLogin(request: LoginRequest(userName: username, password: password)),
+    );
+  }
+
+  void doLogout() {
+    dispatch(LoginActions.doLogout(request: LogoutRequest()));
   }
 }
