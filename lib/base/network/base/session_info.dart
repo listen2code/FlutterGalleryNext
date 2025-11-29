@@ -11,7 +11,7 @@ class SessionInfo {
   String? userName;
   String? lastLoginTime;
   bool? isLogin;
-  String? jSessionId;
+  String? sessionId;
   LoginEntity? loginInfo;
 
   bool isMember() {
@@ -27,11 +27,11 @@ class SessionInfo {
     userName = null;
     lastLoginTime = null;
     isLogin = false;
-    jSessionId = null;
+    sessionId = null;
     loginInfo = null;
   }
 
   bool isSessionChanged(String newSessionId) {
-    return jSessionId != newSessionId;
+    return sessionId != newSessionId;
   }
 }

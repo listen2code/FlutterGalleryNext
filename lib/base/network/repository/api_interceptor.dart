@@ -86,7 +86,7 @@ class BaseApiInterceptor extends QueuedInterceptor {
     RequestOptions newOptions =
         options.copyWith(headers: await createHeaders(options));
     if (isSessionCheckRequired(newOptions.path)) {
-      if (SessionInfo().jSessionId?.isEmpty ?? true) {
+      if (SessionInfo().sessionId?.isEmpty ?? true) {
         var autoLogin = await LoginUtil.isAutoLogin();
         if (autoLogin) {
           await executeAutoLogin();
@@ -246,7 +246,7 @@ class BaseApiInterceptor extends QueuedInterceptor {
       result += "$key=$value; ";
     });
     if (setSessionIdList.contains(requestOptions.path) == false) {
-      var sessionId = SessionInfo().jSessionId;
+      var sessionId = SessionInfo().sessionId;
       if (sessionId != null) {
         result += "$headerSessionId=$sessionId; ";
       }
@@ -328,7 +328,7 @@ class BaseApiInterceptor extends QueuedInterceptor {
     if (setSessionIdList.contains(resp.requestOptions.path)) {
       String? sessionId = analysisSessionId(resp);
       if (sessionId != null) {
-        SessionInfo().jSessionId = sessionId;
+        SessionInfo().sessionId = sessionId;
       }
     }
   }
