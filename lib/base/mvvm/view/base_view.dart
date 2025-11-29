@@ -52,9 +52,13 @@ mixin BaseView {
     return null;
   }
 
-  void onBackPressed({BuildContext? context}) {}
+  void onBackPressed({BuildContext? context}) {
+    back(context: context);
+  }
 
-  void onSystemBackPressed(BuildContext context, bool didPop) {}
+  void onSystemBackPressed(BuildContext context, bool didPop) {
+    back(context: context);
+  }
 
   Widget? createDrawer(BuildContext context) => null;
 
@@ -159,6 +163,7 @@ void pageBack<T>({T? result, BuildContext? context}) {
   //     Get.find<NavigationController>().remove(Get.currentStackIndex);
   //   }
   // }
+  Navigator.of(context!).pop(result);
 }
 
 void fullScreenPageBack<T>({T? result, BuildContext? context}) {

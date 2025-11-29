@@ -5,6 +5,7 @@ import 'package:flutter_gallery_next/base/widget/dialog/common_loading_widget.da
 import 'package:flutter_gallery_next/base/widget/dialog/common_toast_widget.dart';
 import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:package_libs/utils/logger_util.dart';
 
 const int mainRouteKey = -1;
 
@@ -13,8 +14,8 @@ void main() async {
   assert(() {
     FlutterError.onError = (FlutterErrorDetails details) {
       // error
-      debugPrint("############# error ############");
-      debugPrint("$details");
+      LoggerUtil.error("############# error ############");
+      LoggerUtil.error("$details");
     };
     return true;
   }());
@@ -78,7 +79,7 @@ class HomePage extends StatelessWidget {
           );
         },
         itemCount: Constant.router.length,
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
