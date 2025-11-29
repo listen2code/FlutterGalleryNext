@@ -186,7 +186,7 @@ async function handleRequest(req, res) {
                         res.setHeader('Set-Cookie',
                             ['name=JohnDoe; Path=/; HttpOnly',
                                 'JSESSIONID=fasvsbgfgbfdgvsdfgbg.asdfhaoie; Path=/; HttpOnly',
-                                'token=abc123; Path=/; Secure; Max-Age=3600']);
+                                'token=abc123; Path=/; Secure; Max-Age=3600;server-time=1726396200000']);
                         res.writeHead(code, { 'Content-Type': 'application/json', 'x-cloud-trace-context': '9527' });
                         const jsonResult = JSON.stringify(result);
                         res.end(jsonResult);
