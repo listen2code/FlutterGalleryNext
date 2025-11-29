@@ -3,6 +3,7 @@ import 'package:get/get_utils/get_utils.dart';
 import 'package:package_base/scope_extension.dart';
 import 'package:package_libs/utils/http_util.dart';
 
+// todo fix net[0]
 class MultiNetData {
   int _size = 0;
   Object? _netData;

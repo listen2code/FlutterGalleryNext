@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gallery_next/base/mvvm/view_mode/base_view_mode.dart';
+import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
 import 'package:flutter_gallery_next/base/network/base/base_api_use_case.dart';
 import 'package:get/get.dart';
 
-class AutoLoadWidget<T, VM extends ViewMode> extends StatelessWidget {
+class AutoLoadWidget<T, VM extends ViewModel> extends StatelessWidget {
   final VM viewMode;
   final Rx<ResponseEntity<T>> rxResponse;
   final Widget Function(T data) widget;

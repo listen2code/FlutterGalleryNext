@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/theme/color/theme_colors.dart';
-import 'package:flutter_gallery_next/base/mvvm/view_mode/base_view_mode.dart';
-import 'package:flutter_gallery_next/base/mvvm/view_mode/net_state_ext.dart';
+import 'package:flutter_gallery_next/base/mvvm/vm/net_state_ext.dart';
+import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import 'base_view.dart';
 
-abstract class BaseStatelessPage<VM extends ViewMode> extends StatelessWidget
+abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget
     with BaseView {
   const BaseStatelessPage({super.key});
 

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/base_view.dart';
-import 'package:flutter_gallery_next/base/mvvm/view_mode/base_controller.dart';
+import 'package:flutter_gallery_next/base/mvvm/vm/base_controller.dart';
 import 'package:flutter_gallery_next/base/network/base/base_api_use_case.dart';
 import 'package:flutter_gallery_next/base/network/base/base_service.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
@@ -17,8 +17,8 @@ import 'package:package_libs/utils/logger_util.dart';
 import 'base_action.dart';
 import 'multi_net_data.dart';
 
-abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
-    extends BaseController {
+abstract class ViewModel<Actions extends BaseAction,
+    Service extends BaseService> extends BaseController {
   final Service api = Get.find<Service>();
 
   late final List<StreamSubscription> _eventSubList = [];

@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gallery_next/base/mvvm/view_mode/base_action.dart';
-import 'package:flutter_gallery_next/base/mvvm/view_mode/base_view_mode.dart';
+import 'package:flutter_gallery_next/base/mvvm/vm/base_action.dart';
+import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
 import 'package:flutter_gallery_next/base/network/base/base_service.dart';
 import 'package:package_libs/utils/auth_util.dart';
 
 mixin AutoReloadMixin<Actions extends BaseAction, Service extends BaseService>
-    on ViewMode<Actions, Service> {
+    on ViewModel<Actions, Service> {
   late DataRefresher refresher;
 
   int get interval => 5000;
