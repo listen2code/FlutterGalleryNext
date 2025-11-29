@@ -10,7 +10,6 @@ class LoggerUtil {
         methodCount: 2,
         colors: true,
         printEmojis: false,
-        printTime: true,
         noBoxingByDefault: false,
       ),
       output: null);
@@ -46,14 +45,10 @@ class LoggerUtil {
       case LoggerType.easy:
         developer.log(message.toString());
         break;
-      default:
-        logger.d(message);
-        break;
     }
   }
 
-  static void warning(dynamic message,
-      {Object? error, StackTrace? stackTrace}) {
+  static void warning(dynamic message, {Object? error, StackTrace? stackTrace}) {
     logger.w(message, error: error, stackTrace: stackTrace);
   }
 

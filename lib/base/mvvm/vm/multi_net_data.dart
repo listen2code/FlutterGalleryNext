@@ -1,4 +1,4 @@
-import 'package:flutter_gallery_next/base/network/base/base.dart';
+import 'package:flutter_gallery_next/base/network/base_network.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:package_base/scope_extension.dart';
 import 'package:package_libs/utils/http_util.dart';

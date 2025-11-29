@@ -34,4 +34,8 @@ class SessionInfo {
   bool isSessionChanged(String newSessionId) {
     return sessionId != newSessionId;
   }
+
+  bool isEmpty() {
+    return sessionId?.isEmpty ?? true;
+  }
 }

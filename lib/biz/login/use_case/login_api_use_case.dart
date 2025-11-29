@@ -1,7 +1,7 @@
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus_key.dart';
-import 'package:flutter_gallery_next/base/network/base/base.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
+import 'package:flutter_gallery_next/base/network/base_network.dart';
 import 'package:flutter_gallery_next/biz/login/model/login_entity.dart';
 import 'package:package_libs/utils/http_util.dart';
 import 'package:package_libs/utils/logger_util.dart';

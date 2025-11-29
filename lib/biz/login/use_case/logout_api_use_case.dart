@@ -1,4 +1,4 @@
-import 'package:flutter_gallery_next/base/network/base/base.dart';
+import 'package:flutter_gallery_next/base/network/base_network.dart';
 
 class LogoutAPIUseCase extends BaseAPIUseCase<void, LogoutRequest> {
   @override

@@ -1,16 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_gallery_next/base/network/repository/api_data_store.dart';
-import 'package:flutter_gallery_next/base/network/repository/api_exception.dart';
-import 'package:flutter_gallery_next/base/network/repository/api_repository.dart';
 import 'package:intl/intl.dart';
 import 'package:package_libs/utils/http_util.dart';
 
-import 'base.dart';
+import '../base_network.dart';
 
 abstract class BaseAPIUseCase<T, R extends BaseRequest> {
-  final APIRepository apiRepository = APIRepository();
-
   final CancelToken _cancelToken = CancelToken();
 
   Dio getDio() {
@@ -28,10 +23,10 @@ abstract class BaseAPIUseCase<T, R extends BaseRequest> {
   R? request;
 
   void setBaseUrl() {
-    apiRepository.init(
-      APIDataStore.apiDio,
+    APIDataStore().init(
+      getDio(),
       baseUrl: dotenv.env['API_SERVER'] ?? '',
-      addHeaders: addHeaders(),
+      headers: addHeaders(),
     );
   }
 
@@ -45,7 +40,7 @@ abstract class BaseAPIUseCase<T, R extends BaseRequest> {
     return false;
   }
 
-  bool cacheFlag() {
+  bool isNoCache() {
     return true;
   }
 
@@ -57,18 +52,18 @@ abstract class BaseAPIUseCase<T, R extends BaseRequest> {
       parameters?.removeWhere((key, value) {
         return value == null;
       });
-      resp = await apiRepository.get(
+      resp = await APIDataStore().get(
         getDio(),
         getPath(request),
-        noCache: cacheFlag(),
+        noCache: isNoCache(),
         params: parameters,
         options: getRequestOptions(),
         cancelToken: _cancelToken,
       );
-      if (HttpUtil.isSuccess(resp.statusCode) == false) {
-        throw ApiResultException(resp.statusCode, resp.statusMessage);
-      } else {
+      if (HttpUtil.isSuccess(resp.statusCode)) {
         return xCreateModel(resp);
+      } else {
+        throw ApiResultException(resp.statusCode, resp.statusMessage);
       }
     } on DioException catch (e) {
       return xCreateDioError(e);
@@ -82,7 +77,7 @@ abstract class BaseAPIUseCase<T, R extends BaseRequest> {
   Future<ResponseEntity<T>> post([R? request]) async {
     Response resp;
     try {
-      resp = await apiRepository.post(
+      resp = await APIDataStore().post(
         getDio(),
         getPath(request),
         options: getOptions(),
@@ -106,7 +101,7 @@ abstract class BaseAPIUseCase<T, R extends BaseRequest> {
   }
 
   void cancel() {
-    apiRepository.cancelRequests(token: _cancelToken);
+    APIDataStore().cancelRequests(token: _cancelToken);
   }
 
   Map<String, dynamic>? xCreateRequest(R? request) {
@@ -138,7 +133,7 @@ abstract class BaseAPIUseCase<T, R extends BaseRequest> {
         List<String> time = timeObj;
         DateFormat format = DateFormat("yyyy-MM-dd HH:mm:ss", "ja_JP");
         dateTime = format.parse(time[0]);
-      } on Exception catch (e) {
+      } on Exception {
         dateTime = DateTime.now();
       }
       return dateTime;

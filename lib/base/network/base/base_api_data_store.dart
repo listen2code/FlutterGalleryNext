@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:package_libs/utils/logger_util.dart';
 import 'package:plugin_native/proxy/proxy_util.dart';
 
-import 'api_interceptor.dart';
+import '../interceptor/base_api_interceptor.dart';
 
 class APIDataStore {
   static final APIDataStore _instance = APIDataStore._internal();
@@ -33,15 +34,15 @@ class APIDataStore {
   void init(
     Dio dio, {
     String? baseUrl,
-    required Duration connectTimeout,
-    required Duration receiveTimeout,
     Map<String, dynamic>? headers,
   }) {
+    int connectTimeout = int.parse(dotenv.env['CONNECT_TIMEOUT'] ?? '30');
+    int receiveTimeout = int.parse(dotenv.env['RECEIVE_TIMEOUT'] ?? '30');
     dio.options = dio.options.copyWith(
       baseUrl: baseUrl,
-      connectTimeout: connectTimeout,
-      receiveTimeout: receiveTimeout,
-      headers: headers ?? const {},
+      connectTimeout: Duration(seconds: connectTimeout),
+      receiveTimeout: Duration(seconds: receiveTimeout),
+      headers: headers,
     );
   }
 
@@ -83,6 +84,9 @@ class APIDataStore {
     String? cacheKey,
     bool cacheDisk = false,
   }) async {
+    if (enableConnection() == false) {
+      return Response(requestOptions: RequestOptions());
+    }
     try {
       taskBegin();
       Options requestOptions = options ?? Options();
@@ -122,6 +126,9 @@ class APIDataStore {
     Options? options,
     CancelToken? cancelToken,
   }) async {
+    if (enableConnection() == false) {
+      return Response(requestOptions: RequestOptions());
+    }
     try {
       taskBegin();
       Options requestOptions = options ?? Options();

@@ -1,4 +1,4 @@
-import 'package:flutter_gallery_next/base/network/base/base.dart';
+import 'package:flutter_gallery_next/base/network/base_network.dart';
 
 class BaseService {
   final List<BaseAPIUseCase> _useCaseList = <BaseAPIUseCase>[];
@@ -24,8 +24,7 @@ class BaseService {
     _useCaseList.clear();
   }
 
-  Future<ResponseEntity<T>> getNewDataFromNet<T, R extends BaseRequest>(
-      BaseAPIUseCase<T, R> apiUseCase, R? request,
+  Future<ResponseEntity<T>> getNewDataFromNet<T, R extends BaseRequest>(BaseAPIUseCase<T, R> apiUseCase, R? request,
       {HttpMethod? method}) {
     addToUseCaseList(apiUseCase);
     switch (method) {

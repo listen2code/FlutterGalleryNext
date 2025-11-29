@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/base_view.dart';
 import 'package:flutter_gallery_next/base/mvvm/vm/base_controller.dart';
-import 'package:flutter_gallery_next/base/network/base/base.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
+import 'package:flutter_gallery_next/base/network/base_network.dart';
 import 'package:flutter_gallery_next/base/utils/login_util.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_dialog.dart';
 import 'package:flutter_gallery_next/main.dart';
@@ -16,8 +16,7 @@ import 'package:package_libs/utils/logger_util.dart';
 import 'base_action.dart';
 import 'multi_net_data.dart';
 
-abstract class ViewModel<Actions extends BaseAction,
-    Service extends BaseService> extends BaseController {
+abstract class ViewModel<Actions extends BaseAction, Service extends BaseService> extends BaseController {
   final Service api = Get.find<Service>();
 
   late final List<StreamSubscription> _eventSubList = [];
@@ -75,8 +74,7 @@ abstract class ViewModel<Actions extends BaseAction,
   @mustCallSuper
   void onStackResume(BuildContext context) {
     isFront = true;
-    final navigatorKey =
-        Navigator.of(context).widget.key as GlobalKey<NavigatorState>;
+    final navigatorKey = Navigator.of(context).widget.key as GlobalKey<NavigatorState>;
     if (navigatorKey == Get.nestedKey(mainRouteKey)) {
       isFullScreen = true;
     } else {
@@ -222,11 +220,7 @@ abstract class ViewModel<Actions extends BaseAction,
     }
   }
 
-  void subscribe<T>(
-      {String? key,
-      required ISubscriber<T> subscriber,
-      String? page,
-      bool clearStickyEvent = true}) {
+  void subscribe<T>({String? key, required ISubscriber<T> subscriber, String? page, bool clearStickyEvent = true}) {
     _eventSubList.add(EventBus.defaultBus().subscribe<T>(
       subscriber: subscriber,
       key: key,

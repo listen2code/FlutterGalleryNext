@@ -1,10 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_gallery_next/base/network/base/base.dart';
-import 'package:flutter_gallery_next/base/network/repository/api_data_store.dart';
+import 'package:flutter_gallery_next/base/network/base_network.dart';
 
-abstract class BaseLoginUseCase<T, R extends BaseRequest>
-    extends BaseAPIUseCase<T, R> {
+abstract class BaseLoginUseCase<T, R extends BaseRequest> extends BaseAPIUseCase<T, R> {
   @override
   Dio getDio() {
     // todo BaseUrl と DIO の 1 対 1
@@ -13,10 +11,10 @@ abstract class BaseLoginUseCase<T, R extends BaseRequest>
 
   @override
   void setBaseUrl() {
-    apiRepository.init(
+    APIDataStore().init(
       APIDataStore.loginDio,
       baseUrl: dotenv.env['API_SERVER'] ?? '',
-      addHeaders: addHeaders(),
+      headers: addHeaders(),
     );
   }
 }
