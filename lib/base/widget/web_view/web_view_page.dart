@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/base_stateless_page.dart';
-import 'package:flutter_gallery_next/base/mvvm/view_mode/view_mode.dart';
+import 'package:flutter_gallery_next/base/mvvm/view_mode/base_view_mode.dart';
 import 'package:flutter_gallery_next/base/widget/web_view/inner_web_view.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 

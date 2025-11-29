@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/base_view.dart';
+import 'package:flutter_gallery_next/base/mvvm/view_mode/base_controller.dart';
 import 'package:flutter_gallery_next/base/network/base/base_api_use_case.dart';
 import 'package:flutter_gallery_next/base/network/base/base_service.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
@@ -17,7 +18,7 @@ import 'base_action.dart';
 import 'multi_net_data.dart';
 
 abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
-    extends SuperController<String> {
+    extends BaseController {
   final Service api = Get.find<Service>();
 
   late final List<StreamSubscription> _eventSubList = [];
@@ -25,21 +26,6 @@ abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
   bool isFront = true;
 
   bool isNetworkErrorShowing = false;
-
-  @override
-  void onResumed() {}
-
-  @override
-  void onPaused() {}
-
-  @override
-  void onInactive() {}
-
-  @override
-  void onDetached() {}
-
-  @override
-  void onHidden() {}
 
   @override
   void onClose() {
@@ -81,7 +67,7 @@ abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
       onValue(data, action);
     }).catchError((e, stackTrace) {
       showError(handleError, handleBack, e: e, stackTrace: stackTrace);
-      LoggerUtil.error("viewModel: e=$e t=$stackTrace");
+      LoggerUtil.error("viewModel error: e=$e t=$stackTrace");
     }).whenComplete(() {
       dismissLoading(handleLoading);
     });
@@ -93,7 +79,6 @@ abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
     final navigatorKey =
         Navigator.of(context).widget.key as GlobalKey<NavigatorState>;
     if (navigatorKey == Get.nestedKey(mainRouteKey)) {
-      // 全画面ページ
       isFullScreen = true;
     } else {
       isFullScreen = false;
@@ -107,26 +92,21 @@ abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
   }
 
   void showApiResult(
-      MultiNetData data, bool isShow, bool isBack, bool isNetworkShow) {
+    MultiNetData data,
+    bool isShow,
+    bool isBack,
+    bool isNetworkShow,
+  ) {
     if (data.errorData is! ResponseEntity) {
       return;
     }
     ResponseEntity responseEntity = data.errorData;
     switch (responseEntity.result) {
       case APIResult.success:
-        break;
       case APIResult.loading:
-        break;
       case APIResult.empty:
         break;
       case APIResult.generalError:
-        showApiError(
-          show: isShow,
-          back: isBack,
-          messageId: responseEntity.messageId,
-          message: responseEntity.message,
-        );
-        break;
       case APIResult.systemError:
         showApiError(
           show: isShow,
@@ -136,26 +116,21 @@ abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
         );
         break;
       case APIResult.sessionTimeout:
-        sessionTimeoutEvent();
+        onSessionTimeout();
         break;
       case APIResult.networkError:
         if (isNetworkShow) {
-          String msg = "errorNetworkErrorMessage";
           showApiError(
             show: isShow,
             back: isBack,
-            message: msg,
+            message: "errorNetworkErrorMessage",
           );
         }
         break;
     }
   }
 
-  void updateNetworkErrorShowing() {
-    isNetworkErrorShowing = false;
-  }
-
-  void sessionTimeoutEvent() async {
+  void onSessionTimeout() async {
     if (SessionInfo().isMember()) {
       reLoginAfter(true);
     } else {
@@ -220,13 +195,8 @@ abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
   }) {
     if (isFront) {
       if (show) {
-        String defaultTitle = "errorTitle";
-        if (messageId != null) {
-          defaultTitle = "$defaultTitle:$messageId";
-        }
         GlobalDialog.showMessageDialog(
           message ?? "",
-          title: defaultTitle,
           closeAfter: () {
             var after = closeAfter;
             if (after != null) {

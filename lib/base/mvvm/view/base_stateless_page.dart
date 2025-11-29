@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/theme/color/theme_colors.dart';
+import 'package:flutter_gallery_next/base/mvvm/view_mode/base_view_mode.dart';
 import 'package:flutter_gallery_next/base/mvvm/view_mode/net_state_ext.dart';
-import 'package:flutter_gallery_next/base/mvvm/view_mode/view_mode.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import 'base_view.dart';
 
-abstract class BaseStatelessPage<VM extends ViewMode> extends StatelessWidget with BaseView {
+abstract class BaseStatelessPage<VM extends ViewMode> extends StatelessWidget
+    with BaseView {
   const BaseStatelessPage({super.key});
 
   @protected
@@ -82,9 +83,11 @@ abstract class BaseStatelessPage<VM extends ViewMode> extends StatelessWidget wi
               key: Key(hashCode.toString()),
               child: Column(
                 children: [
-                  Offstage(offstage: !useStatusBar, child: createStatusBar(context)),
+                  Offstage(
+                      offstage: !useStatusBar, child: createStatusBar(context)),
                   Expanded(child: _buildBody(context)),
-                  Offstage(offstage: !useBottomBar, child: createBottomBar(context)),
+                  Offstage(
+                      offstage: !useBottomBar, child: createBottomBar(context)),
                 ],
               ),
             ),
@@ -127,7 +130,9 @@ abstract class BaseStatelessPage<VM extends ViewMode> extends StatelessWidget wi
 
   PreferredSizeWidget? _createAppBar(BuildContext context) {
     AppBar? appBar = createAppBar(titleString(), isCenterTitle(),
-        backButton: backButton(), actionWidget: appBarActionWidget(context), customTitleWidget: titleWidget());
+        backButton: backButton(),
+        actionWidget: appBarActionWidget(context),
+        customTitleWidget: titleWidget());
     return appBar == null
         ? appBar
         : PreferredSize(
@@ -135,7 +140,8 @@ abstract class BaseStatelessPage<VM extends ViewMode> extends StatelessWidget wi
             child: Stack(
               children: [
                 appBar,
-                Offstage(offstage: !useStatusBar, child: createStatusBar(context)),
+                Offstage(
+                    offstage: !useStatusBar, child: createStatusBar(context)),
               ],
             ),
           );

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gallery_next/base/mvvm/view_mode/view_mode.dart';
+import 'package:flutter_gallery_next/base/mvvm/view_mode/base_view_mode.dart';
 import 'package:flutter_gallery_next/base/network/base/base_api_use_case.dart';
 import 'package:get/get.dart';
 

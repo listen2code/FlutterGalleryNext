@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/theme/color/theme_colors.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/base_view.dart';
+import 'package:flutter_gallery_next/base/mvvm/view_mode/base_view_mode.dart';
 import 'package:flutter_gallery_next/base/mvvm/view_mode/net_state_ext.dart';
-import 'package:flutter_gallery_next/base/mvvm/view_mode/view_mode.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/design_dialog.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';

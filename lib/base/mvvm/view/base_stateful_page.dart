@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/theme/color/theme_colors.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/base_view.dart';
+import 'package:flutter_gallery_next/base/mvvm/view_mode/base_view_mode.dart';
 import 'package:flutter_gallery_next/base/mvvm/view_mode/net_state_ext.dart';
-import 'package:flutter_gallery_next/base/mvvm/view_mode/view_mode.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -13,8 +13,8 @@ abstract class BaseStatefulPage extends StatefulWidget {
   BaseState createState();
 }
 
-abstract class BaseState<VM extends ViewMode, T extends BaseStatefulPage> extends State<T>
-    with AutomaticKeepAliveClientMixin<T>, BaseView {
+abstract class BaseState<VM extends ViewMode, T extends BaseStatefulPage>
+    extends State<T> with AutomaticKeepAliveClientMixin<T>, BaseView {
   @protected
   VM get viewMode => Get.find<VM>();
 
@@ -91,9 +91,11 @@ abstract class BaseState<VM extends ViewMode, T extends BaseStatefulPage> extend
               key: Key(hashCode.toString()),
               child: Column(
                 children: [
-                  Offstage(offstage: !useStatusBar, child: createStatusBar(context)),
+                  Offstage(
+                      offstage: !useStatusBar, child: createStatusBar(context)),
                   Expanded(child: _buildBody(context)),
-                  Offstage(offstage: !useBottomBar, child: createBottomBar(context)),
+                  Offstage(
+                      offstage: !useBottomBar, child: createBottomBar(context)),
                 ],
               ),
             ),
@@ -136,7 +138,9 @@ abstract class BaseState<VM extends ViewMode, T extends BaseStatefulPage> extend
 
   PreferredSizeWidget? _createAppBar(BuildContext context) {
     AppBar? appBar = createAppBar(titleString(), isCenterTitle(),
-        backButton: backButton(), actionWidget: appBarActionWidget(context), customTitleWidget: titleWidget());
+        backButton: backButton(),
+        actionWidget: appBarActionWidget(context),
+        customTitleWidget: titleWidget());
     return appBar == null
         ? appBar
         : PreferredSize(
@@ -144,7 +148,8 @@ abstract class BaseState<VM extends ViewMode, T extends BaseStatefulPage> extend
             child: Stack(
               children: [
                 appBar,
-                Offstage(offstage: !useStatusBar, child: createStatusBar(context)),
+                Offstage(
+                    offstage: !useStatusBar, child: createStatusBar(context)),
               ],
             ),
           );
