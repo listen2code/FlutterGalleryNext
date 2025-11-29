@@ -4,7 +4,7 @@ import 'package:flutter_gallery_next/base/network/base/base_login_use_case.dart'
 class VisitorAPIUseCase extends BaseLoginUseCase<void, VisitorRequest> {
   @override
   String getPath(VisitorRequest? request) {
-    return "/v1/login/visitor";
+    return "/v1/visitor";
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:package_libs/utils/logger_util.dart';
 import 'package:plugin_native/proxy/proxy_util.dart';
 
@@ -142,6 +143,11 @@ class APIDataStore {
       );
       return response;
     } catch (e) {
+      if (e is DioException) {
+        debugPrint('DioException caught!');
+        debugPrint('HTTP Status Code: ${e.response?.statusCode}');
+        debugPrint('Response Data: ${e.response?.data}');
+      }
       rethrow;
     } finally {
       taskEnd();

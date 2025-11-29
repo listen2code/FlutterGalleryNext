@@ -16,7 +16,8 @@ import 'package:package_libs/utils/logger_util.dart';
 import 'base_action.dart';
 import 'multi_net_data.dart';
 
-abstract class ViewMode<Actions extends BaseAction, Service extends BaseService> extends SuperController<String> {
+abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
+    extends SuperController<String> {
   final Service api = Get.find<Service>();
 
   late final List<StreamSubscription> _eventSubList = [];
@@ -54,7 +55,7 @@ abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
   void onValue(MultiNetData netData, Actions action);
 
   FutureOr request(var requests,
-      {bool handleLoading = false,
+      {bool handleLoading = true,
       bool handleError = true,
       bool handleSuccess = true,
       bool handleBack = false,
@@ -80,6 +81,7 @@ abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
       onValue(data, action);
     }).catchError((e, stackTrace) {
       showError(handleError, handleBack, e: e, stackTrace: stackTrace);
+      LoggerUtil.error("viewModel: e=$e t=$stackTrace");
     }).whenComplete(() {
       dismissLoading(handleLoading);
     });
@@ -88,7 +90,8 @@ abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
   @mustCallSuper
   void onStackResume(BuildContext context) {
     isFront = true;
-    final navigatorKey = Navigator.of(context).widget.key as GlobalKey<NavigatorState>;
+    final navigatorKey =
+        Navigator.of(context).widget.key as GlobalKey<NavigatorState>;
     if (navigatorKey == Get.nestedKey(mainRouteKey)) {
       // 全画面ページ
       isFullScreen = true;
@@ -103,7 +106,8 @@ abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
     log("onStackPause:${context.widget}");
   }
 
-  void showApiResult(MultiNetData data, bool isShow, bool isBack, bool isNetworkShow) {
+  void showApiResult(
+      MultiNetData data, bool isShow, bool isBack, bool isNetworkShow) {
     if (data.errorData is! ResponseEntity) {
       return;
     }
@@ -249,7 +253,11 @@ abstract class ViewMode<Actions extends BaseAction, Service extends BaseService>
     }
   }
 
-  void subscribe<T>({String? key, required ISubscriber<T> subscriber, String? page, bool clearStickyEvent = true}) {
+  void subscribe<T>(
+      {String? key,
+      required ISubscriber<T> subscriber,
+      String? page,
+      bool clearStickyEvent = true}) {
     _eventSubList.add(EventBus.defaultBus().subscribe<T>(
       subscriber: subscriber,
       key: key,

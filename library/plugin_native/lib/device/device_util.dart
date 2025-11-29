@@ -51,11 +51,12 @@ class DeviceUtil {
       return Future.value(uuid);
     }
     SpUtil.instance().set(SpKey.uuid, _deviceInfo?.uuid);
-    return Future.value(_deviceInfo?.uuid);
+    return Future.value(_deviceInfo?.uuid ?? "");
   }
 
   Future<String> getNetworkStatus() async {
-    List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
+    List<ConnectivityResult> connectivityResult =
+        await (Connectivity().checkConnectivity());
     switch (connectivityResult.first) {
       case ConnectivityResult.wifi:
         return Future.value("WiFi");
@@ -110,7 +111,8 @@ class DeviceUtil {
     if (isIOS()) {
       // tod
       var platform = const MethodChannel("com.xxxx.plugin/set_portrait");
-      await platform.invokeListMethod("setPortrait", {"isLandscape": isLandscape});
+      await platform
+          .invokeListMethod("setPortrait", {"isLandscape": isLandscape});
     }
   }
 }

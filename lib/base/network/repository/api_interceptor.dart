@@ -38,14 +38,14 @@ class BaseApiInterceptor extends QueuedInterceptor {
   static const String headerSessionId = "sessionId";
 
   static const List<String> noSessionCheckList = [
-    "/v1/login/member",
-    "/v1/login/visitor",
+    "/v1/login",
+    "/v1/visitor",
     "/v1/logout",
   ];
 
   static const List<String> setSessionIdList = [
-    "/v1/login/member",
-    "/v1/login/visitor",
+    "/v1/login",
+    "/v1/visitor",
   ];
 
   bool _isRetryCancel = false;
@@ -83,7 +83,8 @@ class BaseApiInterceptor extends QueuedInterceptor {
         ),
       );
     }
-    RequestOptions newOptions = options.copyWith(headers: await createHeaders(options));
+    RequestOptions newOptions =
+        options.copyWith(headers: await createHeaders(options));
     if (isSessionCheckRequired(newOptions.path)) {
       if (SessionInfo().jSessionId?.isEmpty ?? true) {
         var autoLogin = await LoginUtil.isAutoLogin();
@@ -92,7 +93,8 @@ class BaseApiInterceptor extends QueuedInterceptor {
         } else {
           await visitorLogin();
         }
-        newOptions = newOptions.copyWith(headers: await createHeaders(newOptions));
+        newOptions =
+            newOptions.copyWith(headers: await createHeaders(newOptions));
       }
     }
     DioInterceptorLogger.requestLog(newOptions);
@@ -113,7 +115,8 @@ class BaseApiInterceptor extends QueuedInterceptor {
         if (SessionInfo().isMember() && apiResult == APIResult.sessionTimeout) {
           bool autoLogin = await LoginUtil.isAutoLogin();
           APIResult loginResult = APIResult.empty;
-          String newSessionId = response.requestOptions.headers[headerSessionId];
+          String newSessionId =
+              response.requestOptions.headers[headerSessionId];
           bool isSessionChanged = SessionInfo().isSessionChanged(newSessionId);
           if (autoLogin && isSessionChanged == false) {
             var entity = await executeAutoLogin();
@@ -122,10 +125,12 @@ class BaseApiInterceptor extends QueuedInterceptor {
               GlobalDialog.showToast("auto login success");
             }
           }
-          if (autoLogin && (loginResult == APIResult.success || isSessionChanged == true)) {
+          if (autoLogin &&
+              (loginResult == APIResult.success || isSessionChanged == true)) {
             // auto login
             if (needRetry(response.requestOptions)) {
-              RequestOptions newOptions = response.requestOptions.copyWith(headers: await createHeaders(response.requestOptions));
+              RequestOptions newOptions = response.requestOptions.copyWith(
+                  headers: await createHeaders(response.requestOptions));
               var retryResponse = await retry(newOptions);
               handler.next(retryResponse);
             } else {
@@ -147,8 +152,8 @@ class BaseApiInterceptor extends QueuedInterceptor {
 
             if (loginResult == true || isSessionChanged == true) {
               if (isRetry) {
-                RequestOptions newOptions =
-                    response.requestOptions.copyWith(headers: await createHeaders(response.requestOptions));
+                RequestOptions newOptions = response.requestOptions.copyWith(
+                    headers: await createHeaders(response.requestOptions));
                 var retryResponse = await retry(newOptions);
                 handler.next(retryResponse);
               } else {
@@ -167,16 +172,18 @@ class BaseApiInterceptor extends QueuedInterceptor {
           // visitor login
           if (apiResult == APIResult.sessionTimeout) {
             APIResult loginResult = APIResult.empty;
-            String newSessionId = response.requestOptions.headers[headerSessionId];
-            bool isSessionChanged = SessionInfo().isSessionChanged(newSessionId);
+            String newSessionId =
+                response.requestOptions.headers[headerSessionId];
+            bool isSessionChanged =
+                SessionInfo().isSessionChanged(newSessionId);
             if (isSessionChanged == false) {
               ResponseEntity<void> visitorLoginResult = await visitorLogin();
               loginResult = visitorLoginResult.result;
             }
             if (loginResult == APIResult.success || isSessionChanged == true) {
               if (needRetry(response.requestOptions)) {
-                RequestOptions newOptions =
-                    response.requestOptions.copyWith(headers: await createHeaders(response.requestOptions));
+                RequestOptions newOptions = response.requestOptions.copyWith(
+                    headers: await createHeaders(response.requestOptions));
                 var retryResponse = await retry(newOptions);
                 handler.next(retryResponse);
               } else {
@@ -217,7 +224,8 @@ class BaseApiInterceptor extends QueuedInterceptor {
     }
   }
 
-  Future<Map<String, dynamic>> createHeaders(RequestOptions requestOptions) async {
+  Future<Map<String, dynamic>> createHeaders(
+      RequestOptions requestOptions) async {
     Map<String, dynamic> headers = {};
     headers["Accept"] = 'application/json';
     headers["Accept-Encoding"] = "gzip,deflate,br";
@@ -252,7 +260,8 @@ class BaseApiInterceptor extends QueuedInterceptor {
   }
 
   void logoutEventBus() {
-    EventBus.defaultBus().post<String>(event: EventBusKeys.logout, key: EventBusKeys.logout);
+    EventBus.defaultBus()
+        .post<String>(event: EventBusKeys.logout, key: EventBusKeys.logout);
   }
 
   bool needRetry(RequestOptions requestOptions) {
@@ -284,7 +293,8 @@ class BaseApiInterceptor extends QueuedInterceptor {
       APIDataStore.retryDio.interceptors
         ..clear()
         ..add(BaseApiInterceptor());
-      return await APIDataStore().request(APIDataStore.retryDio, requestOptions.path,
+      return await APIDataStore().request(
+          APIDataStore.retryDio, requestOptions.path,
           data: requestOptions.data,
           params: requestOptions.queryParameters,
           cancelToken: requestOptions.cancelToken,
@@ -298,7 +308,8 @@ class BaseApiInterceptor extends QueuedInterceptor {
               responseType: requestOptions.responseType,
               contentType: requestOptions.contentType,
               validateStatus: requestOptions.validateStatus,
-              receiveDataWhenStatusError: requestOptions.receiveDataWhenStatusError,
+              receiveDataWhenStatusError:
+                  requestOptions.receiveDataWhenStatusError,
               followRedirects: requestOptions.followRedirects,
               maxRedirects: requestOptions.maxRedirects,
               persistentConnection: requestOptions.persistentConnection,
@@ -343,7 +354,7 @@ APIResult getApiResult(Response response) {
   APIResult result = APIResult.empty;
   var data = response.data;
   if (data != null && data != "") {
-    if (data["result"] != null && data["result" != ""]) {
+    if (data['result'] != null && data['result'] != "") {
       result = APIResultExtension.fromCode(response.data["result"]);
     }
   }

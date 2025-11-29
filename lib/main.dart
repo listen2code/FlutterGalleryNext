@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/init.dart';
 import 'package:flutter_gallery_next/base/common/pages.dart';
-import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
+import 'package:flutter_gallery_next/base/widget/dialog/common_loading_widget.dart';
+import 'package:flutter_gallery_next/base/widget/dialog/common_toast_widget.dart';
+import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 const int mainRouteKey = -1;
 
@@ -35,7 +38,17 @@ class MyApp extends StatelessWidget {
       ),
       home: const HomePage(),
       routes: Constant.router,
-      builder: GlobalLoading.init(),
+      builder: FlutterSmartDialog.init(
+        builder: (context, widget) {
+          GlobalLoading.init();
+          if (widget != null) {
+            return MediaQuery.withNoTextScaling(child: widget);
+          }
+          throw StateError('widget is null');
+        },
+        loadingBuilder: (context) => const CommonLoadingWidget(),
+        toastBuilder: (msg) => CommonToastWidget(msg: msg),
+      ),
     );
   }
 }

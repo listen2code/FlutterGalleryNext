@@ -22,7 +22,7 @@ class LoginViewMode extends ViewMode<LoginActions, LoginService> {
   void onValue(MultiNetData netData, LoginActions action) {
     switch (action) {
       case DoLogin():
-        loginState.rxLogin = netData[0];
+        loginState.rxLogin.value = netData[0];
     }
   }
 

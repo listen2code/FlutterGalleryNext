@@ -15,7 +15,7 @@ import 'package:plugin_native/device/device_util.dart';
 class LoginAPIUseCase extends BaseLoginUseCase<LoginEntity, LoginRequest> {
   @override
   String getPath(LoginRequest? request) {
-    return "/v1/login/member";
+    return "/v1/login";
   }
 
   Future<ResponseEntity<LoginEntity>> autoLogin() async {
@@ -26,23 +26,24 @@ class LoginAPIUseCase extends BaseLoginUseCase<LoginEntity, LoginRequest> {
     String? deviceId = await getDeviceId();
     String deviceType = DeviceType.getDeviceType();
     String appVersion = await getAppVersion();
-    return post(LoginRequest(loginId, loginPwd, deviceId, deviceType, appVersion)).then((value) {
+    return post(
+        LoginRequest(loginId, loginPwd, deviceId, deviceType, appVersion))
+        .then((value) {
       setSessionInfo(value, LoginType.reLogin);
       return value;
     });
   }
 
-  Future<ResponseEntity<LoginEntity>> login(
-    LoginRequest? memberLoginRequest,
-    LoginType loginType,
-  ) {
+  Future<ResponseEntity<LoginEntity>> login(LoginRequest? memberLoginRequest,
+      LoginType loginType,) {
     return post(memberLoginRequest).then((value) {
       setSessionInfo(value, loginType);
       return value;
     });
   }
 
-  void setSessionInfo(ResponseEntity<LoginEntity> loginEntity, LoginType loginType) async {
+  void setSessionInfo(ResponseEntity<LoginEntity> loginEntity,
+      LoginType loginType) async {
     if (loginEntity.result == APIResult.success) {
       SessionInfo().loginInfo = loginEntity.body;
       loginNotification(loginType);
@@ -76,7 +77,8 @@ class LoginAPIUseCase extends BaseLoginUseCase<LoginEntity, LoginRequest> {
   }
 
   void logoutNotification() {
-    EventBus.defaultBus().post<String>(event: EventBusKeys.logout, key: EventBusKeys.logout);
+    EventBus.defaultBus()
+        .post<String>(event: EventBusKeys.logout, key: EventBusKeys.logout);
   }
 
   Future<String> getAppVersion() async {
@@ -113,7 +115,8 @@ class LoginRequest implements IRequest {
   /// アプリバージョン情報
   String version;
 
-  LoginRequest(this.loginId, this.password, this.deviceId, this.deviceType, this.version);
+  LoginRequest(this.loginId, this.password, this.deviceId, this.deviceType,
+      this.version);
 
   @override
   Map<String, dynamic>? getParameters() {
