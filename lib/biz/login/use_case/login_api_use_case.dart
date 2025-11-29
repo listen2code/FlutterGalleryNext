@@ -23,27 +23,28 @@ class LoginAPIUseCase extends BaseLoginUseCase<LoginEntity, LoginRequest> {
     var local = await ProfileUtil().loadLoginSettingInfo();
     String loginId = local.loginId ?? "";
     String loginPwd = local.passwd ?? "";
+    // todo
     String? deviceId = await getDeviceId();
     String deviceType = DeviceType.getDeviceType();
     String appVersion = await getAppVersion();
-    return post(
-        LoginRequest(loginId, loginPwd, deviceId, deviceType, appVersion))
-        .then((value) {
+    return post(LoginRequest(loginId, loginPwd)).then((value) {
       setSessionInfo(value, LoginType.reLogin);
       return value;
     });
   }
 
-  Future<ResponseEntity<LoginEntity>> login(LoginRequest? memberLoginRequest,
-      LoginType loginType,) {
+  Future<ResponseEntity<LoginEntity>> login(
+    LoginRequest? memberLoginRequest,
+    LoginType loginType,
+  ) {
     return post(memberLoginRequest).then((value) {
       setSessionInfo(value, loginType);
       return value;
     });
   }
 
-  void setSessionInfo(ResponseEntity<LoginEntity> loginEntity,
-      LoginType loginType) async {
+  void setSessionInfo(
+      ResponseEntity<LoginEntity> loginEntity, LoginType loginType) async {
     if (loginEntity.result == APIResult.success) {
       SessionInfo().loginInfo = loginEntity.body;
       loginNotification(loginType);
@@ -103,32 +104,17 @@ class LoginAPIUseCase extends BaseLoginUseCase<LoginEntity, LoginRequest> {
 
 /// 要求用モデル
 class LoginRequest implements IRequest {
-  String loginId;
+  String userName;
   String password;
 
-  /// Push通知用のトークン
-  String? deviceId;
-
-  /// デバイス種別
-  String deviceType;
-
-  /// アプリバージョン情報
-  String version;
-
-  LoginRequest(this.loginId, this.password, this.deviceId, this.deviceType,
-      this.version);
+  LoginRequest(this.userName, this.password);
 
   @override
   Map<String, dynamic>? getParameters() {
     Map<String, dynamic> result = {
-      "loginId": loginId,
+      "userName": userName,
       "password": password,
-      "deviceType": deviceType,
-      "version": version,
     };
-    if (deviceId != null) {
-      result["deviceId"] = deviceId;
-    }
     return result;
   }
 }
