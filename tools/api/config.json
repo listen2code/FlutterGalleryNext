@@ -11,5 +11,9 @@
   {
     "api": "logout",
     "httpCode": 200
+  },
+  {
+    "api": "userInfo",
+    "httpCode": 200
   }
 ]
