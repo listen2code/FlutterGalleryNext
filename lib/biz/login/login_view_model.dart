@@ -26,7 +26,7 @@ class LoginViewMode extends ViewMode<LoginActions, LoginService> {
     }
   }
 
-  void doLogin() {
+  void doLogin({required String username, required String password}) {
     dispatch(const LoginActions.doLogin());
   }
 }

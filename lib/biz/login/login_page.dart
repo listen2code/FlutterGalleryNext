@@ -13,6 +13,9 @@ class LoginPage extends BaseStatefulPage {
 }
 
 class _LoginPageState extends BaseState<LoginViewMode, LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -22,26 +25,55 @@ class _LoginPageState extends BaseState<LoginViewMode, LoginPage> {
 
   @override
   void dispose() {
-    super.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
     Get.delete<LoginViewMode>();
     Get.delete<LoginService>();
+    super.dispose();
   }
 
   @override
   Widget buildContent(BuildContext context) {
-    return Center(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ElevatedButton(
-            onPressed: viewMode.doLogin,
-            child: const Text("login"),
+          TextField(
+            controller: _usernameController,
+            decoration: const InputDecoration(
+              labelText: 'Username',
+              border: OutlineInputBorder(),
+            ),
           ),
+          const SizedBox(height: 16.0),
+          TextField(
+            controller: _passwordController,
+            decoration: const InputDecoration(
+              labelText: 'Password',
+              border: OutlineInputBorder(),
+            ),
+            obscureText: true, // Hide password text
+          ),
+          const SizedBox(height: 24.0),
+          ElevatedButton(
+            onPressed: () {
+              viewMode.doLogin(
+                username: _usernameController.text,
+                password: _passwordController.text,
+              );
+            },
+            child: const Text("Login"),
+          ),
+          const SizedBox(height: 40.0),
           AutoLoadWidget(
             viewMode: viewMode,
             rxResponse: viewMode.loginState.rxLogin,
             widget: (data) {
-              return Text("id=${data.id} name=${data.name}");
+              return Center(
+                child: Text("userId=${data.id}, userName=${data.name}"),
+              );
             },
           ),
         ],
