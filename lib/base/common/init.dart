@@ -41,7 +41,7 @@ void initErrorHandler() {
   PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
     // In a real app, you would typically report the error to a service like Firebase Crashlytics here.
     // For now, we just log it.
-    debugPrint('Caught unhandled error: $error');
+    debugPrint('Caught unhandled error: $error stack=$stack');
 
     // Returning true tells the framework that the error has been handled,
     // which prevents the application from crashing.
@@ -51,7 +51,8 @@ void initErrorHandler() {
 
 /// force to portrait
 void initOrientations() {
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 }
 
 Future<void> initEnv() async {
@@ -66,7 +67,7 @@ Future<void> initEnv() async {
     } else {
       await dotenv.load(fileName: 'env/.env');
     }
-    debugPrint("ENVファイル読み込み中");
+    debugPrint("loadEnv NAME=${dotenv.env['NAME']}");
   }
 }
 
@@ -103,7 +104,8 @@ Future<void> initIntl() async {
   //   print(DateFormat.yMMMMd().format(now));
   // }
   //
-  await Future.wait(supportedLocales.map((locale) => initializeDateFormatting(locale, null)));
+  await Future.wait(
+      supportedLocales.map((locale) => initializeDateFormatting(locale, null)));
 
   // Get the device's current system locale (e.g., 'en_US', 'ja_JP').
   final systemLocale = Platform.localeName;
