@@ -180,6 +180,7 @@ async function handleRequest(req, res) {
                     }, 11000);
                 } else {
                     try {
+                        console.log(`timeout=` + timeout);
                     	sleepSync(timeout);
                         const result = await readJsonFile(api, userId, code, error, errorCode, moreInformation);
                         res.setHeader('Set-Cookie',

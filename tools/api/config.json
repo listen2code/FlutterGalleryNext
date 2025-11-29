@@ -1,6 +1,11 @@
 [
   {
     "api": "login",
+    "timeout": 2000,
+    "httpCode": 200
+  },
+  {
+    "api": "visitor",
     "httpCode": 200
   },
   {
