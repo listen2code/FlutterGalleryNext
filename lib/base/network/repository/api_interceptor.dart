@@ -2,7 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus_key.dart';
-import 'package:flutter_gallery_next/base/network/base/base_api_use_case.dart';
+import 'package:flutter_gallery_next/base/network/base/base.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
 import 'package:flutter_gallery_next/base/network/repository/api_data_store.dart';
 import 'package:flutter_gallery_next/base/utils/login_util.dart';

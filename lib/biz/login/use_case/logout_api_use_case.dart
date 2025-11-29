@@ -1,4 +1,4 @@
-import 'package:flutter_gallery_next/base/network/base/base_api_use_case.dart';
+import 'package:flutter_gallery_next/base/network/base/base.dart';
 
 class LogoutAPIUseCase extends BaseAPIUseCase<void, LogoutRequest> {
   @override
@@ -10,7 +10,7 @@ class LogoutAPIUseCase extends BaseAPIUseCase<void, LogoutRequest> {
   bool retryAfter() => true;
 }
 
-class LogoutRequest implements IRequest {
+class LogoutRequest implements BaseRequest {
   @override
   Map<String, dynamic>? getParameters() {
     return null;

@@ -11,7 +11,6 @@ class APIDataStore {
   factory APIDataStore() => _instance;
 
   static late final Dio apiDio;
-  static late final Dio httpDio;
   static late final Dio loginDio;
   static late final Dio retryDio;
   final CancelToken _cancelToken = CancelToken();
@@ -23,9 +22,6 @@ class APIDataStore {
   APIDataStore._internal() {
     apiDio = Dio(BaseOptions());
     apiDio.interceptors.add(BaseApiInterceptor());
-
-    httpDio = Dio(BaseOptions());
-    httpDio.interceptors.add(CommonInterceptor());
 
     loginDio = Dio(BaseOptions());
     loginDio.interceptors.add(BaseApiInterceptor());

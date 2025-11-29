@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
-import 'package:flutter_gallery_next/base/network/base/base_api_use_case.dart';
+import 'package:flutter_gallery_next/base/network/base/base.dart';
 import 'package:get/get.dart';
 
 class PartLoadWidget<T, VM extends ViewModel> extends StatelessWidget {

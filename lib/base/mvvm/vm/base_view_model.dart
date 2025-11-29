@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/base_view.dart';
 import 'package:flutter_gallery_next/base/mvvm/vm/base_controller.dart';
-import 'package:flutter_gallery_next/base/network/base/base_api_use_case.dart';
-import 'package:flutter_gallery_next/base/network/base/base_service.dart';
+import 'package:flutter_gallery_next/base/network/base/base.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
 import 'package:flutter_gallery_next/base/utils/login_util.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_dialog.dart';
@@ -175,14 +174,14 @@ abstract class ViewModel<Actions extends BaseAction,
             after();
           }
           if (back == true) {
-            apiErrorPageBack();
+            onApiError();
           }
         },
       );
     }
   }
 
-  void apiErrorPageBack() {
+  void onApiError() {
     pageBack();
   }
 
@@ -203,7 +202,7 @@ abstract class ViewModel<Actions extends BaseAction,
               after();
             }
             if (back == true) {
-              apiErrorPageBack();
+              onApiError();
             }
           },
         );

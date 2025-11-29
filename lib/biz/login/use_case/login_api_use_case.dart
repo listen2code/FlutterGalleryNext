@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus_key.dart';
-import 'package:flutter_gallery_next/base/network/base/base_api_use_case.dart';
-import 'package:flutter_gallery_next/base/network/base/base_login_use_case.dart';
+import 'package:flutter_gallery_next/base/network/base/base.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
 import 'package:flutter_gallery_next/biz/login/model/login_entity.dart';
 import 'package:flutter_gallery_next/biz/login/use_case/visitor_api_use_case.dart';
@@ -103,7 +102,7 @@ class LoginAPIUseCase extends BaseLoginUseCase<LoginEntity, LoginRequest> {
 }
 
 /// 要求用モデル
-class LoginRequest implements IRequest {
+class LoginRequest implements BaseRequest {
   String userName;
   String password;
 

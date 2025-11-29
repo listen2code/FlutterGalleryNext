@@ -1,5 +1,4 @@
-import 'package:flutter_gallery_next/base/network/base/base_api_use_case.dart';
-import 'package:flutter_gallery_next/base/network/base/base_login_use_case.dart';
+import 'package:flutter_gallery_next/base/network/base/base.dart';
 
 class VisitorAPIUseCase extends BaseLoginUseCase<void, VisitorRequest> {
   @override
@@ -8,7 +7,7 @@ class VisitorAPIUseCase extends BaseLoginUseCase<void, VisitorRequest> {
   }
 }
 
-class VisitorRequest implements IRequest {
+class VisitorRequest implements BaseRequest {
   String version;
 
   VisitorRequest(this.version);
