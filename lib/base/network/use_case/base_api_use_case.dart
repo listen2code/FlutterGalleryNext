@@ -1,15 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gallery_next/base/network/base_network.dart';
 import 'package:intl/intl.dart';
 import 'package:package_libs/utils/http_util.dart';
-
-import '../base_network.dart';
 
 abstract class BaseAPIUseCase<T, R extends BaseRequest> {
   final CancelToken _cancelToken = CancelToken();
 
   Dio getDio() {
-    return APIDataStore.apiDio;
+    return ApiManager.apiDio;
   }
 
   BaseAPIUseCase() {
@@ -23,7 +22,7 @@ abstract class BaseAPIUseCase<T, R extends BaseRequest> {
   R? request;
 
   void setBaseUrl() {
-    APIDataStore().init(
+    ApiManager().init(
       getDio(),
       baseUrl: dotenv.env['API_SERVER'] ?? '',
       headers: addHeaders(),
@@ -52,7 +51,7 @@ abstract class BaseAPIUseCase<T, R extends BaseRequest> {
       parameters?.removeWhere((key, value) {
         return value == null;
       });
-      resp = await APIDataStore().get(
+      resp = await ApiManager().get(
         getDio(),
         getPath(request),
         noCache: isNoCache(),
@@ -77,19 +76,17 @@ abstract class BaseAPIUseCase<T, R extends BaseRequest> {
   Future<ResponseEntity<T>> post([R? request]) async {
     Response resp;
     try {
-      resp = await APIDataStore().post(
+      resp = await ApiManager().post(
         getDio(),
         getPath(request),
         options: getOptions(),
         data: xCreateRequest(request),
         cancelToken: _cancelToken,
       );
-      if (HttpUtil.isSuccess(resp.statusCode) == false) {
-        // 請求結果が200以外
-        throw ApiResultException(resp.statusCode, resp.statusMessage);
-      } else {
-        // 上記以外
+      if (HttpUtil.isSuccess(resp.statusCode)) {
         return xCreateModel(resp);
+      } else {
+        throw ApiResultException(resp.statusCode, resp.statusMessage);
       }
     } on DioException catch (e) {
       return xCreateDioError(e);
@@ -101,7 +98,7 @@ abstract class BaseAPIUseCase<T, R extends BaseRequest> {
   }
 
   void cancel() {
-    APIDataStore().cancelRequests(token: _cancelToken);
+    ApiManager().cancelRequests(token: _cancelToken);
   }
 
   Map<String, dynamic>? xCreateRequest(R? request) {

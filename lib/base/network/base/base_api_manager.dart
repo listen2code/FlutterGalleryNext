@@ -6,10 +6,10 @@ import 'package:plugin_native/proxy/proxy_util.dart';
 
 import '../interceptor/base_api_interceptor.dart';
 
-class APIDataStore {
-  static final APIDataStore _instance = APIDataStore._internal();
+class ApiManager {
+  static final ApiManager _instance = ApiManager._internal();
 
-  factory APIDataStore() => _instance;
+  factory ApiManager() => _instance;
 
   static late final Dio apiDio;
   static late final Dio loginDio;
@@ -20,7 +20,7 @@ class APIDataStore {
 
   static int tasksCount = 0;
 
-  APIDataStore._internal() {
+  ApiManager._internal() {
     apiDio = Dio(BaseOptions());
     apiDio.interceptors.add(BaseApiInterceptor());
 
@@ -51,21 +51,13 @@ class APIDataStore {
     log("cancel request", type: LoggerType.easy);
   }
 
-  void tasksCountAddition() {
+  void taskBegin() {
+    log("通信開始で通信中件数：$tasksCount", type: LoggerType.easy);
     tasksCount += 1;
   }
 
-  void tasksCountSubtraction() {
-    tasksCount -= 1;
-  }
-
-  void taskBegin() {
-    log("通信開始で通信中件数：$tasksCount", type: LoggerType.easy);
-    tasksCountAddition();
-  }
-
   void taskEnd() {
-    tasksCountSubtraction();
+    tasksCount -= 1;
     log("通信完了で通信中件数：$tasksCount", type: LoggerType.easy);
   }
 
@@ -90,14 +82,12 @@ class APIDataStore {
     try {
       taskBegin();
       Options requestOptions = options ?? Options();
-      requestOptions = requestOptions.copyWith(
-        extra: {
-          "refresh": refresh,
-          "noCache": noCache,
-          "cacheKey": cacheKey,
-          "cacheDisk": cacheDisk,
-        },
-      );
+      requestOptions = requestOptions.copyWith(extra: {
+        "refresh": refresh,
+        "noCache": noCache,
+        "cacheKey": cacheKey,
+        "cacheDisk": cacheDisk,
+      });
       Map<String, dynamic>? authorization = getAuthorizationHeader();
       if (authorization != null) {
         requestOptions = requestOptions.copyWith(headers: authorization);
@@ -193,7 +183,6 @@ class APIDataStore {
     }
   }
 
-  // todo 待删除
   bool enableConnection() {
     return tasksCount < maxConnection;
   }

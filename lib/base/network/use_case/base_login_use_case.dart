@@ -6,13 +6,13 @@ abstract class BaseLoginUseCase<T, R extends BaseRequest> extends BaseAPIUseCase
   @override
   Dio getDio() {
     // todo BaseUrl と DIO の 1 対 1
-    return APIDataStore.loginDio;
+    return ApiManager.loginDio;
   }
 
   @override
   void setBaseUrl() {
-    APIDataStore().init(
-      APIDataStore.loginDio,
+    ApiManager().init(
+      ApiManager.loginDio,
       baseUrl: dotenv.env['API_SERVER'] ?? '',
       headers: addHeaders(),
     );

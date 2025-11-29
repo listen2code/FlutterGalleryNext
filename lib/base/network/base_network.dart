@@ -1,5 +1,5 @@
-export 'base/base_api_data_store.dart';
 export 'base/base_api_exception.dart';
+export 'base/base_api_manager.dart';
 export 'base/base_request.dart';
 export 'base/base_response.dart';
 export 'base/base_service.dart';

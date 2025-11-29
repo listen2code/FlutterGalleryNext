@@ -190,13 +190,13 @@ class BaseApiInterceptor extends QueuedInterceptor {
 
   Future<Response> _retry(RequestOptions requestOptions) async {
     try {
-      if (APIDataStore().enableConnection() == false) {
+      if (ApiManager().enableConnection() == false) {
         return Response(requestOptions: RequestOptions());
       }
-      APIDataStore.retryDio.interceptors
+      ApiManager.retryDio.interceptors
         ..clear()
         ..add(BaseApiInterceptor());
-      return await APIDataStore().request(APIDataStore.retryDio, requestOptions.path,
+      return await ApiManager().request(ApiManager.retryDio, requestOptions.path,
           data: requestOptions.data,
           params: requestOptions.queryParameters,
           cancelToken: requestOptions.cancelToken,
