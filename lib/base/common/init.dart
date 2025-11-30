@@ -8,20 +8,18 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gallery_next/base/widget/refresh/refresh_manager.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:package_libs/utils/logger_util.dart';
 import 'package:plugin_native/device/device_util.dart';
-import 'package:plugin_native/plugin_native.dart';
 import 'package:plugin_native/proxy/proxy_util.dart';
 
 Future<void> appInit() async {
+  WidgetsFlutterBinding.ensureInitialized();
   initErrorHandler();
   initOrientations();
   initRefresh();
   initEnv();
-  initDeviceInfo();
+  await DeviceUtil.instance().init();
   await initIntl();
   await ProxyUtil.instance().init();
-  await initDebug();
 }
 
 void initErrorHandler() {
@@ -43,7 +41,9 @@ void initErrorHandler() {
   PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
     // In a real app, you would typically report the error to a service like Firebase Crashlytics here.
     // For now, we just log it.
-    LoggerUtil.error('Caught unhandled error: $error stack=$stack');
+    debugPrint('##########################################################');
+    debugPrint('############# Caught unhandled error: $error stack=$stack');
+    debugPrint('##########################################################');
 
     // Returning true tells the framework that the error has been handled,
     // which prevents the application from crashing.
@@ -68,7 +68,7 @@ void initRefresh() {
 Future<void> initEnv() async {
   if (dotenv.isInitialized) {
     // ENVファイル読み込み完了
-    debugPrint("ENVファイル読み込み完了");
+    debugPrint("loadEnv finish");
   } else {
     String env = const String.fromEnvironment("env");
     debugPrint("loadEnv=$env");
@@ -79,10 +79,6 @@ Future<void> initEnv() async {
     }
     debugPrint("loadEnv NAME=${dotenv.env['NAME']}");
   }
-}
-
-Future<void> initDeviceInfo() async {
-  await DeviceUtil.instance().init();
 }
 
 Future<void> initIntl() async {
@@ -130,14 +126,4 @@ Future<void> initIntl() async {
 
   // Log the final default locale for debugging purposes.
   debugPrint('Intl default locale set to: ${Intl.defaultLocale}');
-}
-
-Future<void> initDebug() async {
-  // Unhandled Exception: Binding has not yet been initialized.
-  // The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
-  // Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former).
-  // Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent;
-  // calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
-  WidgetsFlutterBinding.ensureInitialized();
-  debugPrint("getPlatformVersion=${await PluginNative().getPlatformVersion()}");
 }

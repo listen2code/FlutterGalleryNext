@@ -11,6 +11,7 @@
 9.plugin:FlutterJsonBeanFactory, AssetsHelper, timestamp Json Parser
 10.multi service to vm
 11.upgrade freeze
+12.splash
 
 # architecture
 

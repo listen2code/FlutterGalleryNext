@@ -14,7 +14,7 @@ void main() async {
   await appInit();
   assert(() {
     FlutterError.onError = (FlutterErrorDetails details) {
-      LoggerUtil.error("############# error ############");
+      LoggerUtil.error("############# FlutterError ############");
       LoggerUtil.error("$details");
     };
     return true;
