@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/theme/color/theme_colors.dart';
 import 'package:flutter_gallery_next/base/view_model/base_view_model.dart';
 import 'package:flutter_gallery_next/base/view_model/net_state_ext.dart';
+import 'package:flutter_gallery_next/base/widget/base/base_view.dart';
+import 'package:flutter_gallery_next/base/widget/dialog/design_dialog.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import 'base_view.dart';
-
-abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget with BaseView {
+abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget with BaseView, DesignDialog {
   const BaseStatelessPage({super.key});
 
   @protected
@@ -28,16 +28,6 @@ abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget w
   @protected
   bool get navi => false;
 
-  bool get canPop => true;
-
-  bool get useStatusBar => false;
-
-  bool get useBottomBar => false;
-
-  Color get statusBarColor => ThemeColors.grey200;
-
-  Color get bottomBarColor => ThemeColors.white;
-
   Widget buildContent(BuildContext context);
 
   @override
@@ -49,6 +39,16 @@ abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget w
   void onBackPressed({BuildContext? context}) {
     back(context: context);
   }
+
+  bool get canPop => true;
+
+  bool get useStatusBar => false;
+
+  bool get useBottomBar => false;
+
+  Color get statusBarColor => ThemeColors.grey200;
+
+  Color get bottomBarColor => ThemeColors.white;
 
   @override
   Widget build(BuildContext context) {
@@ -62,33 +62,32 @@ abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget w
           top: !useStatusBar,
           bottom: !useBottomBar,
           child: PopScope(
-            canPop: canPop,
-            onPopInvokedWithResult: (bool didPop, Object? result) {
-              if (didPop) {
-                return;
-              }
-              onSystemBackPressed(context, didPop);
-            },
-            child: VisibilityDetector(
-              onVisibilityChanged: (info) {
-                if (context.mounted && Get.isRegistered<VM>()) {
-                  if (info.visibleFraction == 1) {
-                    viewMode.onStackResume(context);
-                  } else if (info.visibleFraction == 0) {
-                    viewMode.onStackPause(context);
-                  }
+              canPop: canPop,
+              onPopInvokedWithResult: (bool didPop, Object? result) {
+                if (didPop) {
+                  return;
                 }
+                onSystemBackPressed(context, didPop);
               },
-              key: Key(hashCode.toString()),
-              child: Column(
-                children: [
-                  Offstage(offstage: !useStatusBar, child: createStatusBar(context)),
-                  Expanded(child: _buildBody(context)),
-                  Offstage(offstage: !useBottomBar, child: createBottomBar(context)),
-                ],
-              ),
-            ),
-          ),
+              child: VisibilityDetector(
+                  onVisibilityChanged: (info) {
+                    // todo && viewMode is! HomeViewMode
+                    if (context.mounted && Get.isRegistered<VM>()) {
+                      if (info.visibleFraction == 1) {
+                        viewMode.onStackResume(context);
+                      } else if (info.visibleFraction == 0) {
+                        viewMode.onStackPause(context);
+                      }
+                    }
+                  },
+                  key: Key(hashCode.toString()),
+                  child: Column(
+                    children: [
+                      Offstage(offstage: !useStatusBar, child: createStatusBar(context)),
+                      Expanded(child: _buildBody(context)),
+                      Offstage(offstage: !useBottomBar, child: createBottomBar(context)),
+                    ],
+                  ))),
         ),
         drawer: _createDrawer(context),
         floatingActionButton: createFloatingActionButton(context),
