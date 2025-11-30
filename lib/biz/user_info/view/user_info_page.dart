@@ -52,15 +52,15 @@ class _UserInfoPageState extends BaseState<UserInfoViewModel, UserInfoPage> {
             ),
             ElevatedButton(
               onPressed: viewMode.getUserInfo,
-              child: const Text("getUserInfo"),
+              child: const Text("getUserInfo and save db"),
             ),
             ElevatedButton(
               onPressed: viewMode.deleteUserInfo,
-              child: const Text("delete"),
+              child: const Text("db: delete"),
             ),
             ElevatedButton(
               onPressed: viewMode.updateUserInfo,
-              child: const Text("update"),
+              child: const Text("db: update"),
             ),
           ],
         );
