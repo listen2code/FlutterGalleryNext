@@ -5,7 +5,7 @@ export 'package:flutter_gallery_next/generated/json/login_entity.g.dart';
 
 @JsonSerializable()
 class LoginEntity {
-	String? id = '';
+	String? userId = '';
 	String? name = '';
 
 	LoginEntity();

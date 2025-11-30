@@ -4,7 +4,6 @@ import 'package:flutter_gallery_next/biz/demos/net/demo_net_basic.dart';
 import 'package:flutter_gallery_next/biz/demos/net/demo_net_complex_add.dart';
 import 'package:flutter_gallery_next/biz/demos/net/demo_net_complex_del.dart';
 import 'package:flutter_gallery_next/biz/demos/net/demo_net_complex_update.dart';
-import 'package:flutter_gallery_next/biz/login/login_page.dart';
 
 class DemoNet extends StatefulWidget {
   const DemoNet({Key? key}) : super(key: key);
@@ -26,32 +25,27 @@ class _DemoNetState extends State<DemoNet> {
           children: [
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const DemoNetBasic()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoNetBasic()));
                 },
                 child: const Text("net basic")),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const DemoNetAsync()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoNetAsync()));
                 },
                 child: const Text("net async")),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const DemoNetComplexAdd()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoNetComplexAdd()));
                 },
                 child: const Text("net complex add")),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const DemoNetComplexDel()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoNetComplexDel()));
                 },
                 child: const Text("net complex del")),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const DemoNetComplexUpdate()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoNetComplexUpdate()));
                 },
                 child: const Text("net complex update")),
           ],

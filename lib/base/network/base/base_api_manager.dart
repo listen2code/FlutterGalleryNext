@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:package_libs/utils/logger_util.dart';
 import 'package:plugin_native/proxy/proxy_util.dart';
@@ -92,16 +91,15 @@ class ApiManager {
       if (authorization != null) {
         requestOptions = requestOptions.copyWith(headers: authorization);
       }
-      Response response;
       await ProxyUtil.instance().findProxyAsync(Uri.parse(dio.options.baseUrl));
-      response = await dio.get(
+      return await dio.get(
         path,
         queryParameters: params,
         options: requestOptions,
         cancelToken: cancelToken ?? _cancelToken,
       );
-      return response;
     } catch (e) {
+      LoggerUtil.error("DioException e=$e");
       rethrow;
     } finally {
       taskEnd();
@@ -127,20 +125,15 @@ class ApiManager {
         requestOptions = requestOptions.copyWith(headers: authorization);
       }
       await ProxyUtil.instance().findProxyAsync(Uri.parse(dio.options.baseUrl));
-      var response = await dio.post(
+      return await dio.post(
         path,
         data: data,
         queryParameters: params,
         options: requestOptions,
         cancelToken: cancelToken ?? _cancelToken,
       );
-      return response;
     } catch (e) {
-      if (e is DioException) {
-        debugPrint('DioException caught!');
-        debugPrint('HTTP Status Code: ${e.response?.statusCode}');
-        debugPrint('Response Data: ${e.response?.data}');
-      }
+      LoggerUtil.error("DioException e=$e");
       rethrow;
     } finally {
       taskEnd();
@@ -166,7 +159,7 @@ class ApiManager {
         requestOptions = requestOptions.copyWith(headers: authorization);
       }
       await ProxyUtil.instance().findProxyAsync(Uri.parse(dio.options.baseUrl));
-      var response = await dio.request(
+      return await dio.request(
         path,
         data: data,
         queryParameters: params,
@@ -175,8 +168,8 @@ class ApiManager {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
-      return response;
     } catch (e) {
+      LoggerUtil.error("DioException e=$e");
       rethrow;
     } finally {
       taskEnd();

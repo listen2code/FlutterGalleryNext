@@ -3,8 +3,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/auto_load_widget.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/base_stateful_page.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
-import 'package:flutter_gallery_next/biz/login/login_view_model.dart';
-import 'package:flutter_gallery_next/biz/login/service/login_service.dart';
+import 'package:flutter_gallery_next/biz/login/vm/login_view_model.dart';
+import 'package:flutter_gallery_next/biz/login/vm/service/login_service.dart';
 import 'package:get/get.dart';
 
 class LoginPage extends BaseStatefulPage {
@@ -14,14 +14,14 @@ class LoginPage extends BaseStatefulPage {
   BaseState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends BaseState<LoginViewMode, LoginPage> {
+class _LoginPageState extends BaseState<LoginViewModel, LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    Get.lazyPut(() => LoginViewMode());
+    Get.lazyPut(() => LoginViewModel());
     Get.lazyPut(() => LoginService());
   }
 
@@ -29,7 +29,7 @@ class _LoginPageState extends BaseState<LoginViewMode, LoginPage> {
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
-    Get.delete<LoginViewMode>();
+    Get.delete<LoginViewModel>();
     Get.delete<LoginService>();
     super.dispose();
   }
@@ -52,7 +52,7 @@ class _LoginPageState extends BaseState<LoginViewMode, LoginPage> {
             rxResponse: viewMode.loginState.rxLogin,
             widget: (data) {
               return Center(
-                child: Text("userId=${SessionInfo().loginInfo?.id}, userName=${SessionInfo().loginInfo?.name}"),
+                child: Text("userId=${SessionInfo().loginInfo?.userId}, userName=${SessionInfo().loginInfo?.name}"),
               );
             },
           ),

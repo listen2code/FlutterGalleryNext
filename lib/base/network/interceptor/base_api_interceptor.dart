@@ -7,8 +7,8 @@ import 'package:flutter_gallery_next/base/network/base_network.dart';
 import 'package:flutter_gallery_next/base/network/interceptor/base_interceptor.dart';
 import 'package:flutter_gallery_next/base/utils/login_util.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_dialog.dart';
-import 'package:flutter_gallery_next/biz/login/use_case/login_api_use_case.dart';
-import 'package:flutter_gallery_next/biz/login/use_case/visitor_api_use_case.dart';
+import 'package:flutter_gallery_next/biz/login/vm/service/use_case/login_api_use_case.dart';
+import 'package:flutter_gallery_next/biz/login/vm/service/use_case/visitor_api_use_case.dart';
 import 'package:package_libs/utils/http_util.dart';
 import 'package:package_libs/utils/logger_util.dart';
 import 'package:plugin_native/device/device_util.dart';
@@ -34,6 +34,7 @@ class BaseApiInterceptor extends QueuedInterceptor {
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     _isRetryCancel = false;
+    log("onRequest: $options");
     if (await _isConnected() == false) {
       handler.reject(
         DioException(requestOptions: options, type: DioExceptionType.unknown, message: HttpUtil.noInternetConnection),

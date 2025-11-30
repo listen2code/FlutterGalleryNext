@@ -3,12 +3,12 @@ import 'package:flutter_gallery_next/base/common/event_bus/event_bus_key.dart';
 import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
 import 'package:flutter_gallery_next/base/mvvm/vm/multi_net_data.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
-import 'package:flutter_gallery_next/biz/login/login_state.dart';
-import 'package:flutter_gallery_next/biz/login/service/login_service.dart';
-import 'package:flutter_gallery_next/biz/login/use_case/login_api_use_case.dart';
-import 'package:flutter_gallery_next/biz/login/use_case/logout_api_use_case.dart';
+import 'package:flutter_gallery_next/biz/login/vm/login_state.dart';
+import 'package:flutter_gallery_next/biz/login/vm/service/login_service.dart';
+import 'package:flutter_gallery_next/biz/login/vm/service/use_case/login_api_use_case.dart';
+import 'package:flutter_gallery_next/biz/login/vm/service/use_case/logout_api_use_case.dart';
 
-class LoginViewMode extends ViewModel<LoginActions, LoginService> {
+class LoginViewModel extends ViewModel<LoginActions, LoginService> {
   final LoginState loginState = LoginState();
 
   @override
@@ -19,8 +19,10 @@ class LoginViewMode extends ViewModel<LoginActions, LoginService> {
           api.login(action.request, LoginType.login),
           action: action,
         );
+        break;
       case DoLogout():
         request(api.logout(action.request), action: action);
+        break;
     }
   }
 

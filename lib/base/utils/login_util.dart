@@ -5,7 +5,6 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
 import 'package:package_libs/utils/logger_util.dart';
-import 'package:package_libs/utils/profile_util.dart';
 
 class LoginUtil {
   static String getSSOUrl({required final String homeId, required final String scid, final Map<String, String>? paramMap}) {
@@ -50,7 +49,7 @@ class LoginUtil {
 
   static String getDirectKey() {
     var key = "sbxf4tuvw42rs7vzlubwkxz5z9";
-    var loginId = SessionInfo().loginInfo?.id ?? "";
+    var loginId = SessionInfo().loginInfo?.userId ?? "";
     if (loginId.isEmpty) {
       return "";
     }
@@ -91,11 +90,12 @@ class LoginUtil {
   }
 
   static Future<bool> isAutoLogin() async {
-    var local = await ProfileUtil().loadLoginSettingInfo();
-    if ((local.autoLogin ?? false)) {
-      return true;
-    } else {
-      return false;
-    }
+    // var local = await ProfileUtil().loadLoginSettingInfo();
+    // if ((local.autoLogin ?? false)) {
+    //   return true;
+    // } else {
+    //   return false;
+    // }
+    return false;
   }
 }

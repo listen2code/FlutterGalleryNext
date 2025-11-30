@@ -3,9 +3,9 @@ import 'package:flutter_gallery_next/generated/json/base/json_convert_content.da
 
 LoginEntity $LoginEntityFromJson(Map<String, dynamic> json) {
   final LoginEntity loginEntity = LoginEntity();
-  final String? id = jsonConvert.convert<String>(json['id']);
-  if (id != null) {
-    loginEntity.id = id;
+  final String? userId = jsonConvert.convert<String>(json['userId']);
+  if (userId != null) {
+    loginEntity.userId = userId;
   }
   final String? name = jsonConvert.convert<String>(json['name']);
   if (name != null) {
@@ -16,18 +16,18 @@ LoginEntity $LoginEntityFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> $LoginEntityToJson(LoginEntity entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
-  data['id'] = entity.id;
+  data['userId'] = entity.userId;
   data['name'] = entity.name;
   return data;
 }
 
 extension LoginEntityExtension on LoginEntity {
   LoginEntity copyWith({
-    String? id,
+    String? userId,
     String? name,
   }) {
     return LoginEntity()
-      ..id = id ?? this.id
+      ..userId = userId ?? this.userId
       ..name = name ?? this.name;
   }
 }
