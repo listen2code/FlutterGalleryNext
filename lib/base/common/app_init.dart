@@ -5,9 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gallery_next/base/utils/app_constants.dart';
 import 'package:flutter_gallery_next/base/widget/refresh/refresh_manager.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:package_libs/utils/secure_storage_util.dart';
 import 'package:plugin_native/device/device_util.dart';
 import 'package:plugin_native/proxy/proxy_util.dart';
 
@@ -17,6 +19,7 @@ Future<void> appInit() async {
   initOrientations();
   initRefresh();
   initEnv();
+  SecureStorageUtil.instance().init(accountName: Constants.appName);
   await DeviceUtil.instance().init();
   await initIntl();
   await ProxyUtil.instance().init();

@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
@@ -11,6 +10,7 @@ import 'package:flutter_gallery_next/base/widget/base/global_navigation.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_dialog.dart';
 import 'package:flutter_gallery_next/biz/login/vm/service/use_case/login_api_use_case.dart';
 import 'package:flutter_gallery_next/biz/login/vm/service/use_case/visitor_api_use_case.dart';
+import 'package:package_libs/utils/connectivity_util.dart';
 import 'package:package_libs/utils/http_util.dart';
 import 'package:package_libs/utils/logger_util.dart';
 import 'package:plugin_native/device/device_util.dart';
@@ -26,7 +26,7 @@ class BaseApiInterceptor extends QueuedInterceptor {
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     _isRetryCancel = false;
-    if (await _isConnected() == false) {
+    if (await ConnectivityUtil.instance().isConnected() == false) {
       handler.reject(
         DioException(requestOptions: options, type: DioExceptionType.unknown, message: HttpUtil.noInternetConnection),
       );
@@ -124,12 +124,6 @@ class BaseApiInterceptor extends QueuedInterceptor {
 
   bool _isNeedSessionCheck(RequestOptions newOptions) {
     return noNeedSessionCheckApiList.contains(newOptions.path) == false;
-  }
-
-  Future<bool> _isConnected() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    log("_isConnected: $connectivityResult");
-    return connectivityResult.first != ConnectivityResult.none;
   }
 
   Future<Map<String, dynamic>> _createHeaders(RequestOptions requestOptions) async {

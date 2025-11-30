@@ -24,8 +24,7 @@ class ProxyUtil {
     // _proxyFromNative ??= await DevicePlugin.getProxyInfo();
     LoggerUtil.log("enabled proxy: ${proxyEnabled()}", type: LoggerType.easy);
     if (proxyEnabled()) {
-      LoggerUtil.log(
-          "init proxy: ${_proxyFromNative?.host}:${_proxyFromNative?.port} ${_proxyFromNative?.nonProxy}",
+      LoggerUtil.log("init proxy: ${_proxyFromNative?.host}:${_proxyFromNative?.port} ${_proxyFromNative?.nonProxy}",
           type: LoggerType.easy);
       HttpOverrides.global = CustomProxyHttpOverride.withProxy();
     }
@@ -63,9 +62,7 @@ class ProxyUtil {
     }
     ProxyInfo? proxyInfo = _proxyCache[uri?.host];
     if (null != proxyInfo) {
-      LoggerUtil.log(
-          "findProxySync from cache uri=$uri proxyInfo=${proxyInfo.toString()}",
-          type: LoggerType.easy);
+      LoggerUtil.log("findProxySync from cache uri=$uri proxyInfo=${proxyInfo.toString()}", type: LoggerType.easy);
       return proxyInfo;
     }
     LoggerUtil.log("findProxySync from direct", type: LoggerType.easy);
@@ -74,31 +71,24 @@ class ProxyUtil {
 
   Future<ProxyInfo>? findProxyAsync(Uri? uri) async {
     if (proxyEnabled() == false) {
-      LoggerUtil.log("findProxyAsync proxyEnabled=false",
-          type: LoggerType.easy);
+      LoggerUtil.log("findProxyAsync proxyEnabled=false", type: LoggerType.easy);
       return Future.value(_proxyDirect);
     }
     if (uri?.host == null || uri?.host.isEmpty == true) {
-      LoggerUtil.log("findProxyAsync uri?.host is empty",
-          type: LoggerType.easy);
+      LoggerUtil.log("findProxyAsync uri?.host is empty", type: LoggerType.easy);
       return Future.value(_proxyDirect);
     }
     ProxyInfo? proxyInfo = _proxyCache[uri?.host];
     if (null != proxyInfo) {
-      LoggerUtil.log(
-          "findProxyAsync from cache uri=$uri proxyInfo=${proxyInfo.toString()}",
-          type: LoggerType.easy);
+      LoggerUtil.log("findProxyAsync from cache uri=$uri proxyInfo=${proxyInfo.toString()}", type: LoggerType.easy);
       return Future.value(proxyInfo);
     }
+    // todo
     // proxyInfo = await DevicePlugin.findProxy(uri.toString());
-    LoggerUtil.log(
-        "findProxyAsync from native uri=$uri proxyInfo=${proxyInfo.toString()}",
-        type: LoggerType.easy);
+    LoggerUtil.log("findProxyAsync from native uri=$uri proxyInfo=${proxyInfo.toString()}", type: LoggerType.easy);
     proxyInfo ??= _proxyDirect;
     _proxyCache[uri?.host] = proxyInfo;
-    LoggerUtil.log(
-        "findProxyAsync add cache host=${uri?.host}\ncurrent cache$_proxyCache",
-        type: LoggerType.easy);
+    LoggerUtil.log("findProxyAsync add cache host=${uri?.host}\ncurrent cache$_proxyCache", type: LoggerType.easy);
     return Future.value(proxyInfo);
   }
 }

@@ -6,9 +6,9 @@ extension StringExtensions on String {
         toLowerCase().endsWith(".m4a");
   }
 
-  bool get isSvg {
-    return toLowerCase().endsWith(".svg");
-  }
+  bool get isSvg => toLowerCase().endsWith(".svg");
+
+  bool get flag => this == "1";
 
   bool isNull(dynamic value) => value == null;
 
@@ -20,12 +20,19 @@ extension StringExtensions on String {
     return num.tryParse(value) is num;
   }
 
-  int get toInt {
+  int get stringToInt {
     if (isNum(this)) {
-      int value = int.parse(this);
-      return value;
+      int valueInt = 0;
+      double valueDouble = 0;
+      valueDouble = double.parse(this);
+      valueInt = valueDouble.toInt();
+      if (valueInt >= 0) {
+        return valueInt;
+      } else {
+        return 0;
+      }
     } else {
-      return -1;
+      return 0;
     }
   }
 

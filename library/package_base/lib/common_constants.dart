@@ -39,84 +39,20 @@ class DisplayFormats {
   DisplayFormats._private();
 
   static const String currencyFormat = '0.00';
-  static const String dateFormat = 'yyyy-MM-dd';
-  static const String timeFormat = 'HH:mm:ss';
-  static const String dateTimeFormat = 'yyyy-MM-dd HH:mm:ss';
-}
-
-class AppKeyboardCharacter {
-  static const List<String> numberArray = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "0",
-  ];
-
-  static const List<String> letterArray = [
-    "Q",
-    "W",
-    "E",
-    "R",
-    "T",
-    "Y",
-    "U",
-    "I",
-    "O",
-    "P",
-    "A",
-    "S",
-    "D",
-    "F",
-    "G",
-    "H",
-    "J",
-    "K",
-    "L",
-    "Z",
-    "X",
-    "C",
-    "V",
-    "B",
-    "N",
-    "M"
-  ];
-
-  static const List<String> symbolArray = [
-    "+",
-    "-",
-    "_",
-    ".",
-    "/",
-    "@",
-    "*",
-    "#",
-    "%",
-    "!",
-    "\"",
-    "\$",
-    "&",
-    "(",
-    ")",
-    "=",
-    "~",
-    "^",
-    "?",
-    ">",
-    "<",
-    ",",
-    ";",
-    "'",
-    "{",
-    "}",
-    "[",
-    "]"
-  ];
+  static const String slashDateFormat = 'yyyy/MM/dd';
+  static const String hyphenDateFormat = 'yyyy-MM-dd';
+  static const String dateTimeMilliFormat = 'yyyy-MM-dd HH:mm:ss.SSS';
+  static const String slashDateTime = 'yyyy/MM/dd HH:mm';
+  static const String jpDateDowTime = 'yyyy年MM月dd日 (E) HH:mm';
+  static const String jpDateMonthTime = 'MM/dd HH:mm';
+  static const String dateTimeFormat = 'yyyyMMddHHmmss';
+  static const String jpYearMonthDay = 'yyyy年M月d日';
+  static const String assetsTrendMonth = 'M';
+  static const String assetsTrendYear = 'Y';
+  static const String yearMonthDay = 'yyyy/MM/dd';
+  static const String monthDay = 'MM/dd';
+  static const String timeMinute = 'HH:mm';
+  static const String jpDateYearMonthTime = 'yy/MM/dd HH:mm';
 }
 
 class AppStoreAddress {
@@ -124,6 +60,6 @@ class AppStoreAddress {
 
   static get appStore => Platform.isAndroid ? _android : _ios;
 
-  static const String _android = "market://details?id=[package_name]";
-  static const String _ios = "https://apps.apple.com/jp/app/[app_id]";
+  static const String _android = "https://play.google.com/store/apps/details?id=";
+  static const String _ios = "https://apps.apple.com/jp/app/";
 }

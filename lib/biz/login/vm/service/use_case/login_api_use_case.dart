@@ -3,7 +3,6 @@ import 'package:flutter_gallery_next/base/common/event_bus/event_bus_key.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
 import 'package:flutter_gallery_next/base/network/base_network.dart';
 import 'package:flutter_gallery_next/biz/login/model/login_entity.dart';
-import 'package:package_libs/utils/http_util.dart';
 import 'package:package_libs/utils/logger_util.dart';
 import 'package:package_libs/utils/profile_util.dart';
 import 'package:plugin_native/device/device_util.dart';
@@ -17,7 +16,7 @@ class LoginAPIUseCase extends BaseLoginUseCase<LoginEntity, LoginRequest> {
   }
 
   Future<ResponseEntity<LoginEntity>> autoLogin() async {
-    var local = await ProfileUtil().loadLoginSettingInfo();
+    var local = await ProfileUtil().loadLoginSetting();
     return post(LoginRequest(
       userName: local.userName ?? "",
       password: local.passwd ?? "",

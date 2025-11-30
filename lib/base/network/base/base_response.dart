@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/generated/json/base/json_convert_content.dart';
-import 'package:package_libs/utils/http_util.dart';
 
 class ResponseEntity<T> {
   T? body;
@@ -114,5 +113,61 @@ extension BaseEntityExtension<T> on ResponseEntity<T> {
       APIResult.networkError => onNetworkError != null ? onNetworkError(message) : Container(height: 1),
       APIResult.empty => onEmpty ?? Container(height: 1),
     };
+  }
+}
+
+enum APIResult {
+  success,
+  loading,
+  empty,
+  generalError,
+  systemError,
+  sessionTimeout,
+  networkError,
+}
+
+extension APIResultExtension on APIResult {
+  static const Map<APIResult, String> _codeMap = {
+    APIResult.loading: "-1",
+    APIResult.success: "0",
+    APIResult.generalError: "1",
+    APIResult.systemError: "2",
+    APIResult.sessionTimeout: "3",
+    APIResult.networkError: "98",
+    APIResult.empty: "99",
+  };
+
+  static final Map<APIResult, String> _nameMap = {
+    APIResult.loading: "loading",
+    APIResult.success: "successful",
+    APIResult.generalError: "generalError",
+    APIResult.systemError: "systemError",
+    APIResult.sessionTimeout: "sessionTimeout",
+    APIResult.networkError: "networkError",
+    APIResult.empty: "blank",
+  };
+
+  String? get code => _codeMap[this];
+
+  String? get name => _nameMap[this];
+
+  static APIResult fromCode(String code) {
+    APIResult result = APIResult.empty;
+    _codeMap.forEach((key, value) {
+      if (value == code) {
+        result = key;
+      }
+    });
+    return result;
+  }
+
+  static APIResult fromName(String name) {
+    APIResult result = APIResult.empty;
+    _nameMap.forEach((key, value) {
+      if (value == name) {
+        result = key;
+      }
+    });
+    return result;
   }
 }

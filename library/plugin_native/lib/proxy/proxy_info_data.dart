@@ -10,7 +10,6 @@ class ProxyInfo {
 
   final String port;
 
-  /// デバイスのtype PROXY:プロキシを使用 DIRECT:プロキシを不使用
   final String type;
 
   final String nonProxy;

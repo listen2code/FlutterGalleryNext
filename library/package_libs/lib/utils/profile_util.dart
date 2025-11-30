@@ -11,19 +11,19 @@ class ProfileUtil {
 
   static final SpUtil _spUtil = SpUtil.instance();
 
-  Future<LoginSettingInfoEntity> loadLoginSettingInfo() async {
-    return LoginSettingInfoEntity()
+  Future<LoginSettingEntity> loadLoginSetting() async {
+    return LoginSettingEntity()
       ..userName = await _spUtil.getStringAsync(SpKey.loginId)
       ..passwd = await _spUtil.getStringAsync(SpKey.password);
   }
 
-  void saveLoginSettingInfo(LoginSettingInfoEntity settingInfo) {
+  void saveLoginSettingInfo(LoginSettingEntity settingInfo) {
     _spUtil.set(SpKey.loginId, settingInfo.userName);
     _spUtil.set(SpKey.password, settingInfo.passwd);
   }
 }
 
-class LoginSettingInfoEntity {
+class LoginSettingEntity {
   String? userName = '';
   bool? loginIdSave = false;
   String? passwd = '';
@@ -33,5 +33,5 @@ class LoginSettingInfoEntity {
   bool? canLogin = false;
   bool? biometricAuth = false;
 
-  LoginSettingInfoEntity();
+  LoginSettingEntity();
 }

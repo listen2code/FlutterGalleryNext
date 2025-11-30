@@ -13,19 +13,13 @@ class CustomProxyHttpOverride extends HttpOverrides {
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
       ..findProxy = (uri) {
-        LoggerUtil.log("HttpOverride findProxy start=$uri",
-            type: LoggerType.debug);
+        LoggerUtil.log("HttpOverride findProxy start=$uri", type: LoggerType.debug);
         ProxyInfo? proxyInfo = ProxyUtil.instance().findProxySync(uri);
-        if (proxyInfo?.type == "PROXY" &&
-            proxyInfo?.host.isNotEmpty == true &&
-            proxyInfo?.port.isNotEmpty == true) {
-          LoggerUtil.log(
-              "HttpOverride findProxy uri=$uri ${proxyInfo.toString()}",
-              type: LoggerType.debug);
+        if (proxyInfo?.type == "PROXY" && proxyInfo?.host.isNotEmpty == true && proxyInfo?.port.isNotEmpty == true) {
+          LoggerUtil.log("HttpOverride findProxy uri=$uri ${proxyInfo.toString()}", type: LoggerType.debug);
           return proxyInfo.toString();
         } else {
-          LoggerUtil.log("HttpOverride findProxy DIRECT: $uri",
-              type: LoggerType.debug);
+          LoggerUtil.log("HttpOverride findProxy DIRECT: $uri", type: LoggerType.debug);
           return "DIRECT";
         }
       };
