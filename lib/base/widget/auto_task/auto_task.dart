@@ -5,6 +5,7 @@ import 'package:flutter_gallery_next/base/network/base/base_service.dart';
 import 'package:flutter_gallery_next/base/view_model/base_action.dart';
 import 'package:flutter_gallery_next/base/view_model/base_view_model.dart';
 import 'package:package_libs/utils/auth_util.dart';
+import 'package:package_libs/utils/logger_util.dart';
 
 mixin AutoReloadMixin<Actions extends BaseAction, Service extends BaseService> on ViewModel<Actions, Service> {
   late DataRefresher refresher;
@@ -128,7 +129,7 @@ class RunningState implements RefreshState {
       }
       context._updateInterval?.call();
     });
-    debugPrint("task start");
+    LoggerUtil.log("RunningState start");
   }
 }
 
@@ -136,6 +137,6 @@ class StoppedState implements RefreshState {
   @override
   void handle(DataRefresher context) {
     context._timer = null;
-    debugPrint("task stop");
+    LoggerUtil.log("RunningState stop");
   }
 }

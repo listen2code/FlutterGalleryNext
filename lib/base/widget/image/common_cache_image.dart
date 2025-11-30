@@ -6,6 +6,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_gallery_next/base/common/theme/color/theme_colors.dart';
 import 'package:flutter_gallery_next/base/widget/image/common_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:package_base/strings_util.dart';
 import 'package:package_libs/utils/logger_util.dart';
 import 'package:plugin_native/proxy/proxy_util.dart';
 
@@ -24,14 +25,9 @@ class CommonCacheImage extends StatelessWidget {
 
   final int? maxHeightDiskCache;
 
-  final String? onLoadingAssets;
-
-  final String? onErrorAssets;
-
   final Widget Function(BuildContext context, String url)? onLoading;
 
-  final Widget Function(BuildContext context, String url, Object error)?
-      onError;
+  final Widget Function(BuildContext context, String url, Object error)? onError;
 
   final BaseCacheManager? cacheManager;
 
@@ -56,8 +52,6 @@ class CommonCacheImage extends StatelessWidget {
     this.onLoading,
     this.onError,
     this.fit,
-    this.onLoadingAssets,
-    this.onErrorAssets,
     this.color,
     this.colorBlendMode,
     this.sizeCallBack,
@@ -77,7 +71,7 @@ class CommonCacheImage extends StatelessWidget {
   }
 
   Widget _loadImage() {
-    if (imageUrl.isEmpty == true) {
+    if (imageUrl.isSvg == true) {
       return SvgPicture.network(
         imageUrl,
         width: width,
@@ -103,31 +97,21 @@ class CommonCacheImage extends StatelessWidget {
       imageBuilder: sizeCallBack == null
           ? null
           : (context, imageProvider) {
-              imageProvider
-                  .resolve(const ImageConfiguration())
-                  .addListener(ImageStreamListener((ImageInfo info, _) {
+              imageProvider.resolve(const ImageConfiguration()).addListener(ImageStreamListener((ImageInfo info, _) {
                 sizeCallBack?.call(
                   (width: info.image.width, height: info.image.height),
                 );
               }));
-              return Image(
-                image: imageProvider,
-                width: width,
-                height: height,
-                fit: fit,
-                color: color,
-              );
+              return Image(image: imageProvider, width: width, height: height, fit: fit, color: color);
             },
       errorListener: (e) {
         if (e is SocketException) {
-          LoggerUtil.log(
+          LoggerUtil.error(
             'CommonCachedImage SocketException: address=${e.address} and message=${e.message}, imageUrl=$imageUrl',
-            type: LoggerType.error,
           );
         } else {
-          LoggerUtil.log(
+          LoggerUtil.error(
             'CommonCachedImage Exception: ${e.toString()}, imageUrl=$imageUrl',
-            type: LoggerType.error,
           );
         }
       },
@@ -136,28 +120,16 @@ class CommonCacheImage extends StatelessWidget {
   }
 
   Widget _initLoading(BuildContext context, String url) {
-    if (null != onLoadingAssets) {
-      return Image.asset(onLoadingAssets ?? "", width: width, height: height);
-    }
     if (null == onLoading) {
-      return SizedBox(
-          height: height,
-          width: width,
-          child: ColoredBox(color: ThemeColors.grey200));
+      return SizedBox(height: height, width: width, child: ColoredBox(color: ThemeColors.grey200));
     } else {
       return onLoading!(context, url);
     }
   }
 
   Widget _initError(BuildContext context, String url, Object error) {
-    if (null != onErrorAssets) {
-      return Image.asset(onErrorAssets ?? "", width: width, height: height);
-    }
     if (null == onError) {
-      return SizedBox(
-          height: height,
-          width: width,
-          child: ColoredBox(color: ThemeColors.grey200));
+      return SizedBox(height: height, width: width, child: ColoredBox(color: ThemeColors.grey200));
     } else {
       return onError!(context, url, error);
     }

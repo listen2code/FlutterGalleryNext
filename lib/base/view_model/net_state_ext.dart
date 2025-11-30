@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_use_of_protected_member
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,8 +21,7 @@ extension StateMixinExt on StateMixin<String> {
         } else if (lastStatus.isError) {
           return onError != null
               ? onError(lastStatus.errorMessage)
-              : Center(
-                  child: Text('A error occurred: ${lastStatus.errorMessage}'));
+              : Center(child: Text('A error occurred: ${lastStatus.errorMessage}'));
         } else if (lastStatus.isEmpty) {
           return onEmpty ?? const SizedBox.shrink();
         }
