@@ -1,17 +1,15 @@
 # todo
 
 1.auto proxy
-2.common widget: button, text, expandable, tabview, refreshList
+2.notification
 3.architecture+redux
 4.demo
 5.multi router
 6.build apk
 7.splash
 8.rules
-9.plugin:FlutterJsonBeanFactory, AssetsHelper, timestamp Json Parser
-10.multi service to vm
-11.upgrade freeze
-12.splash
+9.multi service to vm
+10.upgrade freeze
 
 # architecture
 
