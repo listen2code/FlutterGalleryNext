@@ -9,6 +9,8 @@
 7.splash
 8.rules
 9.plugin:FlutterJsonBeanFactory, AssetsHelper, timestamp Json Parser
+10.multi service to vm
+11.upgrade freeze
 
 # architecture
 
