@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery_next/generated/r.dart';
 
 class DemoImageNetwork extends StatelessWidget {
   const DemoImageNetwork({super.key});
@@ -15,7 +16,7 @@ class DemoImageNetwork extends StatelessWidget {
         ),
         body: Center(
           child: FadeInImage.assetNetwork(
-            placeholder: 'images/loading.gif',
+            placeholder: R.imagesLoading,
             image: 'https://picsum.photos/250?image=9',
           ),
         ),

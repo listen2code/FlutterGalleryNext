@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery_next/generated/r.dart';
 
-///共性元素动画
 class DemoAnimTransition extends StatelessWidget {
+  const DemoAnimTransition({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +25,7 @@ class DemoAnimTransition extends StatelessWidget {
           child: Hero(
             tag: "image",
             child: Image.asset(
-              "images/lake.jpg",
+              R.imagesLake,
               fit: BoxFit.cover,
               width: 100,
               height: 100,
@@ -51,7 +53,7 @@ class HonorPage extends StatelessWidget {
           child: Hero(
             tag: "image",
             child: Image.asset(
-              "images/lake.jpg",
+              R.imagesLake,
               fit: BoxFit.cover,
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.width,

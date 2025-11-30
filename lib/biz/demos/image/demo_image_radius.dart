@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery_next/generated/r.dart';
 
 class DemoImageRadius extends StatelessWidget {
   const DemoImageRadius({super.key});
@@ -24,7 +25,7 @@ class DemoImageRadius extends StatelessWidget {
                   color: Colors.red,
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage("images/lake.jpg"),
+                    image: AssetImage(R.imagesLake),
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
             ),
@@ -32,7 +33,7 @@ class DemoImageRadius extends StatelessWidget {
             ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
               child: Image.asset(
-                "images/lake.jpg",
+                R.imagesLake,
                 fit: BoxFit.cover,
                 width: 100,
                 height: 100,

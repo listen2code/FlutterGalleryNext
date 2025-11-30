@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gallery_next/generated/r.dart';
 
 ///状态栏颜色
 class DemoStatusBarColor extends StatefulWidget {
@@ -15,10 +16,12 @@ class _DemoStatusBarColorState extends State<DemoStatusBarColor> {
   @override
   Widget build(BuildContext context) {
     var body = getBody();
+
     ///如果手动设置过状态栏，就不可以用 AnnotatedRegion ，会影响
     if (customSystemUIOverlayStyle) {
       return body;
     }
+
     ///如果没有手动设置过状态栏，就可以用 AnnotatedRegion 直接嵌套显示
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -84,9 +87,12 @@ class ImageAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Stack(
       children: <Widget>[
         Image.asset(
-          "images/lake.jpg",
+          R.imagesLake,
           fit: BoxFit.cover,
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
           height: kToolbarHeight * 3,
         ),
         SafeArea(

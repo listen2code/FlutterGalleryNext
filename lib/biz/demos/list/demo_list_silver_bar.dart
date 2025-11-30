@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery_next/generated/r.dart';
 
 class DemoListSilverBar extends StatelessWidget {
   const DemoListSilverBar({super.key});
@@ -25,7 +26,7 @@ class DemoListSilverBar extends StatelessWidget {
               flexibleSpace: Placeholder(
                 child: FadeInImage.assetNetwork(
                   fit: BoxFit.fill,
-                  placeholder: 'images/loading.gif',
+                  placeholder: R.imagesLoading,
                   image: 'https://picsum.photos/250?image=9',
                 ),
               ),
@@ -38,7 +39,7 @@ class DemoListSilverBar extends StatelessWidget {
               delegate: SliverChildBuilderDelegate(
                 // The builder function returns a ListTile with a title that
                 // displays the index of the current item.
-                    (context, index) => ListTile(title: Text('Item #$index')),
+                (context, index) => ListTile(title: Text('Item #$index')),
                 // Builds 1000 ListTiles
                 childCount: 1000,
               ),
