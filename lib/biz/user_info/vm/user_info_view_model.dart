@@ -17,7 +17,7 @@ class UserInfoViewModel extends ViewModel<UserInfoActions, UserInfoService> {
   dispatch(UserInfoActions action) {
     switch (action) {
       case GetUserInfo():
-        request(api.getUserInfo(action.request), action: action);
+        request(api.getUserInfo(action.request), action: action, handleBack: true);
         break;
     }
   }

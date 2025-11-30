@@ -42,7 +42,7 @@ class LoginAPIUseCase extends BaseLoginUseCase<LoginEntity, LoginRequest> {
 
   void setSessionInfo(ResponseEntity<LoginEntity> loginEntity, LoginType loginType) async {
     if (loginEntity.result == APIResult.success) {
-      SessionInfo().loginInfo = loginEntity.body;
+      SessionInfo().setSessionInfo(loginEntity.body);
       loginNotification(loginType);
     }
   }

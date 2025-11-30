@@ -120,7 +120,7 @@ abstract class ViewModel<Actions extends BaseAction, Service extends BaseService
           showApiError(
             show: isShow,
             back: isBack,
-            message: "errorNetworkErrorMessage",
+            message: "NetworkError",
           );
         }
         break;
@@ -193,7 +193,7 @@ abstract class ViewModel<Actions extends BaseAction, Service extends BaseService
     if (isFront) {
       if (show) {
         GlobalDialog.showMessageDialog(
-          message ?? "",
+          "$messageId: $message",
           closeAfter: () {
             var after = closeAfter;
             if (after != null) {

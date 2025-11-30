@@ -11,10 +11,13 @@ mixin BaseView {
     return SystemUiOverlayStyle.dark;
   }
 
-  AppBar? createAppBar(String titleString, bool centerTitle,
-      {Widget? backButton,
-      List<Widget>? actionWidget,
-      Widget? customTitleWidget}) {
+  AppBar? createAppBar(
+    String titleString,
+    bool centerTitle, {
+    Widget? backButton,
+    List<Widget>? actionWidget,
+    Widget? customTitleWidget,
+  }) {
     return AppBar(
       backgroundColor: ThemeColors.white,
       title: customTitleWidget ?? titleView(titleString),

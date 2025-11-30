@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/auto_load_widget.dart';
 import 'package:flutter_gallery_next/base/mvvm/view/base_stateful_page.dart';
-import 'package:flutter_gallery_next/base/network/base/session_info.dart';
 import 'package:flutter_gallery_next/biz/login/vm/login_view_model.dart';
 import 'package:flutter_gallery_next/biz/login/vm/service/login_service.dart';
 import 'package:get/get.dart';
@@ -17,6 +16,11 @@ class LoginPage extends BaseStatefulPage {
 class _LoginPageState extends BaseState<LoginViewModel, LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  String titleString() {
+    return "Login";
+  }
 
   @override
   void initState() {
@@ -41,7 +45,7 @@ class _LoginPageState extends BaseState<LoginViewModel, LoginPage> {
         Padding(
           padding: const EdgeInsets.only(top: 32.0, bottom: 16.0),
           child: Text(
-            'Environment: ${dotenv.env['NAME'] ?? 'Not Found'}',
+            'Env: ${dotenv.env['NAME'] ?? 'Not Found'}',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black54),
           ),
         ),
@@ -52,7 +56,7 @@ class _LoginPageState extends BaseState<LoginViewModel, LoginPage> {
             rxResponse: viewMode.loginState.rxLogin,
             widget: (data) {
               return Center(
-                child: Text("userId=${SessionInfo().loginInfo?.userId}, userName=${SessionInfo().loginInfo?.name}"),
+                child: Text("userId=${data.userId}, userName=${data.name}"),
               );
             },
           ),

@@ -25,8 +25,7 @@ class ResponseEntity<T> {
 
   ResponseEntity();
 
-  factory ResponseEntity.fromJson(Map<String, dynamic> json) =>
-      _$BaseEntityFromJson(json);
+  factory ResponseEntity.fromJson(Map<String, dynamic> json) => _$BaseEntityFromJson(json);
 
   factory ResponseEntity.error({int? code, String? msg, APIResult? result}) =>
       _$BaseEntityFromError(msg: msg, code: code, result: result);
@@ -58,8 +57,7 @@ ResponseEntity<T> _$BaseEntityFromJson<T>(Map<String, dynamic> json) {
   return baseEntity;
 }
 
-ResponseEntity<T> _$BaseEntityFromError<T>(
-    {int? code, String? msg, APIResult? result}) {
+ResponseEntity<T> _$BaseEntityFromError<T>({int? code, String? msg, APIResult? result}) {
   final ResponseEntity<T> baseEntity = ResponseEntity();
   if (code != null) {
     baseEntity.code = code;
@@ -108,47 +106,13 @@ extension BaseEntityExtension<T> on ResponseEntity<T> {
   }) {
     return switch (result) {
       APIResult.success =>
-        autoEmpty && (T is List) && ((body as List?)?.isEmpty ?? true)
-            ? onEmpty ??
-                Container(
-                  height: 1,
-                )
-            : widget(body as T),
-      APIResult.loading => onLoading ??
-          FutureBuilder(
-            future: Future.delayed(const Duration(milliseconds: 1000)),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SizedBox.shrink();
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
-      APIResult.generalError => onError != null
-          ? onError(message)
-          : Container(
-              height: 1,
-            ),
-      APIResult.systemError => onSystemError != null
-          ? onSystemError(message)
-          : Container(
-              height: 1,
-            ),
-      APIResult.sessionTimeout => onSessionTimeout != null
-          ? onSessionTimeout(message)
-          : Container(
-              height: 1,
-            ),
-      APIResult.networkError => onNetworkError != null
-          ? onNetworkError(message)
-          : Container(
-              height: 1,
-            ),
-      APIResult.empty => onEmpty ??
-          Container(
-            height: 1,
-          ),
+        autoEmpty && (T is List) && ((body as List?)?.isEmpty ?? true) ? onEmpty ?? Container(height: 1) : widget(body as T),
+      APIResult.loading => onLoading ?? Container(height: 1),
+      APIResult.generalError => onError != null ? onError(message) : Container(height: 1),
+      APIResult.systemError => onSystemError != null ? onSystemError(message) : Container(height: 1),
+      APIResult.sessionTimeout => onSessionTimeout != null ? onSessionTimeout(message) : Container(height: 1),
+      APIResult.networkError => onNetworkError != null ? onNetworkError(message) : Container(height: 1),
+      APIResult.empty => onEmpty ?? Container(height: 1),
     };
   }
 }

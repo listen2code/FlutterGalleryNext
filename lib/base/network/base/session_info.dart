@@ -1,4 +1,5 @@
 import 'package:flutter_gallery_next/biz/login/model/login_entity.dart';
+import 'package:package_libs/utils/logger_util.dart';
 
 class SessionInfo {
   SessionInfo._private();
@@ -22,16 +23,22 @@ class SessionInfo {
     return isLogin ?? false;
   }
 
+  void setSessionInfo(LoginEntity? info) {
+    isLogin = true;
+    loginInfo = info;
+  }
+
   void clearSessionInfo() {
+    isLogin = false;
     uuid = null;
     userName = null;
     lastLoginTime = null;
-    isLogin = false;
     sessionId = null;
     loginInfo = null;
   }
 
-  bool isSessionChanged(String newSessionId) {
+  bool isSessionChanged(String? newSessionId) {
+    LoggerUtil.log("isSessionChanged oldSessionId=$sessionId newSessionId=$newSessionId");
     return sessionId != newSessionId;
   }
 

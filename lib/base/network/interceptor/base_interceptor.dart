@@ -1,27 +1,27 @@
 import 'package:dio/dio.dart';
 import 'package:package_libs/utils/logger_util.dart';
 
-class CommonInterceptor extends Interceptor {
+class BaseInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    DioInterceptorLogger.requestLog(options);
+    InterceptorLogger.requestLog(options);
     super.onRequest(options, handler);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    DioInterceptorLogger.responseLog(response);
+    InterceptorLogger.responseLog(response);
     super.onResponse(response, handler);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    DioInterceptorLogger.errorLog(err);
+    InterceptorLogger.errorLog(err);
     super.onError(err, handler);
   }
 }
 
-class DioInterceptorLogger {
+class InterceptorLogger {
   static void requestLog(RequestOptions options) {
     Map<String, dynamic> logInfo = {
       "baseUrl": options.baseUrl,

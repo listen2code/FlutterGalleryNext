@@ -14,6 +14,11 @@ class UserInfoPage extends BaseStatefulPage {
 
 class _UserInfoPageState extends BaseState<UserInfoViewModel, UserInfoPage> {
   @override
+  String titleString() {
+    return "UserInfo";
+  }
+
+  @override
   void initState() {
     super.initState();
     Get.lazyPut(() => UserInfoViewModel());

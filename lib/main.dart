@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/init.dart';
 import 'package:flutter_gallery_next/base/common/pages.dart';
+import 'package:flutter_gallery_next/base/mvvm/view/global_navigation.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_loading_widget.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_toast_widget.dart';
 import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
@@ -13,7 +14,6 @@ void main() async {
   await appInit();
   assert(() {
     FlutterError.onError = (FlutterErrorDetails details) {
-      // error
       LoggerUtil.error("############# error ############");
       LoggerUtil.error("$details");
     };
@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: GlobalNavigation.navigatorKey,
       title: 'Listen Flutter Gallery',
       theme: ThemeData(
         primarySwatch: Colors.blue,

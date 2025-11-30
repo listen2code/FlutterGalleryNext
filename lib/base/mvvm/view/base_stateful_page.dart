@@ -13,8 +13,8 @@ abstract class BaseStatefulPage extends StatefulWidget {
   BaseState createState();
 }
 
-abstract class BaseState<VM extends ViewModel, T extends BaseStatefulPage>
-    extends State<T> with AutomaticKeepAliveClientMixin<T>, BaseView {
+abstract class BaseState<VM extends ViewModel, T extends BaseStatefulPage> extends State<T>
+    with AutomaticKeepAliveClientMixin<T>, BaseView {
   @protected
   VM get viewMode => Get.find<VM>();
 
@@ -25,7 +25,7 @@ abstract class BaseState<VM extends ViewModel, T extends BaseStatefulPage>
   Widget? titleWidget() => null;
 
   @protected
-  bool isCenterTitle() => false;
+  bool isCenterTitle() => true;
 
   @protected
   bool isFullScreenLoad() => false;
@@ -91,11 +91,9 @@ abstract class BaseState<VM extends ViewModel, T extends BaseStatefulPage>
               key: Key(hashCode.toString()),
               child: Column(
                 children: [
-                  Offstage(
-                      offstage: !useStatusBar, child: createStatusBar(context)),
+                  Offstage(offstage: !useStatusBar, child: createStatusBar(context)),
                   Expanded(child: _buildBody(context)),
-                  Offstage(
-                      offstage: !useBottomBar, child: createBottomBar(context)),
+                  Offstage(offstage: !useBottomBar, child: createBottomBar(context)),
                 ],
               ),
             ),
@@ -138,9 +136,7 @@ abstract class BaseState<VM extends ViewModel, T extends BaseStatefulPage>
 
   PreferredSizeWidget? _createAppBar(BuildContext context) {
     AppBar? appBar = createAppBar(titleString(), isCenterTitle(),
-        backButton: backButton(),
-        actionWidget: appBarActionWidget(context),
-        customTitleWidget: titleWidget());
+        backButton: backButton(), actionWidget: appBarActionWidget(context), customTitleWidget: titleWidget());
     return appBar == null
         ? appBar
         : PreferredSize(
@@ -148,8 +144,7 @@ abstract class BaseState<VM extends ViewModel, T extends BaseStatefulPage>
             child: Stack(
               children: [
                 appBar,
-                Offstage(
-                    offstage: !useStatusBar, child: createStatusBar(context)),
+                Offstage(offstage: !useStatusBar, child: createStatusBar(context)),
               ],
             ),
           );

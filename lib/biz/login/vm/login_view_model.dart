@@ -3,22 +3,33 @@ import 'package:flutter_gallery_next/base/common/event_bus/event_bus_key.dart';
 import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
 import 'package:flutter_gallery_next/base/mvvm/vm/multi_net_data.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
+import 'package:flutter_gallery_next/base/network/base_network.dart';
+import 'package:flutter_gallery_next/biz/login/model/login_entity.dart';
 import 'package:flutter_gallery_next/biz/login/vm/login_state.dart';
 import 'package:flutter_gallery_next/biz/login/vm/service/login_service.dart';
 import 'package:flutter_gallery_next/biz/login/vm/service/use_case/login_api_use_case.dart';
 import 'package:flutter_gallery_next/biz/login/vm/service/use_case/logout_api_use_case.dart';
+import 'package:package_libs/utils/http_util.dart';
 
 class LoginViewModel extends ViewModel<LoginActions, LoginService> {
   final LoginState loginState = LoginState();
 
   @override
+  void onReady() {
+    super.onReady();
+    loginState.rxLogin.value = ResponseEntity<LoginEntity>()
+      ..result = APIResult.success
+      ..body = LoginEntity().copyWith(
+        userId: SessionInfo().loginInfo?.userId,
+        name: SessionInfo().loginInfo?.name,
+      );
+  }
+
+  @override
   dispatch(LoginActions action) {
     switch (action) {
       case DoLogin():
-        request(
-          api.login(action.request, LoginType.login),
-          action: action,
-        );
+        request(api.login(action.request, LoginType.login), action: action);
         break;
       case DoLogout():
         request(api.logout(action.request), action: action);
@@ -35,7 +46,12 @@ class LoginViewModel extends ViewModel<LoginActions, LoginService> {
       case DoLogout():
         SessionInfo().clearSessionInfo();
         EventBus.defaultBus().post<String>(event: EventBusKeys.logout, key: EventBusKeys.logout);
-        loginState.rxLogin.refresh();
+        loginState.rxLogin.value = ResponseEntity<LoginEntity>()
+          ..result = APIResult.success
+          ..body = LoginEntity().copyWith(
+            userId: SessionInfo().loginInfo?.userId,
+            name: SessionInfo().loginInfo?.name,
+          );
         break;
     }
   }

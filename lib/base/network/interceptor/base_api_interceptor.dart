@@ -1,7 +1,9 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus_key.dart';
+import 'package:flutter_gallery_next/base/mvvm/view/global_navigation.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
 import 'package:flutter_gallery_next/base/network/base_network.dart';
 import 'package:flutter_gallery_next/base/network/interceptor/base_interceptor.dart';
@@ -14,48 +16,37 @@ import 'package:package_libs/utils/logger_util.dart';
 import 'package:plugin_native/device/device_util.dart';
 
 class BaseApiInterceptor extends QueuedInterceptor {
-  static const String headerSessionId = "sessionId";
-
   /// avoid repeat request
   bool _isRetryCancel = false;
 
-  static const List<String> noSessionCheckList = ["/v1/login", "/v1/visitor", "/v1/logout"];
+  static const List<String> noNeedSessionCheckApiList = ["/v1/login", "/v1/visitor", "/v1/logout"];
 
-  static const List<String> setSessionIdList = ["/v1/login", "/v1/visitor"];
-
-  bool _isNeedSessionCheck(RequestOptions newOptions) => noSessionCheckList.contains(newOptions.path) == false;
-
-  Future<bool> _isConnected() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    log("connectivityResult: $connectivityResult");
-    return connectivityResult.first != ConnectivityResult.none;
-  }
+  static const List<String> needSessionApiList = ["/v1/login", "/v1/visitor"];
 
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     _isRetryCancel = false;
-    log("onRequest: $options");
     if (await _isConnected() == false) {
       handler.reject(
         DioException(requestOptions: options, type: DioExceptionType.unknown, message: HttpUtil.noInternetConnection),
       );
     }
-    RequestOptions newOptions = options.copyWith(headers: await createHeaders(options));
+    RequestOptions newOptions = options.copyWith(headers: await _createHeaders(options));
     if (_isNeedSessionCheck(newOptions) && SessionInfo().isEmpty()) {
       if (await LoginUtil.isAutoLogin()) {
         await LoginAPIUseCase().autoLogin();
       } else {
         await VisitorAPIUseCase().login();
       }
-      newOptions = newOptions.copyWith(headers: await createHeaders(newOptions));
+      newOptions = newOptions.copyWith(headers: await _createHeaders(newOptions));
     }
-    DioInterceptorLogger.requestLog(newOptions);
+    InterceptorLogger.requestLog(newOptions);
     handler.next(newOptions);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) async {
-    DioInterceptorLogger.responseLog(response);
+    InterceptorLogger.responseLog(response);
     try {
       if (_isRetryCancel) {
         handler.next(response);
@@ -65,7 +56,7 @@ class BaseApiInterceptor extends QueuedInterceptor {
         if (SessionInfo().isMember() && apiResult == APIResult.sessionTimeout) {
           bool autoLogin = await LoginUtil.isAutoLogin();
           APIResult loginResult = APIResult.empty;
-          String newSessionId = response.requestOptions.headers[headerSessionId];
+          String? newSessionId = _getSessionIdFromCookie(response);
           bool isSessionChanged = SessionInfo().isSessionChanged(newSessionId);
           if (autoLogin && isSessionChanged == false) {
             var entity = await LoginAPIUseCase().autoLogin();
@@ -77,7 +68,8 @@ class BaseApiInterceptor extends QueuedInterceptor {
           if (autoLogin && (loginResult == APIResult.success || isSessionChanged == true)) {
             // auto login
             if (_isNeedRetry(response.requestOptions)) {
-              RequestOptions newOptions = response.requestOptions.copyWith(headers: await createHeaders(response.requestOptions));
+              RequestOptions newOptions =
+                  response.requestOptions.copyWith(headers: await _createHeaders(response.requestOptions));
               handler.next(await _retry(newOptions));
             } else {
               _isRetryCancel = false;
@@ -89,17 +81,14 @@ class BaseApiInterceptor extends QueuedInterceptor {
             var isRetry = _isNeedRetry(response.requestOptions);
             var loginResult = false;
             if (isSessionChanged == false) {
-              // todo
-              // var reLogin = await Get.toLogin();
-              // if(reLogin) {
-              //   loginResult = true;
-              // }
+              Navigator.of(GlobalNavigation.currentContext!).pushNamed("login");
             }
 
             if (loginResult == true || isSessionChanged == true) {
               if (isRetry) {
-                RequestOptions newOptions =
-                    response.requestOptions.copyWith(headers: await createHeaders(response.requestOptions));
+                RequestOptions newOptions = response.requestOptions.copyWith(
+                  headers: await _createHeaders(response.requestOptions),
+                );
                 handler.next(await _retry(newOptions));
               } else {
                 _isRetryCancel = false;
@@ -114,55 +103,42 @@ class BaseApiInterceptor extends QueuedInterceptor {
             }
           }
         } else {
-          // visitor login
-          if (apiResult == APIResult.sessionTimeout) {
-            APIResult loginResult = APIResult.empty;
-            String newSessionId = response.requestOptions.headers[headerSessionId];
-            bool isSessionChanged = SessionInfo().isSessionChanged(newSessionId);
-            if (isSessionChanged == false) {
-              ResponseEntity<void> visitorLoginResult = await VisitorAPIUseCase().login();
-              loginResult = visitorLoginResult.result;
-            }
-            if (loginResult == APIResult.success || isSessionChanged == true) {
-              if (_isNeedRetry(response.requestOptions)) {
-                RequestOptions newOptions =
-                    response.requestOptions.copyWith(headers: await createHeaders(response.requestOptions));
-                handler.next(await _retry(newOptions));
-              } else {
-                handler.next(response);
-              }
-            } else {
-              _isRetryCancel = false;
-              handler.next(response);
-            }
-          } else {
-            handler.next(response);
-          }
+          handler.next(response);
         }
       }
-    } catch (e) {
+    } catch (e, t) {
       handler.reject(DioException(
         requestOptions: response.requestOptions,
         response: response,
         type: DioExceptionType.badResponse,
-        message: "response.data:${response.data}",
+        message: "onResponse exception: $e \nt=$t \nresponse:${response.data} ",
       ));
     }
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    DioInterceptorLogger.errorLog(err);
+    InterceptorLogger.errorLog(err);
     handler.next(err);
   }
 
-  Future<Map<String, dynamic>> createHeaders(RequestOptions requestOptions) async {
+  bool _isNeedSessionCheck(RequestOptions newOptions) {
+    return noNeedSessionCheckApiList.contains(newOptions.path) == false;
+  }
+
+  Future<bool> _isConnected() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    log("_isConnected: $connectivityResult");
+    return connectivityResult.first != ConnectivityResult.none;
+  }
+
+  Future<Map<String, dynamic>> _createHeaders(RequestOptions requestOptions) async {
     Map<String, dynamic> headers = {};
     headers["Accept"] = 'application/json';
     headers["Accept-Encoding"] = "gzip,deflate,br";
     headers["Cookie"] = _createCookie(requestOptions);
     headers["User-Agent"] = await DeviceUtil.instance().getUserAgent();
-    log("createHeaders: $headers");
+    log("_createHeaders: $headers");
     return headers;
   }
 
@@ -171,10 +147,10 @@ class BaseApiInterceptor extends QueuedInterceptor {
     getCookies()?.forEach((key, value) {
       result += "$key=$value; ";
     });
-    if (setSessionIdList.contains(requestOptions.path) == false) {
+    if (needSessionApiList.contains(requestOptions.path) == false) {
       var sessionId = SessionInfo().sessionId;
       if (sessionId != null) {
-        result += "$headerSessionId=$sessionId; ";
+        result += "sessionId=$sessionId; ";
       }
     }
     log("_createCookie: $result");
@@ -222,13 +198,13 @@ class BaseApiInterceptor extends QueuedInterceptor {
           onSendProgress: requestOptions.onSendProgress,
           onReceiveProgress: requestOptions.onReceiveProgress);
     } catch (e) {
-      log("retry: $e", type: LoggerType.error);
+      LoggerUtil.error("retry: $e");
       rethrow;
     }
   }
 
   void _setSessionId(Response resp) {
-    if (setSessionIdList.contains(resp.requestOptions.path)) {
+    if (needSessionApiList.contains(resp.requestOptions.path)) {
       String? sessionId = _getSessionIdFromCookie(resp);
       if (sessionId != null) {
         SessionInfo().sessionId = sessionId;
