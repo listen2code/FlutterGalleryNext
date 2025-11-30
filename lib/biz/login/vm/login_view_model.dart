@@ -1,7 +1,7 @@
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus_key.dart';
-import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
-import 'package:flutter_gallery_next/base/mvvm/vm/multi_net_data.dart';
+import 'package:flutter_gallery_next/base/view_model/base_view_model.dart';
+import 'package:flutter_gallery_next/base/view_model/multi_net_data.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
 import 'package:flutter_gallery_next/base/network/base_network.dart';
 import 'package:flutter_gallery_next/biz/login/model/login_entity.dart';

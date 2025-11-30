@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
-import 'package:flutter_gallery_next/base/mvvm/view/base_view.dart';
-import 'package:flutter_gallery_next/base/mvvm/vm/base_controller.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
 import 'package:flutter_gallery_next/base/network/base_network.dart';
 import 'package:flutter_gallery_next/base/utils/login_util.dart';
+import 'package:flutter_gallery_next/base/view_model/base_controller.dart';
+import 'package:flutter_gallery_next/base/widget/base/base_view.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_dialog.dart';
 import 'package:flutter_gallery_next/main.dart';
 import 'package:get/get.dart';

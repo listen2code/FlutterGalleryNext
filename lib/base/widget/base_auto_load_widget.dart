@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
 import 'package:flutter_gallery_next/base/network/base_network.dart';
+import 'package:flutter_gallery_next/base/view_model/base_view_model.dart';
 import 'package:get/get.dart';
 
 class AutoLoadWidget<T, VM extends ViewModel> extends StatelessWidget {

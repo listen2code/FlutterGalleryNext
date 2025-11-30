@@ -1,5 +1,5 @@
-import 'package:flutter_gallery_next/base/mvvm/vm/base_action.dart';
 import 'package:flutter_gallery_next/base/network/base_network.dart';
+import 'package:flutter_gallery_next/base/view_model/base_action.dart';
 import 'package:flutter_gallery_next/biz/login/model/login_entity.dart';
 import 'package:flutter_gallery_next/biz/login/vm/service/use_case/login_api_use_case.dart';
 import 'package:flutter_gallery_next/biz/login/vm/service/use_case/logout_api_use_case.dart';

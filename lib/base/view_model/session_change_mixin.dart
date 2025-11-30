@@ -2,15 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus_key.dart';
-import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
 import 'package:flutter_gallery_next/base/network/base/base_service.dart';
 import 'package:flutter_gallery_next/base/network/base/session_info.dart';
+import 'package:flutter_gallery_next/base/view_model/base_view_model.dart';
 import 'package:package_libs/utils/logger_util.dart';
 
 import 'base_action.dart';
 
-mixin SessionChangeMixin<Actions extends BaseAction,
-    Service extends BaseService> on ViewModel<Actions, Service> {
+mixin SessionChangeMixin<Actions extends BaseAction, Service extends BaseService> on ViewModel<Actions, Service> {
   Completer<void>? loginFuture;
   Completer<void>? logoutFuture;
 

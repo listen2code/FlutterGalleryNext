@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/init.dart';
 import 'package:flutter_gallery_next/base/common/pages.dart';
-import 'package:flutter_gallery_next/base/mvvm/view/global_navigation.dart';
+import 'package:flutter_gallery_next/base/widget/base/global_navigation.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_loading_widget.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_toast_widget.dart';
 import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';

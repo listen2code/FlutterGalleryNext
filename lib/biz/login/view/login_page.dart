@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_gallery_next/base/mvvm/view/auto_load_widget.dart';
-import 'package:flutter_gallery_next/base/mvvm/view/base_stateful_page.dart';
+import 'package:flutter_gallery_next/base/widget/base/auto_load_widget.dart';
+import 'package:flutter_gallery_next/base/widget/base/base_stateful_page.dart';
 import 'package:flutter_gallery_next/biz/login/vm/login_view_model.dart';
 import 'package:flutter_gallery_next/biz/login/vm/service/login_service.dart';
 import 'package:get/get.dart';

@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/theme/color/theme_colors.dart';
-import 'package:flutter_gallery_next/base/mvvm/vm/net_state_ext.dart';
-import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
+import 'package:flutter_gallery_next/base/view_model/base_view_model.dart';
+import 'package:flutter_gallery_next/base/view_model/net_state_ext.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import 'base_view.dart';
 
-abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget
-    with BaseView {
-  const BaseStatelessPage({super.key});
+abstract class BaseStatefulPage extends StatefulWidget {
+  const BaseStatefulPage({super.key});
 
+  @override
+  BaseState createState();
+}
+
+abstract class BaseState<VM extends ViewModel, T extends BaseStatefulPage> extends State<T>
+    with AutomaticKeepAliveClientMixin<T>, BaseView {
   @protected
   VM get viewMode => Get.find<VM>();
 
@@ -21,13 +26,16 @@ abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget
   Widget? titleWidget() => null;
 
   @protected
-  bool isCenterTitle() => false;
+  bool isCenterTitle() => true;
 
   @protected
   bool isFullScreenLoad() => false;
 
   @protected
   bool get navi => false;
+
+  @override
+  bool get wantKeepAlive => true;
 
   bool get canPop => true;
 
@@ -53,6 +61,7 @@ abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: pageOnTap,
@@ -83,11 +92,9 @@ abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget
               key: Key(hashCode.toString()),
               child: Column(
                 children: [
-                  Offstage(
-                      offstage: !useStatusBar, child: createStatusBar(context)),
+                  Offstage(offstage: !useStatusBar, child: createStatusBar(context)),
                   Expanded(child: _buildBody(context)),
-                  Offstage(
-                      offstage: !useBottomBar, child: createBottomBar(context)),
+                  Offstage(offstage: !useBottomBar, child: createBottomBar(context)),
                 ],
               ),
             ),
@@ -130,9 +137,7 @@ abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget
 
   PreferredSizeWidget? _createAppBar(BuildContext context) {
     AppBar? appBar = createAppBar(titleString(), isCenterTitle(),
-        backButton: backButton(),
-        actionWidget: appBarActionWidget(context),
-        customTitleWidget: titleWidget());
+        backButton: backButton(), actionWidget: appBarActionWidget(context), customTitleWidget: titleWidget());
     return appBar == null
         ? appBar
         : PreferredSize(
@@ -140,8 +145,7 @@ abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget
             child: Stack(
               children: [
                 appBar,
-                Offstage(
-                    offstage: !useStatusBar, child: createStatusBar(context)),
+                Offstage(offstage: !useStatusBar, child: createStatusBar(context)),
               ],
             ),
           );

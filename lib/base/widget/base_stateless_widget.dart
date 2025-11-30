@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/theme/color/theme_colors.dart';
-import 'package:flutter_gallery_next/base/mvvm/view/base_view.dart';
-import 'package:flutter_gallery_next/base/mvvm/vm/net_state_ext.dart';
-import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
+import 'package:flutter_gallery_next/base/view_model/base_view_model.dart';
+import 'package:flutter_gallery_next/base/view_model/net_state_ext.dart';
+import 'package:flutter_gallery_next/base/widget/base/base_view.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/design_dialog.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget
-    with BaseView, DesignDialog {
+abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget with BaseView, DesignDialog {
   const BaseStatelessPage({super.key});
 
   @protected
@@ -86,13 +85,10 @@ abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget
                   key: Key(hashCode.toString()),
                   child: Column(
                     children: [
-                      Offstage(
-                          offstage: !useStatusBar, child: statusBarWidget()),
-                      Offstage(
-                          offstage: !useNoticeArea, child: noticeAreaWidget()),
+                      Offstage(offstage: !useStatusBar, child: statusBarWidget()),
+                      Offstage(offstage: !useNoticeArea, child: noticeAreaWidget()),
                       Expanded(child: _buildBody(context)),
-                      Offstage(
-                          offstage: !useBottomArea, child: bottomAreaWidget()),
+                      Offstage(offstage: !useBottomArea, child: bottomAreaWidget()),
                     ],
                   ))),
         ),
@@ -137,9 +133,7 @@ abstract class BaseStatelessPage<VM extends ViewModel> extends StatelessWidget
 
   PreferredSizeWidget? _createAppBar(BuildContext context) {
     AppBar? appBar = createAppBar(titleString(), isCenterTitle(),
-        backButton: backButton(),
-        actionWidget: appBarActionWidget(context),
-        customTitleWidget: titleWidget());
+        backButton: backButton(), actionWidget: appBarActionWidget(context), customTitleWidget: titleWidget());
     return appBar == null
         ? appBar
         : PreferredSize(

@@ -1,5 +1,5 @@
-import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
-import 'package:flutter_gallery_next/base/mvvm/vm/multi_net_data.dart';
+import 'package:flutter_gallery_next/base/view_model/base_view_model.dart';
+import 'package:flutter_gallery_next/base/view_model/multi_net_data.dart';
 import 'package:flutter_gallery_next/biz/user_info/vm/service/use_case/user_info_api_use_case.dart';
 import 'package:flutter_gallery_next/biz/user_info/vm/service/user_info_service.dart';
 import 'package:flutter_gallery_next/biz/user_info/vm/user_info_state.dart';

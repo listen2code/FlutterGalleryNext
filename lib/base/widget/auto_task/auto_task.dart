@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gallery_next/base/mvvm/vm/base_action.dart';
-import 'package:flutter_gallery_next/base/mvvm/vm/base_view_model.dart';
 import 'package:flutter_gallery_next/base/network/base/base_service.dart';
+import 'package:flutter_gallery_next/base/view_model/base_action.dart';
+import 'package:flutter_gallery_next/base/view_model/base_view_model.dart';
 import 'package:package_libs/utils/auth_util.dart';
 
-mixin AutoReloadMixin<Actions extends BaseAction, Service extends BaseService>
-    on ViewModel<Actions, Service> {
+mixin AutoReloadMixin<Actions extends BaseAction, Service extends BaseService> on ViewModel<Actions, Service> {
   late DataRefresher refresher;
 
   int get interval => 5000;
@@ -69,8 +68,7 @@ class DataRefresher {
   RefreshStrategy? _strategy;
   VoidCallback? _updateInterval;
 
-  factory DataRefresher.instance([int time = 5000]) =>
-      DataRefresher._private(time);
+  factory DataRefresher.instance([int time = 5000]) => DataRefresher._private(time);
 
   DataRefresher._private(int time) : _interval = time;
 
@@ -124,8 +122,7 @@ abstract class RefreshState {
 class RunningState implements RefreshState {
   @override
   void handle(DataRefresher context) {
-    context._timer = Timer.periodic(Duration(milliseconds: context._interval),
-        (Timer timer) {
+    context._timer = Timer.periodic(Duration(milliseconds: context._interval), (Timer timer) {
       if (!AuthUtil.instance().isStatusDoing()) {
         context._strategy?.call();
       }

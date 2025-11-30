@@ -1,5 +1,5 @@
-import 'package:flutter_gallery_next/base/mvvm/vm/base_action.dart';
 import 'package:flutter_gallery_next/base/network/base_network.dart';
+import 'package:flutter_gallery_next/base/view_model/base_action.dart';
 import 'package:flutter_gallery_next/biz/user_info/model/user_info_entity.dart';
 import 'package:flutter_gallery_next/biz/user_info/vm/service/use_case/user_info_api_use_case.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
