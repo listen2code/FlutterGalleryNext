@@ -28,4 +28,15 @@ extension StringExtensions on String {
       return -1;
     }
   }
+
+  double parseDouble(String? value) {
+    if (value == null) {
+      return 0;
+    }
+    try {
+      return double.tryParse(value) ?? 0;
+    } catch (e) {
+      return 0;
+    }
+  }
 }
