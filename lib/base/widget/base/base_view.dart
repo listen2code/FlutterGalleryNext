@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gallery_next/base/common/theme/app_resource.dart';
-import 'package:flutter_gallery_next/base/common/theme/app_styles.dart';
-import 'package:flutter_gallery_next/base/common/theme/color/theme_colors.dart';
 import 'package:get/get.dart';
 
 // todo
@@ -71,7 +69,7 @@ mixin BaseView {
     return Text(titleString,
         textAlign: TextAlign.center,
         style: AppTextTheme.defaultStyle(
-          fontFamily: AppFontFamily.charactersFont,
+          fontFamily: AppFontFamily.characters,
           fontWeight: FontWeight.w600,
           fontSize: AppFontSize.base,
         ));

@@ -46,13 +46,11 @@ class CommonButton extends StatelessWidget {
 
   ButtonStyle createTButtonStyle() {
     return ButtonStyle(
-      elevation: WidgetStateProperty.all<double>(
-          options?.elevation ?? defaultOptions.elevation),
+      elevation: WidgetStateProperty.all<double>(options?.elevation ?? defaultOptions.elevation),
       padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
         options?.padding ?? defaultOptions.padding,
       ),
-      backgroundColor: WidgetStateProperty.all<Color>(
-          options?.color ?? defaultOptions.color),
+      backgroundColor: WidgetStateProperty.all<Color>(options?.color ?? defaultOptions.color),
       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
         RoundedRectangleBorder(
           borderRadius: options?.borderRadius ?? defaultOptions.borderRadius,
@@ -133,7 +131,7 @@ class ButtonOptions {
       this.fontSize = 14.0,
       this.fontHeight = 1.0,
       this.fontWeight = FontWeight.normal,
-      this.fontFamily = AppFontFamily.charactersFont,
+      this.fontFamily = AppFontFamily.characters,
       this.borderRadius = const BorderRadius.all(Radius.circular(5)),
       this.padding = const EdgeInsets.all(5)});
 }

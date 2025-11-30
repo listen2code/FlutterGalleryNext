@@ -1,8 +1,8 @@
 class AppFontFamily {
   AppFontFamily._private();
 
-  static const String charactersFont = 'charactersFont';
-  static const String numberFont = 'numberFont';
+  static const String characters = 'characters';
+  static const String number = 'number';
 }
 
 class AppFontSize {

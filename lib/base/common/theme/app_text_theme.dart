@@ -13,7 +13,7 @@ class AppTextTheme {
   }) {
     return TextStyle(
       color: colors ?? ThemeColors.black,
-      fontFamily: fontFamily ?? AppFontFamily.numberFont,
+      fontFamily: fontFamily ?? AppFontFamily.number,
       fontSize: fontSize ?? 12,
       height: height ?? 1,
       letterSpacing: letterSpacing ?? 0,

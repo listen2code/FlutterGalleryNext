@@ -73,8 +73,7 @@ class CommonConfirmButton extends StatelessWidget {
     return result;
   }
 
-  List<ButtonOptions> createNotEnabledOptions(
-      List<ButtonOptions> enabledOptions) {
+  List<ButtonOptions> createNotEnabledOptions(List<ButtonOptions> enabledOptions) {
     List<ButtonOptions> result = [];
     for (ButtonOptions opt in enabledOptions) {
       result.add(ButtonOptions(
@@ -106,8 +105,7 @@ class CommonConfirmButton extends StatelessWidget {
       widthFactor: widthRatio,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children:
-            createButtonList(optionsList, notOptionsList, flexList, enabled),
+        children: createButtonList(optionsList, notOptionsList, flexList, enabled),
       ),
     );
   }
@@ -116,56 +114,48 @@ class CommonConfirmButton extends StatelessWidget {
     var optionsList = options ?? blueButtonOptions();
     var flexList = flex ?? avgFlex();
     var enabled = isEnabled ?? createEnabledList();
-    return createFractionallySizedBox(
-        optionsList, optionsList, flexList, enabled);
+    return createFractionallySizedBox(optionsList, optionsList, flexList, enabled);
   }
 
   Widget buildMonochromeUneven() {
     var optionsList = options ?? blueButtonOptions();
     var flexList = flex ?? unevenFlex();
     var enabled = isEnabled ?? createEnabledList();
-    return createFractionallySizedBox(
-        optionsList, optionsList, flexList, enabled);
+    return createFractionallySizedBox(optionsList, optionsList, flexList, enabled);
   }
 
   Widget buildTwoToneAvg() {
     var optionsList = options ?? twoToneButtonOptions();
     var flexList = flex ?? avgFlex();
     var enabled = isEnabled ?? createEnabledList();
-    return createFractionallySizedBox(
-        optionsList, optionsList, flexList, enabled);
+    return createFractionallySizedBox(optionsList, optionsList, flexList, enabled);
   }
 
   Widget buildTwoToneUneven() {
     var optionsList = options ?? twoToneButtonOptions();
     var flexList = flex ?? unevenFlex();
     var enabled = isEnabled ?? createEnabledList();
-    return createFractionallySizedBox(
-        optionsList, optionsList, flexList, enabled);
+    return createFractionallySizedBox(optionsList, optionsList, flexList, enabled);
   }
 
   Widget buildRedBlue() {
     var optionsList = options ?? redBlueButtonOptions();
     var flexList = flex ?? unevenFlex();
     var enabled = isEnabled ?? createEnabledList();
-    return createFractionallySizedBox(
-        optionsList, optionsList, flexList, enabled);
+    return createFractionallySizedBox(optionsList, optionsList, flexList, enabled);
   }
 
   Widget buildRedWhite() {
     var optionsList = options ?? whiteRedButtonOptions();
-    var notOptionsList =
-        notEnabledOptions ?? createNotEnabledOptions(optionsList);
+    var notOptionsList = notEnabledOptions ?? createNotEnabledOptions(optionsList);
     var flexList = flex ?? unevenFlex();
     var enabled = isEnabled ?? createEnabledList();
-    return createFractionallySizedBox(
-        optionsList, notOptionsList, flexList, enabled);
+    return createFractionallySizedBox(optionsList, notOptionsList, flexList, enabled);
   }
 
   Widget buildBlackWhite() {
     var optionsList = options ?? blackWhiteButtonOptions();
-    var notOptionsList =
-        notEnabledOptions ?? createNotEnabledOptions(optionsList);
+    var notOptionsList = notEnabledOptions ?? createNotEnabledOptions(optionsList);
     var enabled = isEnabled ?? createEnabledList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -177,8 +167,7 @@ class CommonConfirmButton extends StatelessWidget {
     var optionsList = options!;
     var flexList = flex!;
     var enabled = isEnabled ?? createEnabledList();
-    return createFractionallySizedBox(
-        optionsList, optionsList, flexList, enabled);
+    return createFractionallySizedBox(optionsList, optionsList, flexList, enabled);
   }
 
   List<Widget> createButtonList(
@@ -193,8 +182,7 @@ class CommonConfirmButton extends StatelessWidget {
         Expanded(
           flex: flex[i],
           child: Container(
-            margin:
-                EdgeInsets.fromLTRB(horizontalSpacing, 0, horizontalSpacing, 0),
+            margin: EdgeInsets.fromLTRB(horizontalSpacing, 0, horizontalSpacing, 0),
             child: CommonButton(
               text: text[i],
               onPressed: createOnPresses(isEnabled[i], onPressed[i]),
@@ -345,15 +333,13 @@ class CommonConfirmButton extends StatelessWidget {
     );
   }
 
-  ButtonOptions doubleColorButtonOptions(
-      Color bgColor, Color fontColor, Color borderColor,
-      {double fontSize = 16.0}) {
+  ButtonOptions doubleColorButtonOptions(Color bgColor, Color fontColor, Color borderColor, {double fontSize = 16.0}) {
     return ButtonOptions(
       height: height,
       color: bgColor,
       fontColor: fontColor,
       fontSize: fontSize,
-      fontFamily: AppFontFamily.charactersFont,
+      fontFamily: AppFontFamily.characters,
       fontWeight: FontWeight.w300,
       borderWidth: 0,
       borderRadius: const BorderRadius.all(Radius.circular(10)),
