@@ -8,7 +8,6 @@ class VisitorAPIUseCase extends BaseLoginUseCase<void, VisitorRequest> {
   }
 
   Future<ResponseEntity<void>> login() async {
-    await DeviceUtil.instance().init();
     String version = DeviceUtil.instance().getAppVersionName() ?? "";
     return post(VisitorRequest(version));
   }

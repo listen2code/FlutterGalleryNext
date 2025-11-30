@@ -68,12 +68,10 @@ class LoginAPIUseCase extends BaseLoginUseCase<LoginEntity, LoginRequest> {
   }
 
   Future<String> getAppVersion() async {
-    await DeviceUtil.instance().init();
     return DeviceUtil.instance().getAppVersionName() ?? "";
   }
 
   Future<String?> getDeviceId() async {
-    await DeviceUtil.instance().init();
     // todo
     // if (await NotificationService.instance.requestPermission()) {
     //   // プッシュ通知権限リクエストを承認された／されている場合はトークンを取得する

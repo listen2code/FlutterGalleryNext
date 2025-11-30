@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:package_libs/utils/logger_util.dart';
-import 'package:plugin_native/proxy/proxy_info_data.dart';
+import 'package:plugin_native/proxy/proxy_info.dart';
 import 'package:plugin_native/proxy/proxy_util.dart';
 
 class CustomProxyHttpOverride extends HttpOverrides {
@@ -13,13 +13,13 @@ class CustomProxyHttpOverride extends HttpOverrides {
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
       ..findProxy = (uri) {
-        LoggerUtil.log("HttpOverride findProxy start=$uri", type: LoggerType.debug);
+        log("HttpOverride findProxy start=$uri");
         ProxyInfo? proxyInfo = ProxyUtil.instance().findProxySync(uri);
         if (proxyInfo?.type == "PROXY" && proxyInfo?.host.isNotEmpty == true && proxyInfo?.port.isNotEmpty == true) {
-          LoggerUtil.log("HttpOverride findProxy uri=$uri ${proxyInfo.toString()}", type: LoggerType.debug);
+          log("HttpOverride findProxy uri=$uri ${proxyInfo.toString()}");
           return proxyInfo.toString();
         } else {
-          LoggerUtil.log("HttpOverride findProxy DIRECT: $uri", type: LoggerType.debug);
+          log("HttpOverride findProxy DIRECT: $uri");
           return "DIRECT";
         }
       };

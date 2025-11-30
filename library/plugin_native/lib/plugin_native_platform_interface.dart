@@ -1,3 +1,5 @@
+import 'package:plugin_native/device/device_info.dart';
+import 'package:plugin_native/proxy/proxy_info.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'plugin_native_method_channel.dart';
@@ -23,7 +25,23 @@ abstract class PluginNativePlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future<DeviceInfo?> getDeviceInfo() {
+    throw UnimplementedError('getDeviceInfo() has not been implemented.');
+  }
+
+  Future<ProxyInfo?> getProxyInfo() {
+    throw UnimplementedError('getProxyInfo() has not been implemented.');
+  }
+
+  Future<ProxyInfo?> findProxy(String string) {
+    throw UnimplementedError('findProxy() has not been implemented.');
+  }
+
+  Future<bool> isLaunchExternalApp({required String packageName, required String activityName}) {
+    throw UnimplementedError('isLaunchExternalApp() has not been implemented.');
+  }
+
+  Future<void> launchExternalApp({required String packageName, required String activityName}) {
+    throw UnimplementedError('launchExternalApp() has not been implemented.');
   }
 }

@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
+import 'package:package_libs/utils/connectivity_util.dart';
 import 'package:package_libs/utils/sp_util.dart';
-import 'package:plugin_native/device/device_info_data.dart';
+import 'package:plugin_native/device/device_info.dart';
+import 'package:plugin_native/plugin_native_platform_interface.dart';
 
 class DeviceUtil {
   DeviceUtil._private();
@@ -11,10 +12,11 @@ class DeviceUtil {
   factory DeviceUtil.instance() => _instance;
   static final DeviceUtil _instance = DeviceUtil._private();
   DeviceInfo? _deviceInfo;
+  late String appName;
 
-  Future init() async {
-    // todo
-    // _deviceInfo ??= await DevicePlugin.getDeviceInfo();
+  Future init({required String appName}) async {
+    this.appName = appName;
+    _deviceInfo ??= await PluginNativePlatform.instance.getDeviceInfo();
   }
 
   String? getAppName() {
@@ -54,24 +56,8 @@ class DeviceUtil {
     return Future.value(_deviceInfo?.uuid ?? "");
   }
 
-  Future<String> getNetworkStatus() async {
-    List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
-    switch (connectivityResult.first) {
-      case ConnectivityResult.wifi:
-        return Future.value("WiFi");
-      case ConnectivityResult.mobile:
-        return Future.value("Mobile");
-      case ConnectivityResult.none:
-      case ConnectivityResult.bluetooth:
-      case ConnectivityResult.ethernet:
-      case ConnectivityResult.vpn:
-      case ConnectivityResult.other:
-        return Future.value("UNKNOWN");
-    }
-  }
-
   Future<String> getUserAgent() async {
-    StringBuffer sb = StringBuffer("flutter_gallery/");
+    StringBuffer sb = StringBuffer("$appName/");
     if (Platform.isIOS) {
       sb.write("${getAppVersionName()}i(");
     } else if (Platform.isAndroid) {
@@ -90,7 +76,7 @@ class DeviceUtil {
     }
     sb.write("${getDeviceVersion()}");
     sb.write(";");
-    sb.write("netWorkStatus=${await getNetworkStatus()}");
+    sb.write("netWorkStatus=${await ConnectivityUtil.instance().getStatus()}");
     sb.write("uid=${await getUUID()}");
     sb.write(")");
     return Future.value(sb.toString());
@@ -104,11 +90,9 @@ class DeviceUtil {
     return Platform.isAndroid;
   }
 
-  /// 画面分の横縦設定(デバイスレベル)
-  ///
   static void setPortrait(bool isLandscape) async {
     if (isIOS()) {
-      // tod
+      // todo
       var platform = const MethodChannel("com.xxxx.plugin/set_portrait");
       await platform.invokeListMethod("setPortrait", {"isLandscape": isLandscape});
     }

@@ -2,29 +2,29 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:package_libs/utils/logger_util.dart';
+import 'package:plugin_native/plugin_native_platform_interface.dart';
 import 'package:plugin_native/proxy/custom_proxy_override.dart';
-import 'package:plugin_native/proxy/proxy_info_data.dart';
+import 'package:plugin_native/proxy/proxy_info.dart';
 
 class ProxyUtil {
+  static const String tag = "ProxyUtil";
+
   ProxyUtil._private();
 
   factory ProxyUtil.instance() => _instance;
   static final ProxyUtil _instance = ProxyUtil._private();
 
-  /// nativeからプロキシ情報
   ProxyInfo? _proxyFromNative;
 
-  /// default:プロキシを使用しない
   final ProxyInfo _proxyDirect = ProxyInfo(type: "DIRECT");
 
-  /// プロキシキャッシュ
   final Map<String?, ProxyInfo?> _proxyCache = {};
 
   Future init() async {
-    // _proxyFromNative ??= await DevicePlugin.getProxyInfo();
-    LoggerUtil.log("enabled proxy: ${proxyEnabled()}", type: LoggerType.easy);
+    _proxyFromNative ??= await PluginNativePlatform.instance.getProxyInfo();
+    log("$tag enabled proxy: ${proxyEnabled()}");
     if (proxyEnabled()) {
-      LoggerUtil.log("init proxy: ${_proxyFromNative?.host}:${_proxyFromNative?.port} ${_proxyFromNative?.nonProxy}",
+      log("$tag init proxy: ${_proxyFromNative?.host}:${_proxyFromNative?.port} ${_proxyFromNative?.nonProxy}",
           type: LoggerType.easy);
       HttpOverrides.global = CustomProxyHttpOverride.withProxy();
     }
@@ -53,42 +53,41 @@ class ProxyUtil {
 
   ProxyInfo? findProxySync(Uri? uri) {
     if (proxyEnabled() == false) {
-      LoggerUtil.log("findProxySync proxyEnabled=false", type: LoggerType.easy);
+      log("$tag findProxySync proxyEnabled=false");
       return _proxyDirect;
     }
     if (uri?.host == null || uri?.host.isEmpty == true) {
-      LoggerUtil.log("findProxySync uri?.host is empty", type: LoggerType.easy);
+      log("$tag findProxySync uri?.host is empty");
       return _proxyDirect;
     }
     ProxyInfo? proxyInfo = _proxyCache[uri?.host];
     if (null != proxyInfo) {
-      LoggerUtil.log("findProxySync from cache uri=$uri proxyInfo=${proxyInfo.toString()}", type: LoggerType.easy);
+      log("$tag findProxySync from cache uri=$uri proxyInfo=${proxyInfo.toString()}");
       return proxyInfo;
     }
-    LoggerUtil.log("findProxySync from direct", type: LoggerType.easy);
+    log("$tag findProxySync from direct");
     return _proxyDirect;
   }
 
   Future<ProxyInfo>? findProxyAsync(Uri? uri) async {
     if (proxyEnabled() == false) {
-      LoggerUtil.log("findProxyAsync proxyEnabled=false", type: LoggerType.easy);
+      log("$tag findProxyAsync proxyEnabled=false");
       return Future.value(_proxyDirect);
     }
     if (uri?.host == null || uri?.host.isEmpty == true) {
-      LoggerUtil.log("findProxyAsync uri?.host is empty", type: LoggerType.easy);
+      log("$tag findProxyAsync uri?.host is empty");
       return Future.value(_proxyDirect);
     }
     ProxyInfo? proxyInfo = _proxyCache[uri?.host];
     if (null != proxyInfo) {
-      LoggerUtil.log("findProxyAsync from cache uri=$uri proxyInfo=${proxyInfo.toString()}", type: LoggerType.easy);
+      log("$tag findProxyAsync from cache uri=$uri proxyInfo=${proxyInfo.toString()}");
       return Future.value(proxyInfo);
     }
-    // todo
-    // proxyInfo = await DevicePlugin.findProxy(uri.toString());
-    LoggerUtil.log("findProxyAsync from native uri=$uri proxyInfo=${proxyInfo.toString()}", type: LoggerType.easy);
+    proxyInfo = await PluginNativePlatform.instance.findProxy(uri.toString());
+    log("$tag findProxyAsync from native uri=$uri proxyInfo=${proxyInfo.toString()}");
     proxyInfo ??= _proxyDirect;
     _proxyCache[uri?.host] = proxyInfo;
-    LoggerUtil.log("findProxyAsync add cache host=${uri?.host}\ncurrent cache$_proxyCache", type: LoggerType.easy);
+    log("$tag findProxyAsync add cache host=${uri?.host}\ncurrent cache$_proxyCache");
     return Future.value(proxyInfo);
   }
 }
