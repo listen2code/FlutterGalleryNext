@@ -16,7 +16,6 @@ dependencies:
     path: ../package_base
   package_libs:
     path: ../package_libs
-  connectivity_plus: ^6.1.5
   url_launcher: ^6.3.2
 
 dev_dependencies:
