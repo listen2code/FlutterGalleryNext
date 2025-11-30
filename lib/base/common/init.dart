@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gallery_next/base/widget/refresh/refresh_manager.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:package_libs/utils/logger_util.dart';
 import 'package:plugin_native/device/device_util.dart';
 import 'package:plugin_native/plugin_native.dart';
 import 'package:plugin_native/proxy/proxy_util.dart';
@@ -13,6 +16,7 @@ import 'package:plugin_native/proxy/proxy_util.dart';
 Future<void> appInit() async {
   initErrorHandler();
   initOrientations();
+  initRefresh();
   initEnv();
   initDeviceInfo();
   await initIntl();
@@ -31,9 +35,7 @@ void initErrorHandler() {
 
     // In release mode, force the app to exit.
     // This is a "fail-fast" strategy to prevent the app from running in a broken state.
-    if (kReleaseMode) {
-      exit(1);
-    }
+    if (kReleaseMode) exit(1);
   };
 
   // This is a global error handler for all other unhandled errors
@@ -41,7 +43,7 @@ void initErrorHandler() {
   PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
     // In a real app, you would typically report the error to a service like Firebase Crashlytics here.
     // For now, we just log it.
-    debugPrint('Caught unhandled error: $error stack=$stack');
+    LoggerUtil.error('Caught unhandled error: $error stack=$stack');
 
     // Returning true tells the framework that the error has been handled,
     // which prevents the application from crashing.
@@ -51,8 +53,16 @@ void initErrorHandler() {
 
 /// force to portrait
 void initOrientations() {
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+}
+
+void initRefresh() {
+  EasyRefresh.defaultHeaderBuilder = () {
+    return RefreshManager.instance().defaultHeader;
+  };
+  EasyRefresh.defaultFooterBuilder = () {
+    return RefreshManager.instance().defaultFooter;
+  };
 }
 
 Future<void> initEnv() async {
@@ -104,8 +114,7 @@ Future<void> initIntl() async {
   //   print(DateFormat.yMMMMd().format(now));
   // }
   //
-  await Future.wait(
-      supportedLocales.map((locale) => initializeDateFormatting(locale, null)));
+  await Future.wait(supportedLocales.map((locale) => initializeDateFormatting(locale, null)));
 
   // Get the device's current system locale (e.g., 'en_US', 'ja_JP').
   final systemLocale = Platform.localeName;
