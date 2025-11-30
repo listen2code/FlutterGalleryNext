@@ -8,10 +8,10 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 part 'user_info_state.freezed.dart';
 
 class UserInfoState {
-  late final Rx<ResponseEntity<UserInfoEntity>> rxUserInfo;
+  late final Rx<ResponseEntity<UserInfoEntity?>> rxUserInfo;
 
   UserInfoState() {
-    rxUserInfo = ResponseEntity<UserInfoEntity>().obs;
+    rxUserInfo = ResponseEntity<UserInfoEntity?>().obs;
   }
 
   UserInfoEntity? get userInfo => rxUserInfo.value.body;

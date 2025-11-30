@@ -38,9 +38,31 @@ class _UserInfoPageState extends BaseState<UserInfoViewModel, UserInfoPage> {
       viewMode: viewMode,
       rxResponse: viewMode.userInfoState.rxUserInfo,
       widget: (data) {
-        return Container(
-          padding: const EdgeInsetsDirectional.all(20),
-          child: Text("userInfo=${data.toString()}"),
+        return Column(
+          children: [
+            Obx(() {
+              return Container(
+                padding: const EdgeInsetsDirectional.all(20),
+                child: Text("dbInfo=${viewMode.dbInfo.value}"),
+              );
+            }),
+            Container(
+              padding: const EdgeInsetsDirectional.all(20),
+              child: Text("userInfo=${data?.toString()}"),
+            ),
+            ElevatedButton(
+              onPressed: viewMode.getUserInfo,
+              child: const Text("getUserInfo"),
+            ),
+            ElevatedButton(
+              onPressed: viewMode.deleteUserInfo,
+              child: const Text("delete"),
+            ),
+            ElevatedButton(
+              onPressed: viewMode.updateUserInfo,
+              child: const Text("update"),
+            ),
+          ],
         );
       },
     );

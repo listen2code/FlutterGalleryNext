@@ -30,7 +30,7 @@ class UserInfoDataBase {
     var db = await create();
     Map<String, dynamic> map = userInfo.toJson();
     map["timestamp"] = DateTime.now().millisecondsSinceEpoch;
-    log("$tag SaveCartInfo: $map");
+    log("$tag save: $map");
     return DatabaseManager.instance().saveObject(db, map, tableName: _tableName);
   }
 
@@ -48,23 +48,19 @@ class UserInfoDataBase {
     );
     if (res.isNotEmpty) {
       Map<String, dynamic>? map = res.first;
-      log("$tag getUser: $map");
+      log("$tag get: $map");
       return UserInfoEntity.fromJson(map);
     } else {
       return null;
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getMapList() async {
+  static Future<List<UserInfoEntity>> getList() async {
     var db = await create();
-    return DatabaseManager.instance().getObjectList(
+    List<Map<String, dynamic>> list = await DatabaseManager.instance().getObjectList(
       db,
       tableName: _tableName,
     );
-  }
-
-  static Future<List<UserInfoEntity>> getList() async {
-    List<Map<String, dynamic>> list = await getMapList();
     log("$tag getList: $list");
     if (list.isNotEmpty) {
       return list.map((e) {
@@ -74,18 +70,26 @@ class UserInfoDataBase {
     return [];
   }
 
-  static Future<int> update(UserInfoEntity cartInfo, String condition, dynamic value) async {
+  static Future<int> updateLast(UserInfoEntity userInfo) async {
+    return update(userInfo, condition: "userId = (SELECT MAX(userId) FROM $_tableName)");
+  }
+
+  static Future<int> update(UserInfoEntity userInfo, {String? condition, List<dynamic>? values}) async {
     log("$tag update: $condition");
     var db = await create();
-    Map<String, dynamic> map = cartInfo.toJson();
+    Map<String, dynamic> map = userInfo.toJson();
     map["timestamp"] = DateTime.now().millisecondsSinceEpoch;
     return DatabaseManager.instance().updateObject(
       db,
       map,
       tableName: _tableName,
       whereId: condition,
-      whereArgs: [value],
+      whereArgs: values,
     );
+  }
+
+  static Future<int> deleteLast() async {
+    return delete(condition: "userId = (SELECT MAX(userId) FROM $_tableName)");
   }
 
   static Future<int> deleteByUserId(String userId) async {
