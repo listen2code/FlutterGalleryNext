@@ -38,10 +38,7 @@ class UserInfoDataBase {
     return get(condition: "userId = ?", values: [userId]);
   }
 
-  static Future<UserInfoEntity?> get({
-    String? condition,
-    List<dynamic>? values,
-  }) async {
+  static Future<UserInfoEntity?> get({String? condition, List<dynamic>? values}) async {
     var db = await create();
     var res = await DatabaseManager.instance().getObject(
       db,
