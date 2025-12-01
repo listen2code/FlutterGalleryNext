@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_libs/utils/connectivity_util.dart';
 import 'package:package_libs/utils/sp_util.dart';
@@ -17,6 +18,7 @@ class DeviceUtil {
   Future init({required String appName}) async {
     this.appName = appName;
     _deviceInfo ??= await PluginNativePlatform.instance.getDeviceInfo();
+    debugPrint("DeviceUtil init: $_deviceInfo");
   }
 
   String? getAppName() {

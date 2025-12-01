@@ -7,29 +7,33 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import android.content.Context
 
 /** PluginNativePlugin */
-class PluginNativePlugin: FlutterPlugin, MethodCallHandler {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
-  private lateinit var channel : MethodChannel
+class PluginNativePlugin : FlutterPlugin {
 
-  override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "plugin_native")
-    channel.setMethodCallHandler(this)
-  }
+    private lateinit var deviceChannel: MethodChannel
+    private lateinit var proxyChannel: MethodChannel
+    private lateinit var launchMethodChannel: MethodChannel
 
-  override fun onMethodCall(call: MethodCall, result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else {
-      result.notImplemented()
+    private var applicationContext: Context? = null
+
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        applicationContext = flutterPluginBinding.applicationContext
+
+        deviceChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "com.listen.plugin.plugin_native/device_info")
+        deviceChannel.setMethodCallHandler(DeviceInfoMethodChannelHandler(applicationContext))
+
+        proxyChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "com.listen.plugin.plugin_native/proxy_info")
+        proxyChannel.setMethodCallHandler(ProxyInfoMethodChannelHandler(applicationContext))
+
+        launchMethodChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "com.listen.plugin.plugin_native/launch_external_app")
+        launchMethodChannel.setMethodCallHandler(LaunchExternalAppMethodChannelHandler(applicationContext))
     }
-  }
 
-  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-    channel.setMethodCallHandler(null)
-  }
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        deviceChannel.setMethodCallHandler(null)
+        proxyChannel.setMethodCallHandler(null)
+        launchMethodChannel.setMethodCallHandler(null)
+    }
 }

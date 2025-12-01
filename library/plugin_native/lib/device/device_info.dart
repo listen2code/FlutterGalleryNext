@@ -33,4 +33,9 @@ class DeviceInfo {
 
   /// The UUID.
   final String uuid;
+
+  @override
+  String toString() {
+    return "appName=$appName,packageName=$packageName,appVersionName=$appVersionName,appVersionCode=$appVersionCode,model=$model,product=$product,deviceVersion=$deviceVersion,uuid=$uuid";
+  }
 }

@@ -17,50 +17,38 @@ class MethodChannelPluginNative extends PluginNativePlatform {
 
   @override
   Future<DeviceInfo?> getDeviceInfo() async {
-    // final map = await deviceMethodChannel.invokeMapMethod<String, dynamic>("getDeviceInfo");
-    // return DeviceInfo(
-    //   appName: map!["appName"],
-    //   packageName: map["packageName"],
-    //   appVersionName: map['appVersionName'],
-    //   appVersionCode: map['appVersionCode'],
-    //   model: map['model'],
-    //   product: map['product'],
-    //   deviceVersion: map['deviceVersion'],
-    //   uuid: map['uuid'],
-    // );
+    final map = await deviceMethodChannel.invokeMapMethod<String, dynamic>("getDeviceInfo");
     return DeviceInfo(
-      appName: '',
-      packageName: '',
-      appVersionName: '',
-      appVersionCode: '',
-      model: '',
-      product: '',
-      deviceVersion: '',
-      uuid: '',
+      appName: map!["appName"],
+      packageName: map["packageName"],
+      appVersionName: map['appVersionName'],
+      appVersionCode: map['appVersionCode'],
+      model: map['model'],
+      product: map['product'],
+      deviceVersion: map['deviceVersion'],
+      uuid: map['uuid'],
     );
   }
 
   @override
   Future<ProxyInfo?> getProxyInfo() async {
-    // final map = await proxyMethodChannel.invokeMapMethod<String, dynamic>("getProxyInfo");
-    // return ProxyInfo(
-    //   host: map!["host"] ?? "",
-    //   port: map["port"] ?? "",
-    //   type: map["type"] ?? "",
-    //   nonProxy: map["nonProxy"] ?? "",
-    // );
-    return ProxyInfo();
+    final map = await proxyMethodChannel.invokeMapMethod<String, dynamic>("getProxyInfo");
+    return ProxyInfo(
+      host: map!["host"] ?? "",
+      port: map["port"] ?? "",
+      type: map["type"] ?? "",
+      nonProxy: map["nonProxy"] ?? "",
+    );
   }
 
   @override
   Future<ProxyInfo?> findProxy(String url) async {
-    // final map = await proxyMethodChannel.invokeMapMethod<String, dynamic>("findProxy", {"url": url});
-    // return ProxyInfo(
-    //   host: map!["host"] ?? "",
-    //   port: map["port"] ?? "",
-    //   type: map["type"] ?? "",
-    // );
-    return ProxyInfo();
+    final map = await proxyMethodChannel.invokeMapMethod<String, dynamic>("findProxy", {"url": url});
+    return ProxyInfo(
+      host: map!["host"] ?? "",
+      port: map["port"] ?? "",
+      type: map["type"] ?? "",
+    );
   }
 
   @override
