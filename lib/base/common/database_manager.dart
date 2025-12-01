@@ -43,13 +43,8 @@ class DatabaseManager {
     });
   }
 
-  Future<int> saveObject(
-    Database db,
-    Map<String, dynamic> json, {
-    required String tableName,
-  }) {
-    var res = db.insert(tableName, json);
-    return res;
+  Future<int> saveObject(Database db, Map<String, dynamic> json, {required String tableName}) {
+    return db.insert(tableName, json);
   }
 
   Future<List<Map<String, Object?>>> getObject(
@@ -58,8 +53,7 @@ class DatabaseManager {
     String? whereId,
     List<Object?>? whereArgs,
   }) {
-    var res = db.query(tableName, where: whereId, whereArgs: whereArgs);
-    return res;
+    return db.query(tableName, where: whereId, whereArgs: whereArgs);
   }
 
   Future<int> updateObject(
@@ -69,8 +63,7 @@ class DatabaseManager {
     required String? whereId,
     required List<Object?>? whereArgs,
   }) {
-    var res = db.update(tableName, json, where: whereId, whereArgs: whereArgs);
-    return res;
+    return db.update(tableName, json, where: whereId, whereArgs: whereArgs);
   }
 
   Future<int> deleteObject(
@@ -79,19 +72,14 @@ class DatabaseManager {
     String? whereId,
     List<Object?>? whereArgId,
   }) {
-    var res = db.delete(tableName, where: whereId, whereArgs: whereArgId);
-    return res;
+    return db.delete(tableName, where: whereId, whereArgs: whereArgId);
   }
 
-  Future<List<Map<String, dynamic>>> getObjectList(
-    Database db, {
-    required String tableName,
-  }) {
-    var res = db.query(tableName);
-    return res;
+  Future<List<Map<String, dynamic>>> getObjectList(Database db, {required String tableName}) {
+    return db.query(tableName);
   }
 
-  void closeDB(Database db) {
-    db.close();
+  Future<void> closeDB(Database db) async {
+    await db.close();
   }
 }

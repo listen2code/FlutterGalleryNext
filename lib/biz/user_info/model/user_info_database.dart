@@ -79,6 +79,7 @@ class UserInfoDataBase {
     var db = await create();
     Map<String, dynamic> map = userInfo.toJson();
     map["timestamp"] = DateTime.now().millisecondsSinceEpoch;
+
     return DatabaseManager.instance().updateObject(
       db,
       map,
@@ -107,8 +108,8 @@ class UserInfoDataBase {
     );
   }
 
-  static void closeDataBase() async {
+  static Future<void> closeDataBase() async {
     var db = await create();
-    DatabaseManager.instance().closeDB(db);
+    await DatabaseManager.instance().closeDB(db);
   }
 }
