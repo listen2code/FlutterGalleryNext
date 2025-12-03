@@ -1,31 +1,8 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-// import 'package:native_flutter_proxy/custom_proxy.dart';
-// import 'package:native_flutter_proxy/custom_proxy_override.dart';
-// import 'package:native_flutter_proxy/native_proxy_reader.dart';
-
-initProxy() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  bool enabled = false;
-  String? host;
-  int? port;
-  // try {
-  //   ProxySetting settings = await NativeProxyReader.proxySetting;
-  //   enabled = settings.enabled;
-  //   host = settings.host;
-  //   port = settings.port;
-  // } catch (e) {
-  //   debugPrint("$e");
-  // }
-  // if (enabled && host != null) {
-  //   final proxy = CustomProxy(ipAddress: host, port: port);
-  //   HttpOverrides.global = CustomProxyHttpOverride.withProxy(proxy.toString());
-  //   debugPrint("proxy enabled=$enabled host=$host port=$port");
-  // }
-}
+import 'package:flutter_gallery_next/base/widget/dialog/common_dialog.dart';
+import 'package:plugin_native/proxy/proxy_info.dart';
+import 'package:plugin_native/proxy/proxy_util.dart';
 
 class DemoProxy extends StatefulWidget {
   const DemoProxy({Key? key}) : super(key: key);
@@ -48,11 +25,26 @@ class _DemoProxyState extends State<DemoProxy> {
         appBar: AppBar(
           title: const Text("demo proxy"),
         ),
-        body: ElevatedButton(
-            onPressed: () {
-              Dio().get("http://172.16.0.1");
-            },
-            child: Text("test dio")),
+        body: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () async {
+                await ProxyUtil.instance().init();
+                GlobalDialog.showToast("ProxyUtil init");
+              },
+              child: Text("init"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                ProxyInfo? proxyInfo =
+                    await ProxyUtil.instance().findProxyAsync(Uri.parse("http://192.168.0.224:9898/api/login"));
+                GlobalDialog.showToast("proxyInfo=$proxyInfo");
+                Dio().get("http://192.168.0.224:9898/api/login");
+              },
+              child: Text("test login"),
+            ),
+          ],
+        ),
       ),
     );
   }

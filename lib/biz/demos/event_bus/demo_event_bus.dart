@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus.dart';
 import 'package:flutter_gallery_next/base/common/event_bus/event_bus_key.dart';
+import 'package:flutter_gallery_next/base/widget/dialog/common_dialog.dart';
 
 class DemoEventBus extends StatefulWidget {
   const DemoEventBus({Key? key}) : super(key: key);
@@ -17,10 +18,11 @@ class _DemoEventBusState extends State<DemoEventBus> {
   @override
   void initState() {
     super.initState();
-    streamSubscription =
-        EventBus.defaultBus().subscribe(subscriber: (event) async {
-      debugPrint("EventBus subscribe=$event");
-    });
+    streamSubscription = EventBus.defaultBus().subscribe(
+      subscriber: (event) async {
+        GlobalDialog.showToast("event=${event.toString()}");
+      },
+    );
   }
 
   @override

@@ -5,13 +5,11 @@
 3.architecture+redux
 4.demo
 5.multi router
-6.build apk
-7.splash
+6.splash
+7.passkey
 8.rules
 9.multi service to vm
 10.upgrade freeze
-11.passkey
-12.device, proxy... plugin
 
 # architecture
 

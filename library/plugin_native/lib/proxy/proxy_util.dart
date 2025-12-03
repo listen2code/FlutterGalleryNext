@@ -22,8 +22,8 @@ class ProxyUtil {
 
   Future init() async {
     _proxyFromNative ??= await PluginNativePlatform.instance.getProxyInfo();
-    log("$tag enabled proxy: ${proxyEnabled()}");
-    if (proxyEnabled()) {
+    log("$tag enabled proxy($_proxyFromNative): ${_proxyEnabled()}");
+    if (_proxyEnabled()) {
       log("$tag init proxy: ${_proxyFromNative?.host}:${_proxyFromNative?.port} ${_proxyFromNative?.nonProxy}",
           type: LoggerType.easy);
       HttpOverrides.global = CustomProxyHttpOverride.withProxy();
@@ -42,7 +42,7 @@ class ProxyUtil {
     return _proxyFromNative?.nonProxy;
   }
 
-  bool proxyEnabled() {
+  bool _proxyEnabled() {
     if (Platform.isIOS && _proxyFromNative?.type == "AUTO") {
       return true;
     }
@@ -52,7 +52,7 @@ class ProxyUtil {
   }
 
   ProxyInfo? findProxySync(Uri? uri) {
-    if (proxyEnabled() == false) {
+    if (_proxyEnabled() == false) {
       log("$tag findProxySync proxyEnabled=false");
       return _proxyDirect;
     }
@@ -70,7 +70,7 @@ class ProxyUtil {
   }
 
   Future<ProxyInfo>? findProxyAsync(Uri? uri) async {
-    if (proxyEnabled() == false) {
+    if (_proxyEnabled() == false) {
       log("$tag findProxyAsync proxyEnabled=false");
       return Future.value(_proxyDirect);
     }

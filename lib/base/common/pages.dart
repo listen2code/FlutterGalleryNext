@@ -43,9 +43,6 @@ class Constant {
     "demo expand float button": (context) {
       return const DemoExpandFloatButton();
     },
-    "form submit": (context) {
-      return const DemoFormSubmit();
-    },
     "layout complex": (context) {
       return const DemoLayoutComplex();
     },

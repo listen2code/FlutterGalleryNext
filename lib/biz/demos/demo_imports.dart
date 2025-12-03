@@ -4,7 +4,6 @@ export 'package:flutter_gallery_next/biz/demos/db/demo_db_file.dart';
 export 'package:flutter_gallery_next/biz/demos/db/demo_db_sp.dart';
 export 'package:flutter_gallery_next/biz/demos/demo_empty.dart';
 export 'package:flutter_gallery_next/biz/demos/demo_expand_float_button.dart';
-export 'package:flutter_gallery_next/biz/demos/demo_form_submit.dart';
 export 'package:flutter_gallery_next/biz/demos/demo_proxy.dart';
 export 'package:flutter_gallery_next/biz/demos/demo_status_bar_color.dart';
 export 'package:flutter_gallery_next/biz/demos/demo_theme.dart';

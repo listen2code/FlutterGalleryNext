@@ -19,11 +19,11 @@ class DemoTheme extends StatelessWidget {
 
         // Define the default `TextTheme`. Use this to specify the default
         // text styling for headlines, titles, bodies of text, and more.
-        // textTheme: const TextTheme(
-        //   headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-        //   headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-        //   bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-        // ),
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+          displayMedium: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+          displaySmall: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+        ),
       ),
       home: const MyHomePage(
         title: appName,
@@ -50,13 +50,6 @@ class MyHomePage extends StatelessWidget {
             'Text with a background color',
             style: Theme.of(context).textTheme.headlineLarge,
           ),
-        ),
-      ),
-      floatingActionButton: Theme(
-        data: Theme.of(context).copyWith(splashColor: Colors.yellow),
-        child: FloatingActionButton(
-          onPressed: () {},
-          child: const Icon(Icons.add),
         ),
       ),
     );
