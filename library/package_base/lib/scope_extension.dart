@@ -38,16 +38,3 @@ extension BoolExtension on bool {
     if (!this) action();
   }
 }
-
-extension NullableStringExtension on String? {
-  /// Returns `true` if the string is either `null` or empty.
-  bool get isNullOrEmpty => this == null || this!.isEmpty;
-}
-
-extension StringParsingExtension on String {
-  /// Parses the string as an [int] or returns `null` if it fails.
-  int? toIntOrNull() => int.tryParse(this);
-
-  /// Parses the string as a [double] or returns `null` if it fails.
-  double? toDoubleOrNull() => double.tryParse(this);
-}

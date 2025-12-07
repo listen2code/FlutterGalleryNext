@@ -6,7 +6,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_gallery_next/base/common/theme/color/theme_colors.dart';
 import 'package:flutter_gallery_next/base/widget/image/common_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:package_base/strings_util.dart';
+import 'package:package_base/string_extension.dart';
 import 'package:package_libs/utils/logger_util.dart';
 import 'package:plugin_native/proxy/proxy_util.dart';
 
