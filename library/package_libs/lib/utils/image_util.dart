@@ -75,7 +75,7 @@ class ImageUtil {
             toolbarColor: Colors.black,
             toolbarWidgetColor: Colors.white,
             activeControlsWidgetColor: Colors.grey,
-            dimmedLayerColor: Colors.white.withOpacity(0.5),
+            dimmedLayerColor: Colors.white.withAlpha(128),
             showCropGrid: false,
             cropStyle: CropStyle.circle,
           ),
