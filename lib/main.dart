@@ -5,6 +5,7 @@ import 'package:flutter_gallery_next/base/widget/dialog/common_loading_widget.da
 import 'package:flutter_gallery_next/base/widget/dialog/common_toast_widget.dart';
 import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:package_libs/utils/app_links_util.dart';
 import 'package:package_libs/utils/logger_util.dart';
 
 import 'base/common/app_init.dart';
@@ -16,15 +17,41 @@ void main() async {
   assert(() {
     FlutterError.onError = (FlutterErrorDetails details) {
       LoggerUtil.error("############# FlutterError ############");
-      LoggerUtil.error("$details");
+      LoggerUtil.error("\$details");
     };
     return true;
   }());
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _initAppLinks();
+  }
+
+  Future<void> _initAppLinks() async {
+    await AppLinksUtil().init();
+    AppLinksUtil().uriLinkStream.listen((uri) {
+      if (!mounted) return;
+
+      LoggerUtil.log('Received app link: \$uri');
+    });
+  }
+
+  @override
+  void dispose() {
+    AppLinksUtil().dispose();
+    super.dispose();
+  }
 
   // This widget is the root of your application.
   @override

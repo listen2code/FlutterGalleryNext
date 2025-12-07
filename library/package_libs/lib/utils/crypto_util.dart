@@ -6,7 +6,7 @@ class CryptoUtil {
 
   factory CryptoUtil() {
     if (_instance == null) {
-      throw StateError('CryptoUtil has not been initialized. Call CryptoUtil.initialize() first.');
+      throw StateError('CryptoUtil has not been initialized. Call CryptoUtil.init() first.');
     }
     return _instance!;
   }
