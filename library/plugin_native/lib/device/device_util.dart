@@ -48,6 +48,10 @@ class DeviceUtil {
     return _deviceInfo?.deviceVersion;
   }
 
+  String? getUUID() {
+    return _deviceInfo?.uuid;
+  }
+
   Future<String> getUserAgent() async {
     StringBuffer sb = StringBuffer("$appName/");
     if (Platform.isIOS) {
@@ -69,7 +73,7 @@ class DeviceUtil {
     sb.write("${getDeviceVersion()}");
     sb.write(";");
     sb.write("netWorkStatus=${await ConnectivityUtil.instance().getStatus()}");
-    // sb.write("uid=${await getUUID()}");
+    sb.write("uid=${getUUID()}");
     sb.write(")");
     return Future.value(sb.toString());
   }

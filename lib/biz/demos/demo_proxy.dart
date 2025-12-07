@@ -29,15 +29,14 @@ class _DemoProxyState extends State<DemoProxy> {
           children: [
             ElevatedButton(
               onPressed: () async {
-                await ProxyUtil.instance().init();
+                await ProxyUtil.instance.init();
                 GlobalDialog.showToast("ProxyUtil init");
               },
               child: Text("init"),
             ),
             ElevatedButton(
               onPressed: () async {
-                ProxyInfo? proxyInfo =
-                    await ProxyUtil.instance().findProxyAsync(Uri.parse("http://192.168.0.224:9898/api/login"));
+                ProxyInfo? proxyInfo = await ProxyUtil.instance.findProxyAsync(Uri.parse("http://192.168.0.224:9898/api/login"));
                 GlobalDialog.showToast("proxyInfo=$proxyInfo");
                 Dio().get("http://192.168.0.224:9898/api/login");
               },

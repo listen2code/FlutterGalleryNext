@@ -27,7 +27,7 @@ Future<void> appInit() async {
   SecureStorageUtil.instance.init(accountName: Constants.appName);
   await DeviceUtil.instance().init(appName: Constants.appName);
   await initIntl();
-  await ProxyUtil.instance().init();
+  await ProxyUtil.instance.init();
   // todo app links
   // todo keyString: get from SecureStorageUtil
   CryptoUtil.init(keyString: "", ivString: "");

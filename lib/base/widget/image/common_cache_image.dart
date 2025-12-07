@@ -60,7 +60,7 @@ class CommonCacheImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ProxyUtil.instance().findProxyAsync(Uri.parse(imageUrl)),
+      future: ProxyUtil.instance.findProxyAsync(Uri.parse(imageUrl)),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return _loadImage();

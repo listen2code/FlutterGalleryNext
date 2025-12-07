@@ -10,7 +10,7 @@ class PermissionUtil {
 
   static final PermissionUtil _instance = PermissionUtil._private();
 
-  factory PermissionUtil.instance() => _instance;
+  static PermissionUtil get instance => _instance;
 
   Future<bool> isGranted(Permission permission) async {
     PermissionStatus status = await permission.status;

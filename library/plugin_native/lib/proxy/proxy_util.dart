@@ -11,8 +11,7 @@ class ProxyUtil {
 
   ProxyUtil._private();
 
-  factory ProxyUtil.instance() => _instance;
-  static final ProxyUtil _instance = ProxyUtil._private();
+  static final ProxyUtil instance = ProxyUtil._private();
 
   ProxyInfo? _proxyFromNative;
 
@@ -20,11 +19,12 @@ class ProxyUtil {
 
   final Map<String?, ProxyInfo?> _proxyCache = {};
 
-  Future init() async {
+  Future<void> init() async {
     _proxyFromNative ??= await PluginNativePlatform.instance.getProxyInfo();
-    log("$tag enabled proxy($_proxyFromNative): ${_proxyEnabled()}");
+    LoggerUtil.loggerWithType("$tag enabled proxy($_proxyFromNative): ${_proxyEnabled()}", type: LoggerType.easy);
     if (_proxyEnabled()) {
-      log("$tag init proxy: ${_proxyFromNative?.host}:${_proxyFromNative?.port} ${_proxyFromNative?.nonProxy}",
+      LoggerUtil.loggerWithType(
+          "$tag init proxy: ${_proxyFromNative?.host}:${_proxyFromNative?.port} ${_proxyFromNative?.nonProxy}",
           type: LoggerType.easy);
       HttpOverrides.global = CustomProxyHttpOverride.withProxy();
     }
@@ -43,51 +43,55 @@ class ProxyUtil {
   }
 
   bool _proxyEnabled() {
-    if (Platform.isIOS && _proxyFromNative?.type == "AUTO") {
+    final info = _proxyFromNative;
+    if (info == null) return false;
+
+    if (Platform.isIOS && info.type == "AUTO") {
       return true;
     }
-    return _proxyFromNative?.host.isNotEmpty == true &&
-        _proxyFromNative?.port.isNotEmpty == true &&
-        (int.tryParse("${_proxyFromNative?.port}") ?? 0) > 0;
+    return info.host.isNotEmpty && info.port.isNotEmpty && (int.tryParse(info.port) ?? 0) > 0;
   }
 
-  ProxyInfo? findProxySync(Uri? uri) {
+  ProxyInfo findProxySync(Uri? uri) {
     if (_proxyEnabled() == false) {
-      log("$tag findProxySync proxyEnabled=false");
+      LoggerUtil.loggerWithType("$tag findProxySync proxyEnabled=false", type: LoggerType.easy);
       return _proxyDirect;
     }
-    if (uri?.host == null || uri?.host.isEmpty == true) {
-      log("$tag findProxySync uri?.host is empty");
+    if (uri?.host == null || uri!.host.isEmpty) {
+      LoggerUtil.loggerWithType("$tag findProxySync uri?.host is empty", type: LoggerType.easy);
       return _proxyDirect;
     }
-    ProxyInfo? proxyInfo = _proxyCache[uri?.host];
-    if (null != proxyInfo) {
-      log("$tag findProxySync from cache uri=$uri proxyInfo=${proxyInfo.toString()}");
+    ProxyInfo? proxyInfo = _proxyCache[uri.host];
+    if (proxyInfo != null) {
+      LoggerUtil.loggerWithType("$tag findProxySync from cache uri=$uri proxyInfo=${proxyInfo.toString()}",
+          type: LoggerType.easy);
       return proxyInfo;
     }
-    log("$tag findProxySync from direct");
+    LoggerUtil.loggerWithType("$tag findProxySync from direct", type: LoggerType.easy);
     return _proxyDirect;
   }
 
-  Future<ProxyInfo>? findProxyAsync(Uri? uri) async {
+  Future<ProxyInfo> findProxyAsync(Uri? uri) async {
     if (_proxyEnabled() == false) {
-      log("$tag findProxyAsync proxyEnabled=false");
-      return Future.value(_proxyDirect);
+      LoggerUtil.loggerWithType("$tag findProxyAsync proxyEnabled=false", type: LoggerType.easy);
+      return _proxyDirect;
     }
-    if (uri?.host == null || uri?.host.isEmpty == true) {
-      log("$tag findProxyAsync uri?.host is empty");
-      return Future.value(_proxyDirect);
+    if (uri?.host == null || uri!.host.isEmpty) {
+      LoggerUtil.loggerWithType("$tag findProxyAsync uri?.host is empty", type: LoggerType.easy);
+      return _proxyDirect;
     }
-    ProxyInfo? proxyInfo = _proxyCache[uri?.host];
-    if (null != proxyInfo) {
-      log("$tag findProxyAsync from cache uri=$uri proxyInfo=${proxyInfo.toString()}");
-      return Future.value(proxyInfo);
+    ProxyInfo? proxyInfo = _proxyCache[uri.host];
+    if (proxyInfo != null) {
+      LoggerUtil.loggerWithType("$tag findProxyAsync from cache uri=$uri proxyInfo=${proxyInfo.toString()}",
+          type: LoggerType.easy);
+      return proxyInfo;
     }
     proxyInfo = await PluginNativePlatform.instance.findProxy(uri.toString());
-    log("$tag findProxyAsync from native uri=$uri proxyInfo=${proxyInfo.toString()}");
+    LoggerUtil.loggerWithType("$tag findProxyAsync from native uri=$uri proxyInfo=${proxyInfo?.toString()}",
+        type: LoggerType.easy);
     proxyInfo ??= _proxyDirect;
-    _proxyCache[uri?.host] = proxyInfo;
-    log("$tag findProxyAsync add cache host=${uri?.host}\ncurrent cache$_proxyCache");
-    return Future.value(proxyInfo);
+    _proxyCache[uri.host] = proxyInfo;
+    LoggerUtil.loggerWithType("$tag findProxyAsync add cache host=${uri.host}\ncurrent cache$_proxyCache", type: LoggerType.easy);
+    return proxyInfo;
   }
 }

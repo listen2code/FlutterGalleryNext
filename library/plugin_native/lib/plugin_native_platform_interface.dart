@@ -33,7 +33,7 @@ abstract class PluginNativePlatform extends PlatformInterface {
     throw UnimplementedError('getProxyInfo() has not been implemented.');
   }
 
-  Future<ProxyInfo?> findProxy(String string) {
+  Future<ProxyInfo?> findProxy(String url) {
     throw UnimplementedError('findProxy() has not been implemented.');
   }
 

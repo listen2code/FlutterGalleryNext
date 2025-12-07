@@ -10,6 +10,19 @@ class DeviceInfo {
     required this.uuid,
   });
 
+  factory DeviceInfo.fromJson(Map<String, dynamic> json) {
+    return DeviceInfo(
+      appName: json['appName'] ?? '',
+      packageName: json['packageName'] ?? '',
+      appVersionName: json['appVersionName'] ?? '',
+      appVersionCode: json['appVersionCode'] ?? '',
+      model: json['model'] ?? '',
+      product: json['product'] ?? '',
+      deviceVersion: json['deviceVersion'] ?? '',
+      uuid: json['uuid'] ?? '',
+    );
+  }
+
   /// The app name. `CFBundleDisplayName` on iOS, `application/label` on Android.
   final String appName;
 

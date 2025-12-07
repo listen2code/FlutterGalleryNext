@@ -91,7 +91,7 @@ class ApiManager {
       if (authorization != null) {
         requestOptions = requestOptions.copyWith(headers: authorization);
       }
-      await ProxyUtil.instance().findProxyAsync(Uri.parse(dio.options.baseUrl));
+      await ProxyUtil.instance.findProxyAsync(Uri.parse(dio.options.baseUrl));
       return await dio.get(
         path,
         queryParameters: params,
@@ -124,7 +124,7 @@ class ApiManager {
       if (authorization != null) {
         requestOptions = requestOptions.copyWith(headers: authorization);
       }
-      await ProxyUtil.instance().findProxyAsync(Uri.parse(dio.options.baseUrl));
+      await ProxyUtil.instance.findProxyAsync(Uri.parse(dio.options.baseUrl));
       return await dio.post(
         path,
         data: data,
@@ -158,7 +158,7 @@ class ApiManager {
       if (authorization != null) {
         requestOptions = requestOptions.copyWith(headers: authorization);
       }
-      await ProxyUtil.instance().findProxyAsync(Uri.parse(dio.options.baseUrl));
+      await ProxyUtil.instance.findProxyAsync(Uri.parse(dio.options.baseUrl));
       return await dio.request(
         path,
         data: data,

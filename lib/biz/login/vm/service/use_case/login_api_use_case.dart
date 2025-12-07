@@ -77,7 +77,7 @@ class LoginAPIUseCase extends BaseLoginUseCase<LoginEntity, LoginRequest> {
     //   // プッシュ通知権限リクエストを承認された／されている場合はトークンを取得する
     //   token = await NotificationService.instance.getFirebaseToken();
     // }
-    // return DeviceUtil.instance().getUUID();
+    return DeviceUtil.instance().getUUID();
   }
 }
 

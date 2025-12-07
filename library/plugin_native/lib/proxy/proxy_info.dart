@@ -7,20 +7,26 @@ class ProxyInfo {
   });
 
   final String host;
-
   final String port;
-
   final String type;
-
   final String nonProxy;
+
+  bool get isProxy => type == "PROXY" && host.isNotEmpty && port.isNotEmpty;
+
+  factory ProxyInfo.fromJson(Map<String, dynamic> json) {
+    return ProxyInfo(
+      host: json['host'] ?? '',
+      port: json['port'] ?? '',
+      type: json['type'] ?? 'DIRECT',
+      nonProxy: json['nonProxy'] ?? '',
+    );
+  }
 
   @override
   String toString() {
-    if ("DIRECT" == type) {
-      return "DIRECT";
+    if (isProxy) {
+      return "PROXY $host:$port";
     }
-    String result = host;
-    if (port.isNotEmpty == true) result += ":$port";
-    return "PROXY $result;";
+    return "DIRECT";
   }
 }
