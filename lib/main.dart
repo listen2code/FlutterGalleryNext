@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/pages.dart';
 import 'package:flutter_gallery_next/base/widget/base/global_navigation.dart';
+import 'package:flutter_gallery_next/base/widget/dialog/common_dialog.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_loading_widget.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_toast_widget.dart';
 import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
@@ -39,7 +40,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _initAppLinks();
     ConnectivityUtil.instance().onConnectivityChanged.listen((status) {
-      LoggerUtil.log('onConnectivityChanged: \$status');
+      GlobalDialog.showToast('onConnectivityChanged: $status');
     });
   }
 
@@ -47,8 +48,7 @@ class _MyAppState extends State<MyApp> {
     await AppLinksUtil().init();
     AppLinksUtil().uriLinkStream.listen((uri) {
       if (!mounted) return;
-
-      LoggerUtil.log('Received app link: \$uri');
+      GlobalDialog.showToast('Received app link: $uri');
     });
   }
 
