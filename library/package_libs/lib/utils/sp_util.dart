@@ -1,134 +1,58 @@
-import 'package:flutter/foundation.dart';
+import 'package:package_libs/utils/logger_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SpUtil {
-  static final SpUtil _instance = SpUtil._private();
-  static SharedPreferences? _prefs;
+  static final SpUtil _instance = SpUtil._internal();
 
-  SpUtil._private() {
-    SharedPreferences.setPrefix("flutter_gallery_");
+  SpUtil._internal();
+
+  static SpUtil get instance => _instance;
+
+  late final SharedPreferences _prefs;
+
+  Future<void> init({required String prefix}) async {
+    SharedPreferences.setPrefix(prefix);
+    _prefs = await SharedPreferences.getInstance();
   }
 
-  factory SpUtil.instance() => _instance;
-
-  Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
-  }
-
-  Future<bool> set(String key, dynamic value) async {
-    if (_prefs == null) await _init();
-
+  Future<bool> set(String key, dynamic value) {
     if (value is String) {
-      return _prefs!.setString(key, value);
+      return _prefs.setString(key, value);
     } else if (value is bool) {
-      return _prefs!.setBool(key, value);
+      return _prefs.setBool(key, value);
     } else if (value is double) {
-      return _prefs!.setDouble(key, value);
+      return _prefs.setDouble(key, value);
     } else if (value is int) {
-      return _prefs!.setInt(key, value);
+      return _prefs.setInt(key, value);
     } else if (value is List<String>) {
-      return _prefs!.setStringList(key, value);
+      return _prefs.setStringList(key, value);
     } else {
-      debugPrint("SharedPreferences setValue Unsupported Type");
+      LoggerUtil.warning("SpUtil.set: Unsupported type ${value.runtimeType} for key '$key'");
       return Future.value(false);
     }
   }
 
-  Future<bool> getBoolAsync(String key, {bool defaultValue = false}) async {
-    if (_prefs == null) await _init();
-    bool? result = _prefs?.getBool(key);
-    if (null == result) {
-      return Future.value(defaultValue);
-    }
-    return Future.value(result);
-  }
-
-  Future<int> getIntAsync(String key, {int defaultValue = 0}) async {
-    if (_prefs == null) await _init();
-    int? result = _prefs?.getInt(key);
-    if (null == result) {
-      return Future.value(defaultValue);
-    }
-    return Future.value(result);
-  }
-
-  Future<double> getDoubleAsync(String key, {double defaultValue = 0.0}) async {
-    if (_prefs == null) await _init();
-    double? result = _prefs?.getDouble(key);
-    if (null == result) {
-      return Future.value(defaultValue);
-    }
-    return Future.value(result);
-  }
-
-  Future<String> getStringAsync(String key, {String defaultValue = ""}) async {
-    if (_prefs == null) await _init();
-    String? result = _prefs?.getString(key);
-    if (null == result) {
-      return Future.value(defaultValue);
-    }
-    return Future.value(result);
-  }
-
-  Future<List<String>> getStringListAsync(String key, {defaultValue}) async {
-    if (_prefs == null) await _init();
-    List<String>? result = _prefs?.getStringList(key);
-    if (null == result) {
-      return Future.value(defaultValue ?? []);
-    }
-    return Future.value(result);
-  }
-
   bool getBool(String key, {bool defaultValue = false}) {
-    bool? result = _prefs?.getBool(key);
-    if (null == result) {
-      return defaultValue;
-    }
-    return result;
+    return _prefs.getBool(key) ?? defaultValue;
   }
 
   int getInt(String key, {int defaultValue = 0}) {
-    int? result = _prefs?.getInt(key);
-    if (null == result) {
-      return defaultValue;
-    }
-    return result;
+    return _prefs.getInt(key) ?? defaultValue;
   }
 
   double getDouble(String key, {double defaultValue = 0.0}) {
-    double? result = _prefs?.getDouble(key);
-    if (null == result) {
-      return defaultValue;
-    }
-    return result;
+    return _prefs.getDouble(key) ?? defaultValue;
   }
 
   String getString(String key, {String defaultValue = ""}) {
-    String? result = _prefs?.getString(key);
-    if (null == result) {
-      return defaultValue;
-    }
-    return result;
+    return _prefs.getString(key) ?? defaultValue;
   }
 
-  List<String> getStringList(String key, {defaultValue}) {
-    List<String>? result = _prefs?.getStringList(key);
-    if (null == result) {
-      return defaultValue ?? [];
-    }
-    return result;
+  List<String> getStringList(String key, {List<String> defaultValue = const []}) {
+    return _prefs.getStringList(key) ?? defaultValue;
   }
 
-  Future<bool> remove(String key) async {
-    if (_prefs == null) await _init();
-    return _prefs!.remove(key);
+  Future<bool> remove(String key) {
+    return _prefs.remove(key);
   }
-}
-
-class SpKey {
-  SpKey._private();
-
-  static const String uuid = "uuid";
-  static const String loginId = "loginId";
-  static const String password = "password";
 }

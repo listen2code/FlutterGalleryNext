@@ -19,7 +19,7 @@ class _DemoDbSpState extends State<DemoDbSp> {
 
   //Loading counter value on start
   Future<void> _loadCounter() async {
-    var counter = await SpUtil.instance().getIntAsync('counter');
+    var counter = SpUtil.instance.getInt('counter');
     setState(() {
       _counter = counter;
     });
@@ -27,11 +27,11 @@ class _DemoDbSpState extends State<DemoDbSp> {
 
   //Incrementing counter after click
   Future<void> _incrementCounter() async {
-    var counter = await SpUtil.instance().getIntAsync('counter');
+    var counter = SpUtil.instance.getInt('counter');
     debugPrint("counter=$counter");
     setState(() {
-      _counter = (counter ?? 0) + 1;
-      SpUtil.instance().set('counter', _counter);
+      _counter = (counter) + 1;
+      SpUtil.instance.set('counter', _counter);
     });
   }
 

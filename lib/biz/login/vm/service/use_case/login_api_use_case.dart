@@ -16,10 +16,10 @@ class LoginAPIUseCase extends BaseLoginUseCase<LoginEntity, LoginRequest> {
   }
 
   Future<ResponseEntity<LoginEntity>> autoLogin() async {
-    var local = await ProfileUtil().loadLoginSetting();
+    var local = await ProfileUtil.instance.loadLoginSetting();
     return post(LoginRequest(
       userName: local.userName ?? "",
-      password: local.passwd ?? "",
+      password: local.password ?? "",
       deviceId: await getDeviceId(),
       deviceType: DeviceType.getDeviceType(),
       appVersion: await getAppVersion(),
@@ -77,7 +77,7 @@ class LoginAPIUseCase extends BaseLoginUseCase<LoginEntity, LoginRequest> {
     //   // プッシュ通知権限リクエストを承認された／されている場合はトークンを取得する
     //   token = await NotificationService.instance.getFirebaseToken();
     // }
-    return DeviceUtil.instance().getUUID();
+    // return DeviceUtil.instance().getUUID();
   }
 }
 

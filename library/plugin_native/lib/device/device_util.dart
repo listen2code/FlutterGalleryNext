@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_libs/utils/connectivity_util.dart';
-import 'package:package_libs/utils/sp_util.dart';
 import 'package:plugin_native/device/device_info.dart';
 import 'package:plugin_native/plugin_native_platform_interface.dart';
 
@@ -49,15 +48,6 @@ class DeviceUtil {
     return _deviceInfo?.deviceVersion;
   }
 
-  Future<String>? getUUID() async {
-    String? uuid = await SpUtil.instance().getStringAsync(SpKey.uuid);
-    if (uuid.isNotEmpty == true) {
-      return Future.value(uuid);
-    }
-    SpUtil.instance().set(SpKey.uuid, _deviceInfo?.uuid);
-    return Future.value(_deviceInfo?.uuid ?? "");
-  }
-
   Future<String> getUserAgent() async {
     StringBuffer sb = StringBuffer("$appName/");
     if (Platform.isIOS) {
@@ -79,7 +69,7 @@ class DeviceUtil {
     sb.write("${getDeviceVersion()}");
     sb.write(";");
     sb.write("netWorkStatus=${await ConnectivityUtil.instance().getStatus()}");
-    sb.write("uid=${await getUUID()}");
+    // sb.write("uid=${await getUUID()}");
     sb.write(")");
     return Future.value(sb.toString());
   }

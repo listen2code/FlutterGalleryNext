@@ -107,11 +107,11 @@ class PasskeyUtil {
       ..result = params["result"]
       ..loginId = params["loginId"];
     if (result.isRegisterSuccess) {
-      SpUtil.instance().set("lastLoginId", result.loginId);
+      SpUtil.instance.set("lastLoginId", result.loginId);
       return result;
     }
     if (result.isAuthSuccess) {
-      SpUtil.instance().set("lastLoginId", result.loginId);
+      SpUtil.instance.set("lastLoginId", result.loginId);
       return result;
     }
     return result..type = WebAuthResultType.error;
@@ -133,14 +133,14 @@ class PasskeyUtil {
     // todo api
     bool isExists = true;
     if (isExists) {
-      SpUtil.instance().set("lastLoginId", loginId);
+      SpUtil.instance.set("lastLoginId", loginId);
     } else {
-      await SpUtil.instance().remove("lastLoginId");
+      await SpUtil.instance.remove("lastLoginId");
     }
   }
 
   Future<bool> canPasskeyUsing() async {
-    String lastLoginId = await SpUtil.instance().getStringAsync("lastLoginId");
+    String lastLoginId = SpUtil.instance.getString("lastLoginId");
     return lastLoginId.isNotEmpty == true;
   }
 }

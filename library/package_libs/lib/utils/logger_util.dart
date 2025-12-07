@@ -14,8 +14,11 @@ class LoggerUtil {
       ),
       output: null);
 
-  static void log(dynamic message, {LoggerType type = LoggerType.info}) {
+  static void init() {
     Logger.level = Level.all;
+  }
+
+  static void log(dynamic message, {LoggerType type = LoggerType.info}) {
     loggerWithType(message, type: type);
   }
 

@@ -4,48 +4,53 @@ import 'logger_util.dart';
 
 class SecureStorageUtil {
   static const String tag = "SecureStorageUtil";
-  static final SecureStorageUtil _instance = SecureStorageUtil._private();
+  static final SecureStorageUtil _instance = SecureStorageUtil._internal();
 
-  SecureStorageUtil._private();
+  SecureStorageUtil._internal();
 
-  factory SecureStorageUtil.instance() => _instance;
+  static SecureStorageUtil get instance => _instance;
 
-  late String accountName;
+  FlutterSecureStorage? _storage;
 
+  /// Initializes the storage instance. This must be called before any other method.
   void init({required String accountName}) {
-    this.accountName = accountName;
-  }
-
-  FlutterSecureStorage createStorage() {
-    FlutterSecureStorage storage = FlutterSecureStorage(
+    _storage = FlutterSecureStorage(
       iOptions: IOSOptions(accountName: accountName, synchronizable: false),
       aOptions: const AndroidOptions(encryptedSharedPreferences: true),
     );
-    return storage;
+    log("$tag init for account: $accountName");
+  }
+
+  // Helper to check for initialization and get storage
+  FlutterSecureStorage get _getStorage {
+    if (_storage == null) {
+      throw StateError('SecureStorageUtil has not been initialized. Call init() first.');
+    }
+    return _storage!;
   }
 
   Future<bool> contains(String key) {
     log("$tag contains key:$key");
-    return createStorage().containsKey(key: key);
+    return _getStorage.containsKey(key: key);
   }
 
   Future<String?> get(String key) {
     log("$tag get key:$key");
-    return createStorage().read(key: key);
+    return _getStorage.read(key: key);
   }
 
-  void set(String key, String? value) {
+  Future<void> set(String key, String? value) async {
     log("$tag set key:$key value:$value");
-    createStorage().write(key: key, value: value);
+    await _getStorage.write(key: key, value: value);
   }
 
-  void delete(String key) {
+  Future<void> delete(String key) async {
     log("$tag delete key:$key");
-    createStorage().delete(key: key);
+    await _getStorage.delete(key: key);
   }
 
-  void deleteAll() {
+  Future<void> deleteAll() async {
     log("$tag deleteAll");
-    createStorage().deleteAll();
+    await _getStorage.deleteAll();
   }
 }

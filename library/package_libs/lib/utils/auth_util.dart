@@ -88,8 +88,8 @@ class AuthUtil {
     if (isAvailableBool == false) {
       LoggerUtil.log("AuthUtil checkAuthority isAvailableBool=false", type: LoggerType.easy);
       setStatus(AuthStatus.done);
-      await SpUtil.instance().set("lockPassWordId", "");
-      await SpUtil.instance().set("authenticationTime", "");
+      await SpUtil.instance.set("lockPassWordId", "");
+      await SpUtil.instance.set("authenticationTime", "");
       await stopAuthentication();
       // GlobalDialog.dismissDialog(tag: BiometricAuthLockDialog.tag);
       return false;
@@ -133,7 +133,7 @@ class AuthUtil {
         return true;
       }
 
-      String authenticationTime = await SpUtil.instance().getStringAsync("authenticationTime", defaultValue: "");
+      String authenticationTime = SpUtil.instance.getString("authenticationTime", defaultValue: "");
       bool isRequiredIfEnabledBool = await isRequiredIfEnabled(getPausedDate(), int.tryParse(authenticationTime) ?? -1);
       LoggerUtil.log(
           "AuthUtil shouldAuth "
@@ -151,8 +151,8 @@ class AuthUtil {
   }
 
   Future<bool> isAuthEnabled() async {
-    String authenticationTime = await SpUtil.instance().getStringAsync("authenticationTime", defaultValue: "");
-    String lockPassword = await SpUtil.instance().getStringAsync("lockPassWordId", defaultValue: "");
+    String authenticationTime = SpUtil.instance.getString("authenticationTime", defaultValue: "");
+    String lockPassword = SpUtil.instance.getString("lockPassWordId", defaultValue: "");
 
     if (lockPassword.isEmpty == true) {
       // lockPasswordが設定されていない
@@ -301,9 +301,9 @@ class AuthUtil {
     clearPauseDate();
 
     // Lockのパスワード
-    SpUtil.instance().set("lockPassWordId", "");
+    SpUtil.instance.set("lockPassWordId", "");
     // 生体認証有効時間
-    SpUtil.instance().set("authenticationTime", "");
+    SpUtil.instance.set("authenticationTime", "");
   }
 
   void setPausedDate() {

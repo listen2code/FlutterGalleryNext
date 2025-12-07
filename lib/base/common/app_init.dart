@@ -10,17 +10,21 @@ import 'package:flutter_gallery_next/base/widget/refresh/refresh_manager.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:package_libs/utils/crypto_util.dart';
+import 'package:package_libs/utils/logger_util.dart';
 import 'package:package_libs/utils/secure_storage_util.dart';
+import 'package:package_libs/utils/sp_util.dart';
 import 'package:plugin_native/device/device_util.dart';
 import 'package:plugin_native/proxy/proxy_util.dart';
 
 Future<void> appInit() async {
   WidgetsFlutterBinding.ensureInitialized();
   initErrorHandler();
+  LoggerUtil.init();
+  SpUtil.instance.init(prefix: Constants.appName);
   initOrientations();
   initRefresh();
   initEnv();
-  SecureStorageUtil.instance().init(accountName: Constants.appName);
+  SecureStorageUtil.instance.init(accountName: Constants.appName);
   await DeviceUtil.instance().init(appName: Constants.appName);
   await initIntl();
   await ProxyUtil.instance().init();
