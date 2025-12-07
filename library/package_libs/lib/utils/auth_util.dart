@@ -72,8 +72,7 @@ class AuthUtil {
       authResult = AuthResult.error;
       LoggerUtil.log("AuthUtil authenticate error=$e", type: LoggerType.error);
     }
-    LoggerUtil.log("AuthUtil authenticate authResult=$authResult",
-        type: LoggerType.easy);
+    LoggerUtil.log("AuthUtil authenticate authResult=$authResult", type: LoggerType.easy);
     if (authResult == AuthResult.success) {
       setStatus(AuthStatus.done);
     }
@@ -82,14 +81,12 @@ class AuthUtil {
 
   Future<bool> checkAuthority() async {
     if (isStatusSkip()) {
-      LoggerUtil.log("AuthUtil checkAuthority skip=true",
-          type: LoggerType.easy);
+      LoggerUtil.log("AuthUtil checkAuthority skip=true", type: LoggerType.easy);
       return false;
     }
     bool isAvailableBool = await isAvailable();
     if (isAvailableBool == false) {
-      LoggerUtil.log("AuthUtil checkAuthority isAvailableBool=false",
-          type: LoggerType.easy);
+      LoggerUtil.log("AuthUtil checkAuthority isAvailableBool=false", type: LoggerType.easy);
       setStatus(AuthStatus.done);
       await SpUtil.instance().set("lockPassWordId", "");
       await SpUtil.instance().set("authenticationTime", "");
@@ -107,11 +104,9 @@ class AuthUtil {
     bool shouldAuthBool = await shouldAuth();
     if (shouldAuthBool) {
       if (isStatusDoing()) {
-        LoggerUtil.log("AuthUtil checkAuthority isStatusDoing",
-            type: LoggerType.easy);
+        LoggerUtil.log("AuthUtil checkAuthority isStatusDoing", type: LoggerType.easy);
       } else {
-        LoggerUtil.log("AuthUtil checkAuthority 生体認証画面へ",
-            type: LoggerType.easy);
+        LoggerUtil.log("AuthUtil checkAuthority 生体認証画面へ", type: LoggerType.easy);
         // BiometricAuthLockDialog.show();
       }
       // 生体認証を行う場合にのみtrueが返る
@@ -125,35 +120,28 @@ class AuthUtil {
 
   Future<bool> shouldAuth() async {
     if (isStatusDone()) {
-      LoggerUtil.log("AuthUtil shouldAuth=false isStatusDone",
-          type: LoggerType.easy);
+      LoggerUtil.log("AuthUtil shouldAuth=false isStatusDone", type: LoggerType.easy);
       return false;
     }
 
     bool isAuthTimeEnabledBool = await isAuthEnabled();
-    LoggerUtil.log(
-        "AuthUtil shouldAuth isAuthTimeEnabled=$isAuthTimeEnabledBool",
-        type: LoggerType.easy);
+    LoggerUtil.log("AuthUtil shouldAuth isAuthTimeEnabled=$isAuthTimeEnabledBool", type: LoggerType.easy);
     if (isAuthTimeEnabledBool) {
       if (isStatusInit()) {
         // アプリ起動 -> 生体認証へ
-        LoggerUtil.log("AuthUtil shouldAuth=true isStatusInit",
-            type: LoggerType.easy);
+        LoggerUtil.log("AuthUtil shouldAuth=true isStatusInit", type: LoggerType.easy);
         return true;
       }
 
-      String authenticationTime = await SpUtil.instance()
-          .getStringAsync("authenticationTime", defaultValue: "");
-      bool isRequiredIfEnabledBool = await isRequiredIfEnabled(
-          getPausedDate(), int.tryParse(authenticationTime) ?? -1);
+      String authenticationTime = await SpUtil.instance().getStringAsync("authenticationTime", defaultValue: "");
+      bool isRequiredIfEnabledBool = await isRequiredIfEnabled(getPausedDate(), int.tryParse(authenticationTime) ?? -1);
       LoggerUtil.log(
           "AuthUtil shouldAuth "
           "authenticationTime=$authenticationTime "
           "isRequiredIfEnabledBool=$isRequiredIfEnabledBool ",
           type: LoggerType.easy);
       if (isRequiredIfEnabledBool == true) {
-        LoggerUtil.log("AuthUtil shouldAuth=true isRequiredIfEnabledBool=true",
-            type: LoggerType.easy);
+        LoggerUtil.log("AuthUtil shouldAuth=true isRequiredIfEnabledBool=true", type: LoggerType.easy);
         return true;
       }
     }
@@ -163,29 +151,24 @@ class AuthUtil {
   }
 
   Future<bool> isAuthEnabled() async {
-    String authenticationTime = await SpUtil.instance()
-        .getStringAsync("authenticationTime", defaultValue: "");
-    String lockPassword = await SpUtil.instance()
-        .getStringAsync("lockPassWordId", defaultValue: "");
+    String authenticationTime = await SpUtil.instance().getStringAsync("authenticationTime", defaultValue: "");
+    String lockPassword = await SpUtil.instance().getStringAsync("lockPassWordId", defaultValue: "");
 
     if (lockPassword.isEmpty == true) {
       // lockPasswordが設定されていない
-      LoggerUtil.log("AuthUtil isAuthTimeEnabled lockPasswordが設定されていない",
-          type: LoggerType.easy);
+      LoggerUtil.log("AuthUtil isAuthTimeEnabled lockPasswordが設定されていない", type: LoggerType.easy);
       return false;
     }
 
     if (authenticationTime.isEmpty == true) {
       // timeoutが設定されていない
-      LoggerUtil.log("AuthUtil isAuthTimeEnabled timeoutが設定されていない",
-          type: LoggerType.easy);
+      LoggerUtil.log("AuthUtil isAuthTimeEnabled timeoutが設定されていない", type: LoggerType.easy);
       return false;
     }
 
     if (num.tryParse(authenticationTime) == null) {
       // 設定無効
-      LoggerUtil.log("AuthUtil isAuthTimeEnabled 設定無効=$authenticationTime",
-          type: LoggerType.easy);
+      LoggerUtil.log("AuthUtil isAuthTimeEnabled 設定無効=$authenticationTime", type: LoggerType.easy);
       return false;
     }
 
@@ -193,27 +176,21 @@ class AuthUtil {
   }
 
   Future<bool> isRequiredIfEnabled(DateTime? startTime, int timeout) async {
-    LoggerUtil.log(
-        "AuthUtil isRequiredIfEnabled startTime=$startTime timeout=$timeout",
-        type: LoggerType.easy);
+    LoggerUtil.log("AuthUtil isRequiredIfEnabled startTime=$startTime timeout=$timeout", type: LoggerType.easy);
     if (timeout < 0) {
-      LoggerUtil.log("AuthUtil isRequiredIfEnabled timeout invalid",
-          type: LoggerType.easy);
+      LoggerUtil.log("AuthUtil isRequiredIfEnabled timeout invalid", type: LoggerType.easy);
       return false;
     }
 
     if (startTime == null) {
       // 認証有効中
-      LoggerUtil.log(
-          "AuthUtil isRequiredIfEnabled 認証有効中 startTime=$startTime timeout=$timeout",
-          type: LoggerType.easy);
+      LoggerUtil.log("AuthUtil isRequiredIfEnabled 認証有効中 startTime=$startTime timeout=$timeout", type: LoggerType.easy);
       return false;
     }
 
     if (timeout == 0) {
       // 即時認証
-      LoggerUtil.log("AuthUtil isRequiredIfEnabled 即時認証",
-          type: LoggerType.easy);
+      LoggerUtil.log("AuthUtil isRequiredIfEnabled 即時認証", type: LoggerType.easy);
       return true;
     }
 
@@ -226,14 +203,10 @@ class AuthUtil {
         type: LoggerType.easy);
 
     if (dif.inMinutes >= timeout) {
-      LoggerUtil.log(
-          "AuthUtil isRequiredIfEnabled=true ${dif.inMinutes} >= $timeout",
-          type: LoggerType.easy);
+      LoggerUtil.log("AuthUtil isRequiredIfEnabled=true ${dif.inMinutes} >= $timeout", type: LoggerType.easy);
       return true;
     } else {
-      LoggerUtil.log(
-          "AuthUtil isRequiredIfEnabled=false ${dif.inMinutes} < $timeout",
-          type: LoggerType.easy);
+      LoggerUtil.log("AuthUtil isRequiredIfEnabled=false ${dif.inMinutes} < $timeout", type: LoggerType.easy);
       return false;
     }
   }
@@ -262,8 +235,7 @@ class AuthUtil {
     try {
       canCheckBiometrics = await _auth.canCheckBiometrics;
     } on PlatformException catch (e) {
-      LoggerUtil.log("AuthUtil canCheckBiometrics error=$e",
-          type: LoggerType.error);
+      LoggerUtil.log("AuthUtil canCheckBiometrics error=$e", type: LoggerType.error);
     }
     return canCheckBiometrics;
   }
@@ -274,11 +246,9 @@ class AuthUtil {
     try {
       biometricList = await _auth.getAvailableBiometrics();
     } on PlatformException catch (e) {
-      LoggerUtil.log("AuthUtil isFaceAvailable error=$e",
-          type: LoggerType.error);
+      LoggerUtil.log("AuthUtil isFaceAvailable error=$e", type: LoggerType.error);
     }
-    var hasNot = biometricList.every((e) => e != BiometricType.face);
-    return !hasNot;
+    return biometricList.contains(BiometricType.face);
   }
 
   Future<bool> isFingerprintAvailable() async {
@@ -287,17 +257,14 @@ class AuthUtil {
     try {
       biometricList = await _auth.getAvailableBiometrics();
     } on PlatformException catch (e) {
-      LoggerUtil.log("AuthUtil isFingerprintAvailable error=$e",
-          type: LoggerType.error);
+      LoggerUtil.log("AuthUtil isFingerprintAvailable error=$e", type: LoggerType.error);
     }
-    var hasNot = biometricList.every((e) => e == BiometricType.fingerprint);
-    return !hasNot;
+    return biometricList.contains(BiometricType.fingerprint);
   }
 
   Future<String> getAuthTypeName() async {
     bool isFaceAvailable = await AuthUtil.instance().isFaceAvailable();
-    bool isFingerprintAvailable =
-        await AuthUtil.instance().isFingerprintAvailable();
+    bool isFingerprintAvailable = await AuthUtil.instance().isFingerprintAvailable();
     String result = "useBiometricAuth";
     if (isFingerprintAvailable && isFaceAvailable) {
       result = "touchIdFaceIdUse";
@@ -314,8 +281,7 @@ class AuthUtil {
     try {
       result = await _auth.stopAuthentication();
     } on PlatformException catch (e) {
-      LoggerUtil.log("AuthUtil stopAuthentication error=$e",
-          type: LoggerType.error);
+      LoggerUtil.log("AuthUtil stopAuthentication error=$e", type: LoggerType.error);
     }
     return result;
   }
@@ -342,8 +308,7 @@ class AuthUtil {
 
   void setPausedDate() {
     _pausedDate = DateTime.now();
-    LoggerUtil.log("AuthUtil setPausedDate pausedDate=$_pausedDate",
-        type: LoggerType.easy);
+    LoggerUtil.log("AuthUtil setPausedDate pausedDate=$_pausedDate", type: LoggerType.easy);
     setStatusTodo();
   }
 
@@ -369,8 +334,7 @@ class AuthUtil {
   }
 
   void setStatusTodo() {
-    log("AuthUtil setStatusTodo from $_status to AuthStatus.todo",
-        type: LoggerType.easy);
+    log("AuthUtil setStatusTodo from $_status to AuthStatus.todo", type: LoggerType.easy);
     if (_status != AuthStatus.doing) {
       _status = AuthStatus.todo;
     }

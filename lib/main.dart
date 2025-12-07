@@ -5,8 +5,8 @@ import 'package:flutter_gallery_next/base/widget/dialog/common_loading_widget.da
 import 'package:flutter_gallery_next/base/widget/dialog/common_toast_widget.dart';
 import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:package_base/function_proxy_util.dart';
 import 'package:package_libs/utils/app_links_util.dart';
-import 'package:package_libs/utils/function_proxy_util.dart';
 import 'package:package_libs/utils/logger_util.dart';
 
 import 'base/common/app_init.dart';
