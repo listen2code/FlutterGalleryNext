@@ -11,7 +11,7 @@ extension FunctionExt on Function {
   ///
   /// This can be used directly in an event handler, for example:
   /// `onPressed: myAction.throttle()`
-  Function throttle({int milliseconds = 500}) {
+  throttle({int milliseconds = 500}) {
     return () {
       // Check if a timer is active for this function.
       if (_functionTimers[this] == null) {
@@ -36,7 +36,7 @@ extension FunctionExt on Function {
   /// This can be used directly in an event handler, for example:
   /// `onChanged: (text) => mySearchAction.debounce()`, although for functions
   /// with arguments, you may need a more specific implementation.
-  Function debounce({int milliseconds = 500}) {
+  debounce({int milliseconds = 500}) {
     return () {
       // If a timer is already active, cancel it.
       _functionTimers[this]?.cancel();

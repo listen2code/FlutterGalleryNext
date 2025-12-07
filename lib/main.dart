@@ -89,7 +89,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var routeLists = Constant.router.keys.toList();
     return Scaffold(
       appBar: AppBar(
         title: const Text("home"),
@@ -98,8 +97,8 @@ class HomePage extends StatelessWidget {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
-              Navigator.of(context).pushNamed(routeLists[index]);
-            }.throttle(),
+              Navigator.of(context).pushNamed(Constant.router.keys.toList()[index]);
+            }.throttle,
             child: Container(
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.symmetric(horizontal: 10),
