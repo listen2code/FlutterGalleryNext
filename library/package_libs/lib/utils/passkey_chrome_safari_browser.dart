@@ -11,16 +11,16 @@ class PasskeyChromeSafariBrowser with WidgetsBindingObserver {
   StreamSubscription<Uri>? _streamSubscription;
   ChromeSafariBrowser? _chromeSafariBrowser;
   Completer<void>? _authResultFuture;
+  String _authCallback = "";
 
   Future<String> openWithResult({required WebUri uri}) async {
-    String authCallback = "";
     _completeFuture();
     _authResultFuture = Completer();
     try {
       if (Platform.isIOS) {
-        authCallback = await _authIOS(uri);
+        await _authIOS(uri);
       } else if (Platform.isAndroid) {
-        authCallback = await _authAndroid(authCallback, uri);
+        await _authAndroid(uri);
       } else {
         throw Exception("Unsupported platform");
       }
@@ -31,13 +31,13 @@ class PasskeyChromeSafariBrowser with WidgetsBindingObserver {
     } finally {
       _completeFuture();
     }
-    return Future.value(authCallback);
+    return Future.value(_authCallback);
   }
 
-  Future<String> _authAndroid(String authCallback, WebUri uri) async {
+  Future<void> _authAndroid(WebUri uri) async {
     _streamSubscription = AppLinks().uriLinkStream.listen((Uri? uri) {
       if (uri?.scheme == callbackURLScheme) {
-        authCallback = uri.toString();
+        _authCallback = uri.toString();
         _completeFuture();
       }
     }, onError: (error, stackTrace) {
@@ -52,11 +52,9 @@ class PasskeyChromeSafariBrowser with WidgetsBindingObserver {
         noHistory: true,
       ),
     );
-    return authCallback;
   }
 
-  Future<String> _authIOS(WebUri uri) async {
-    String callback = "";
+  Future<void> _authIOS(WebUri uri) async {
     _authenticationSession = await WebAuthenticationSession.create(
       url: uri,
       callbackURLScheme: callbackURLScheme,
@@ -69,13 +67,12 @@ class PasskeyChromeSafariBrowser with WidgetsBindingObserver {
         }
 
         if (callbackUrl?.scheme == callbackURLScheme) {
-          callback = callbackUrl.toString();
+          _authCallback = callbackUrl.toString();
         }
         _completeFuture();
       },
     );
     await _authenticationSession?.start();
-    return callback;
   }
 
   Future<void> close() async {
@@ -107,6 +104,7 @@ class PasskeyChromeSafariBrowser with WidgetsBindingObserver {
       case AppLifecycleState.resumed:
         debugPrint("PasskeyChromeSafariBrowser didChangeAppLifecycleState resumed");
         Future.delayed(const Duration(microseconds: 200), () {
+          // delay for authCallback to be set
           _completeFuture();
         });
         break;

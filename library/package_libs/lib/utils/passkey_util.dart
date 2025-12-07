@@ -30,6 +30,10 @@ class WebAuthResult {
   factory WebAuthResult.cancel() => WebAuthResult._(WebAuthResultType.cancel);
 
   factory WebAuthResult.error(String message) => WebAuthResult._(WebAuthResultType.error)..message = message;
+
+  bool get isRegisterSuccess => action == "register";
+
+  bool get isAuthSuccess => action == "auth";
 }
 
 class PasskeyUtil {
@@ -80,6 +84,7 @@ class PasskeyUtil {
     _browser = PasskeyChromeSafariBrowser();
     authCallback = await _browser?.openWithResult(uri: WebUri(url));
     Future.delayed(const Duration(microseconds: 500), () {
+      // delay for browser close completely
       _authFuture?.complete();
       _authFuture = null;
     });
@@ -96,10 +101,20 @@ class PasskeyUtil {
     }
     Uri uri = Uri.parse(authCallback);
     Map<String, String> params = Map.from(uri.queryParameters);
-    return WebAuthResult.success()
+
+    WebAuthResult result = WebAuthResult.success()
       ..action = params["action"]
       ..result = params["result"]
       ..loginId = params["loginId"];
+    if (result.isRegisterSuccess) {
+      SpUtil.instance().set("lastLoginId", result.loginId);
+      return result;
+    }
+    if (result.isAuthSuccess) {
+      SpUtil.instance().set("lastLoginId", result.loginId);
+      return result;
+    }
+    return result..type = WebAuthResultType.error;
   }
 
   startAuthAndCacheLogin() {}
