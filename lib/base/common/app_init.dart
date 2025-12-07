@@ -23,6 +23,7 @@ Future<void> appInit() async {
   await DeviceUtil.instance().init(appName: Constants.appName);
   await initIntl();
   await ProxyUtil.instance().init();
+  // app links
 }
 
 void initErrorHandler() {
@@ -61,14 +62,10 @@ void initOrientations() {
 
 void initRefresh() {
   EasyRefresh.defaultHeaderBuilder = () {
-    return RefreshManager
-        .instance()
-        .defaultHeader;
+    return RefreshManager.instance().defaultHeader;
   };
   EasyRefresh.defaultFooterBuilder = () {
-    return RefreshManager
-        .instance()
-        .defaultFooter;
+    return RefreshManager.instance().defaultFooter;
   };
 }
 
