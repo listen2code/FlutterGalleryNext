@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionUtil {
@@ -25,5 +26,21 @@ class PermissionUtil {
   Future<PermissionStatus> requestPermission(Permission permission) async {
     final status = await permission.request();
     return status;
+  }
+
+  Future<bool> checkCamera() async {
+    try {
+      if (await isGranted(Permission.camera) == false) {
+        final status = await requestPermission(Permission.camera);
+        if (status != PermissionStatus.granted && status != PermissionStatus.limited) {
+          openAppSettings();
+          return false;
+        }
+        return true;
+      }
+    } catch (e, t) {
+      debugPrint("checkCamera error=$e stack=$t");
+    }
+    return false;
   }
 }
