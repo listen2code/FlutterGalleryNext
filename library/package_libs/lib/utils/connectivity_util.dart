@@ -14,20 +14,24 @@ class ConnectivityUtil {
 
     switch (connectivityResult.first) {
       case ConnectivityResult.wifi:
-        return Future.value(ConnectType.wifi);
+        return ConnectType.wifi;
       case ConnectivityResult.mobile:
-        return Future.value(ConnectType.mobile);
+        return ConnectType.mobile;
       case ConnectivityResult.none:
       case ConnectivityResult.bluetooth:
       case ConnectivityResult.ethernet:
       case ConnectivityResult.vpn:
       case ConnectivityResult.other:
-        return Future.value(ConnectType.unknow);
+        return ConnectType.unknow;
     }
   }
 
   Future<bool> isConnected() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     return connectivityResult.first != ConnectivityResult.none;
+  }
+
+  Stream<ConnectivityResult> get onConnectivityChanged {
+    return Connectivity().onConnectivityChanged.map((list) => list.first);
   }
 }

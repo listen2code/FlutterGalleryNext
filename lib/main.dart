@@ -7,6 +7,7 @@ import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:package_base/function_proxy_util.dart';
 import 'package:package_libs/utils/app_links_util.dart';
+import 'package:package_libs/utils/connectivity_util.dart';
 import 'package:package_libs/utils/logger_util.dart';
 
 import 'base/common/app_init.dart';
@@ -37,6 +38,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _initAppLinks();
+    ConnectivityUtil.instance().onConnectivityChanged.listen((status) {
+      LoggerUtil.log('onConnectivityChanged: \$status');
+    });
   }
 
   Future<void> _initAppLinks() async {
