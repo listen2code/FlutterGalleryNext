@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gallery_next/base/common/theme/app_resource.dart';
 import 'package:get/get.dart';
 
+bool isFullScreen = false;
+
 // todo
 mixin BaseView {
   SystemUiOverlayStyle systemOverLayoutStyle() {
@@ -143,8 +145,6 @@ mixin BaseView {
 
   Widget? createLoadingWidget() => null;
 }
-
-bool isFullScreen = false;
 
 // todo
 void pageBack<T>({T? result, BuildContext? context}) {

@@ -1,6 +1,5 @@
 # todo
 
-1.auto proxy
 2.notification
 3.architecture+redux
 4.demo

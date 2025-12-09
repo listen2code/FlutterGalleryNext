@@ -8,4 +8,5 @@ class SpKey {
   static const String uuid = "uuid";
   static const String loginId = "loginId";
   static const String password = "password";
+  static const String navigatorSelectedIndex = "navigatorSelectedIndex";
 }
