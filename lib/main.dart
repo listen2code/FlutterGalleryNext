@@ -102,7 +102,7 @@ class HomePage extends StatelessWidget {
           return InkWell(
             onTap: () {
               Navigator.of(context).pushNamed(Constant.router.keys.toList()[index]);
-            }.throttle,
+            }.throttle(milliseconds: 2000),
             child: Container(
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.symmetric(horizontal: 10),
