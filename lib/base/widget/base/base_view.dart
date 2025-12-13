@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gallery_next/base/common/theme/app_resource.dart';
+import 'package:flutter_gallery_next/base/widget/bottom_navi/bottom_navi.dart';
+import 'package:flutter_gallery_next/base/widget/bottom_navi/multi_navigator.dart';
 import 'package:get/get.dart';
 
 bool isFullScreen = false;
@@ -84,55 +86,46 @@ mixin BaseView {
 
   // todo BottomNaviImpl
   Widget? createBottomNavigation(BuildContext context) {
-    return Container();
-    // return Obx(() {
-    //   return Container(
-    //     decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Color(0xFFF0F2F3)))),
-    //     child: BottomNavigationBar(
-    //       items: List.generate(BottomNaviImpl.instance().tabs.length, (index) {
-    //         return BottomNavigationBarItem(
-    //           icon: Container(
-    //             margin: const EdgeInsets.only(bottom: 3),
-    //             child: Image(
-    //               image: AssetImage(BottomNaviImpl.instance().tabs.elementAt(index).iconPath),
-    //               width: 24,
-    //               height: 24,
-    //             ),
-    //           ),
-    //           activeIcon: Container(
-    //               margin: const EdgeInsets.only(bottom: 3),
-    //               child: Image(
-    //                   image: AssetImage(BottomNaviImpl.instance().tabs.elementAt(index).activeIconPath), width: 24, height: 24)),
-    //           label: BottomNaviImpl.instance().tabs.elementAt(index).label,
-    //         );
-    //       }),
-    //       currentIndex: Get.currentStackIndex,
-    //       onTap: (to) {
-    //         if (to == BottomNaviImpl.instance().order) {
-    //           runOnRedirect(needMemberLogin: true)?.then((login) {
-    //             if (login == true) {
-    //               BottomNaviImpl.instance().gotoOtherTab(to);
-    //             }
-    //           });
-    //         } else {
-    //           BottomNaviImpl.instance().gotoOtherTab(to);
-    //         }
-    //       },
-    //       selectedFontSize: 10,
-    //       unselectedFontSize: 10,
-    //       selectedItemColor: ThemeColors.red800,
-    //       unselectedItemColor: ThemeColors.grey1000,
-    //       selectedLabelStyle: AppTextTheme.defaultStyle(
-    //         fontWeight: FontWeight.w300,
-    //       ),
-    //       unselectedLabelStyle: AppTextTheme.defaultStyle(
-    //         fontWeight: FontWeight.w300,
-    //       ),
-    //       backgroundColor: ThemeColors.white,
-    //       type: BottomNavigationBarType.fixed,
-    //     ),
-    //   );
-    // });
+    return Obx(() {
+      return Container(
+        decoration: const BoxDecoration(border: Border(top: BorderSide(width: 1, color: Color(0xFFF0F2F3)))),
+        child: BottomNavigationBar(
+          items: List.generate(BottomNaviImpl.instance().tabs.length, (index) {
+            return BottomNavigationBarItem(
+              icon: Container(
+                margin: const EdgeInsets.only(bottom: 3),
+                child: Image(
+                  image: AssetImage(BottomNaviImpl.instance().tabs.elementAt(index).iconPath),
+                  width: 24,
+                  height: 24,
+                ),
+              ),
+              activeIcon: Container(
+                  margin: const EdgeInsets.only(bottom: 3),
+                  child: Image(
+                      image: AssetImage(BottomNaviImpl.instance().tabs.elementAt(index).activeIconPath), width: 24, height: 24)),
+              label: BottomNaviImpl.instance().tabs.elementAt(index).label,
+            );
+          }),
+          currentIndex: Get.find<NavigationController>().selectedIndex,
+          onTap: (to) {
+            BottomNaviImpl.instance().gotoOtherTab(to);
+          },
+          selectedFontSize: 10,
+          unselectedFontSize: 10,
+          selectedItemColor: ThemeColors.red800,
+          unselectedItemColor: ThemeColors.grey1000,
+          selectedLabelStyle: AppTextTheme.defaultStyle(
+            fontWeight: FontWeight.w300,
+          ),
+          unselectedLabelStyle: AppTextTheme.defaultStyle(
+            fontWeight: FontWeight.w300,
+          ),
+          backgroundColor: ThemeColors.white,
+          type: BottomNavigationBarType.fixed,
+        ),
+      );
+    });
   }
 
   void back<T>({T? result, BuildContext? context}) {

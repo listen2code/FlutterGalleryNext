@@ -4,8 +4,10 @@ import 'package:flutter_gallery_next/base/widget/base/global_navigation.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_dialog.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_loading_widget.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_toast_widget.dart';
+import 'package:flutter_gallery_next/biz/demos/demo_empty.dart';
 import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 import 'package:package_base/function_proxy_util.dart';
 import 'package:package_libs/utils/app_links_util.dart';
 import 'package:package_libs/utils/connectivity_util.dart';
@@ -20,7 +22,7 @@ void main() async {
   assert(() {
     FlutterError.onError = (FlutterErrorDetails details) {
       LoggerUtil.error("############# FlutterError ############");
-      LoggerUtil.error("\$details");
+      LoggerUtil.error("$details");
     };
     return true;
   }());
@@ -61,17 +63,23 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       navigatorKey: GlobalNavigation.navigatorKey,
       title: 'Listen Flutter Gallery',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         textButtonTheme: const TextButtonThemeData(
-          // 去掉 TextButton 的水波纹效果
           style: ButtonStyle(splashFactory: NoSplash.splashFactory),
         ),
       ),
-      home: const HomePage(),
+      initialRoute: '/',
+      getPages: [
+        GetPage(name: '/tab1', page: () => DemoEmpty()),
+        GetPage(name: '/tab2', page: () => DemoEmpty()),
+        GetPage(name: '/tab3', page: () => DemoEmpty()),
+        GetPage(name: '/placeHolder', page: () => DemoEmpty()),
+      ],
+      home: const SplashPage(),
       routes: Constant.router,
       builder: FlutterSmartDialog.init(
         builder: (context, widget) {
@@ -88,14 +96,14 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class SplashPage extends StatelessWidget {
+  const SplashPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("home"),
+        title: const Text("splash"),
       ),
       body: ListView.builder(
         itemBuilder: (context, index) {

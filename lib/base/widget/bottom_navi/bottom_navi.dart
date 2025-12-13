@@ -103,19 +103,17 @@ class BottomNaviImpl implements IBottomNavi {
   late Iterable<BottomNavigationButton> _tabs = <BottomNavigationButton>[];
   late final List<TabClickListener> _tabOnClickListeners = [];
 
-  late final Tab1 _assets;
+  late final Tab1 _tab1;
 
-  late final Tab2 _order;
+  late final Tab2 _tab2;
 
-  late final Tab3 _feed;
+  late final Tab3 _tab3;
 
-  late final MultiRouting _assetRouting;
+  late final MultiRouting _tab1Routing;
 
-  late final MultiRouting _orderRouting;
+  late final MultiRouting _tab2Routing;
 
-  late final MultiRouting _feedRouting;
-
-  late final MultiRouting _myPageRouting;
+  late final MultiRouting _tab3Routing;
 
   final Map<int, dynamic> _initialRoutesArgs = {};
 
@@ -128,22 +126,20 @@ class BottomNaviImpl implements IBottomNavi {
   BottomNaviImpl._private(BottomNavigationType type) {
     switch (type) {
       case BottomNavigationType.defaultType:
-        _assets = Tab1._private(tab: this);
-        _order = Tab2._private(tab: this);
-        _feed = Tab3._private(tab: this);
-        _list.add(_assets);
-        _list.add(_order);
-        _list.add(_feed);
+        _tab1 = Tab1._private(tab: this);
+        _tab2 = Tab2._private(tab: this);
+        _tab3 = Tab3._private(tab: this);
+        _list.add(_tab1);
+        _list.add(_tab2);
+        _list.add(_tab3);
         _tabs = Iterable.castFrom(_list);
 
-        _assetRouting = MultiRouting();
-        _orderRouting = MultiRouting();
-        _feedRouting = MultiRouting();
-        _myPageRouting = MultiRouting();
-        _routing.add(_assetRouting);
-        _routing.add(_orderRouting);
-        _routing.add(_feedRouting);
-        _routing.add(_myPageRouting);
+        _tab1Routing = MultiRouting();
+        _tab2Routing = MultiRouting();
+        _tab3Routing = MultiRouting();
+        _routing.add(_tab1Routing);
+        _routing.add(_tab2Routing);
+        _routing.add(_tab3Routing);
         break;
       case BottomNavigationType.customType:
       // load menu form disk
@@ -244,23 +240,23 @@ class BottomNaviImpl implements IBottomNavi {
     }
   }
 
-  int get assets => _currentIndex(_assets);
+  int get tab1 => _currentIndex(_tab1);
 
-  int get order => _currentIndex(_order);
+  int get tab2 => _currentIndex(_tab2);
 
-  int get feeds => _currentIndex(_feed);
+  int get tab3 => _currentIndex(_tab3);
 
-  MultiRouting get assetRouting => _assetRouting;
+  MultiRouting get tab1Routing => _tab1Routing;
 
-  MultiRouting get orderRouting => _orderRouting;
+  MultiRouting get tab2Routing => _tab2Routing;
 
-  MultiRouting get feedRouting => _feedRouting;
+  MultiRouting get tab3Routing => _tab3Routing;
 
-  set assetsInitialRoutesArgs(dynamic args) => _initialRoutesArgs[assets] = args;
+  set tab1InitialRoutesArgs(dynamic args) => _initialRoutesArgs[tab1] = args;
 
-  set orderInitialRoutesArgs(dynamic args) => _initialRoutesArgs[order] = args;
+  set tab2InitialRoutesArgs(dynamic args) => _initialRoutesArgs[tab2] = args;
 
-  set feedsInitialRoutesArgs(dynamic args) => _initialRoutesArgs[feeds] = args;
+  set tab3InitialRoutesArgs(dynamic args) => _initialRoutesArgs[tab3] = args;
 
   int _currentIndex(BottomNavigationButton tab) {
     return _list.indexOf(tab);
@@ -277,12 +273,12 @@ class BottomNaviImpl implements IBottomNavi {
       return r.settings.name == "/home";
     }, id: mainRouteKey);
 
-    gotoOtherTab(assets);
+    gotoOtherTab(tab1);
   }
 }
 
 int getNavigatorSelectedIndex() {
-  int selectedIndex = SpUtil.instance.getInt(SpKey.navigatorSelectedIndex, defaultValue: BottomNaviImpl.instance().assets);
+  int selectedIndex = SpUtil.instance.getInt(SpKey.navigatorSelectedIndex, defaultValue: BottomNaviImpl.instance().tab1);
   LoggerUtil.log("getNavigatorSelectedIndex：$selectedIndex", type: LoggerType.easy);
   return selectedIndex;
 }
@@ -294,5 +290,10 @@ void saveNavigatorSelectedIndex(int selectedIndex) {
 
 final unknownPage = GetPage(
   name: "/unknownPage",
-  page: () => const Text("unknownPage"),
+  page: () => Container(
+    color: Colors.red,
+    child: const Center(
+      child: Text("unknownPage"),
+    ),
+  ),
 );

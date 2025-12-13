@@ -130,7 +130,7 @@ class NavigationController extends GetxController {
   late ({bool isChange, int lastIndex}) _stackChangeHistory;
 
   late final Set<int> _navigationStack;
-  late final List<Navigator> _navigatorPages;
+  late final List<Navigator> navigatorPages;
 
   @override
   void onInit() {
@@ -141,7 +141,7 @@ class NavigationController extends GetxController {
     _selectedIndex = initStackIndex.obs;
     _stackChangeHistory = (isChange: false, lastIndex: initStackIndex);
     _navigationStack = {initStackIndex};
-    _navigatorPages = BottomNaviImpl.instance().createMultiNavigator();
+    navigatorPages = BottomNaviImpl.instance().createMultiNavigator();
   }
 
   int get selectedIndex => _selectedIndex.value;

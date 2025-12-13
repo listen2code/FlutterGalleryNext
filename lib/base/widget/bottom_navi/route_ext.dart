@@ -23,7 +23,7 @@ extension GetExtension on GetInterface {
     List<CommonRouteInterceptor>? routeInterceptor,
   }) {
     return toNamedWithNavi(page,
-        id: BottomNaviImpl.instance().assets,
+        id: BottomNaviImpl.instance().tab1,
         arguments: arguments,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -48,7 +48,7 @@ extension GetExtension on GetInterface {
     List<CommonRouteInterceptor>? routeInterceptor,
   }) {
     return toNamedWithNavi(page,
-        id: BottomNaviImpl.instance().order,
+        id: BottomNaviImpl.instance().tab2,
         arguments: arguments,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -73,7 +73,7 @@ extension GetExtension on GetInterface {
     List<CommonRouteInterceptor>? routeInterceptor,
   }) {
     return toNamedWithNavi(page,
-        id: BottomNaviImpl.instance().feeds,
+        id: BottomNaviImpl.instance().tab3,
         arguments: arguments,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
