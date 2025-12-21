@@ -6,8 +6,6 @@ import 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer.dart';
 import 'package:flutter_gallery_next/biz/demos/event_bus/demo_event_bus.dart';
 import 'package:flutter_gallery_next/biz/demos/tab/demo_tab.dart';
 import 'package:flutter_gallery_next/biz/home_page.dart';
-import 'package:flutter_gallery_next/biz/login/view/login_page.dart';
-import 'package:flutter_gallery_next/biz/user_info/view/user_info_page.dart';
 
 class Routers {
   static const String tab1 = "tab1";
@@ -17,6 +15,8 @@ class Routers {
   static const String tab3 = "tab3";
   static const String tab31 = "tab31";
   static const String home = "home";
+  static const String login = "login";
+  static const String userInfo = "userInfo";
   static const String placeHolder = "placeHolder";
   static const String unknownPage = "unknownPage";
 }
@@ -25,12 +25,6 @@ class Constant {
   static final Map<String, WidgetBuilder> router = {
     "home": (context) {
       return HomePage();
-    },
-    "login": (context) {
-      return const LoginPage();
-    },
-    "userInfo": (context) {
-      return const UserInfoPage();
     },
     "demo repaint": (context) {
       return const DemoRepaint();

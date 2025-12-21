@@ -37,6 +37,18 @@ class _Tab1State extends State<Tab1> {
               Get.toTab3(Routers.tab31);
             },
           ),
+          ElevatedButton(
+            child: Text(Routers.login),
+            onPressed: () {
+              Get.toTab1(Routers.login);
+            },
+          ),
+          ElevatedButton(
+            child: Text(Routers.userInfo),
+            onPressed: () {
+              Get.toTab1(Routers.userInfo);
+            },
+          ),
         ],
       ),
     );

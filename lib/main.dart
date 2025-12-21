@@ -9,9 +9,11 @@ import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab2.dart';
 import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab3.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_empty.dart';
 import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
+import 'package:flutter_gallery_next/biz/login/view/login_page.dart';
+import 'package:flutter_gallery_next/biz/user_info/view/user_info_page.dart';
+import 'package:flutter_gallery_next/splash.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
-import 'package:package_base/function_proxy_util.dart';
 import 'package:package_libs/utils/app_links_util.dart';
 import 'package:package_libs/utils/connectivity_util.dart';
 import 'package:package_libs/utils/logger_util.dart';
@@ -84,6 +86,8 @@ class _MyAppState extends State<MyApp> {
         GetPage(name: '/${Routers.tab3}', page: () => Tab3()),
         GetPage(name: '/${Routers.tab31}', page: () => DemoEmpty(title: Routers.tab31)),
         GetPage(name: '/${Routers.placeHolder}', page: () => DemoEmpty(title: Routers.placeHolder)),
+        GetPage(name: '/${Routers.login}', page: () => LoginPage()),
+        GetPage(name: '/${Routers.userInfo}', page: () => UserInfoPage()),
       ],
       home: const SplashPage(),
       routes: Constant.router,
@@ -97,33 +101,6 @@ class _MyAppState extends State<MyApp> {
         },
         loadingBuilder: (context) => const CommonLoadingWidget(),
         toastBuilder: (msg) => CommonToastWidget(msg: msg),
-      ),
-    );
-  }
-}
-
-class SplashPage extends StatelessWidget {
-  const SplashPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("splash")),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () {
-              Navigator.of(context).pushNamed(Constant.router.keys.toList()[index]);
-            }.throttle(milliseconds: 2000),
-            child: Container(
-              alignment: Alignment.centerLeft,
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              height: 50,
-              child: Text(Constant.router.keys.toList()[index]),
-            ),
-          );
-        },
-        itemCount: Constant.router.length,
       ),
     );
   }
