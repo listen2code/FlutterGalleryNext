@@ -102,9 +102,7 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("splash"),
-      ),
+      appBar: AppBar(title: const Text("splash")),
       body: ListView.builder(
         itemBuilder: (context, index) {
           return InkWell(

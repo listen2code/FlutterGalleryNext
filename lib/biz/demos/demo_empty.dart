@@ -13,6 +13,7 @@ class _DemoEmptyState extends State<DemoEmpty> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white,
       alignment: Alignment.center,
       child: Text(widget.title ?? 'empty'),
     );
