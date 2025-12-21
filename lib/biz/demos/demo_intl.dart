@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/translations/app_translations.dart';
-import 'package:get/get.dart';
+import 'package:flutter_gallery_next/main.dart';
 
-class DemoIntl extends StatefulWidget {
+class DemoIntl extends StatelessWidget {
   const DemoIntl({Key? key}) : super(key: key);
 
   @override
-  State<DemoIntl> createState() => _DemoIntlState();
-}
-
-class _DemoIntlState extends State<DemoIntl> {
-  @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Demo intl"),
@@ -20,24 +17,23 @@ class _DemoIntlState extends State<DemoIntl> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text("appName=${AppLocalizations.applicationName.tr}\n"
-                "hello=${AppLocalizations.hello.tr}"),
+            Text(
+              "appName=${localizations.translate(AppLocalizations.applicationName)}\n"
+              "hello=${localizations.translate(AppLocalizations.hello)}",
+            ),
             ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    AppLocalizations.change(
-                        changeLocale: AppLocalizations.getJpaLocale());
-                  });
-                },
-                child: const Text("jp")),
+              onPressed: () {
+                // Call the method in MyApp to change the language
+                MyApp.of(context)?.changeLanguage(AppLocalizations.getJpaLocale());
+              },
+              child: const Text("jp"),
+            ),
             ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    AppLocalizations.change(
-                        changeLocale: AppLocalizations.getEnLocale());
-                  });
-                },
-                child: const Text("en")),
+              onPressed: () {
+                MyApp.of(context)?.changeLanguage(AppLocalizations.getEnLocale());
+              },
+              child: const Text("en"),
+            ),
           ],
         ),
       ),
