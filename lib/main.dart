@@ -8,10 +8,10 @@ import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab1.dart';
 import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab2.dart';
 import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab3.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_empty.dart';
+import 'package:flutter_gallery_next/biz/demos/demo_main.dart';
 import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
 import 'package:flutter_gallery_next/biz/login/view/login_page.dart';
 import 'package:flutter_gallery_next/biz/user_info/view/user_info_page.dart';
-import 'package:flutter_gallery_next/splash.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:package_libs/utils/app_links_util.dart';
@@ -89,7 +89,7 @@ class _MyAppState extends State<MyApp> {
         GetPage(name: '/${Routers.login}', page: () => LoginPage()),
         GetPage(name: '/${Routers.userInfo}', page: () => UserInfoPage()),
       ],
-      home: const SplashPage(),
+      home: const DemoMainPage(),
       routes: Constant.router,
       builder: FlutterSmartDialog.init(
         builder: (context, widget) {

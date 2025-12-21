@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/pages.dart';
 import 'package:package_base/function_proxy_util.dart';
 
-class SplashPage extends StatelessWidget {
-  const SplashPage({Key? key}) : super(key: key);
+class DemoMainPage extends StatelessWidget {
+  const DemoMainPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class DemoRepaint extends StatefulWidget {
   const DemoRepaint({super.key});
@@ -12,6 +13,20 @@ class DemoRepaint extends StatefulWidget {
 class _DemoRepaintState extends State<DemoRepaint> {
   final GlobalKey _paintKey = GlobalKey();
   Offset _offset = Offset.zero;
+  bool isRepaintBoundary = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Every repainted widget will be highlighted with a continuously changing rainbow-colored border.
+    debugRepaintRainbowEnabled = true;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    debugRepaintRainbowEnabled = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,33 +34,38 @@ class _DemoRepaintState extends State<DemoRepaint> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.cyan,
-        title: const Text('Flutter RepaintBoundary Demo'),
+        title: const Text('DemoRepaint'),
       ),
       body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
+        children: [
           _buildBackground(),
           _buildCursor(),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            isRepaintBoundary = !isRepaintBoundary;
+          });
+        },
+        child: Text(isRepaintBoundary ? "On" : "Off"),
       ),
     );
   }
 
   Widget _buildBackground() {
-    // 不加RepaintBoundary的时候，_buildCursor会导致_buildBackground也重绘，性能很差
-    return RepaintBoundary(
-      child: CustomPaint(
-        painter: BackgroundColor(MediaQuery.of(context).size),
-        // 提示这个图层的绘画应该被缓存
-        isComplex: true,
-        // willChange是false意味着是否应该告诉光栅缓存，这个绘画在下一帧可能会改变
-        willChange: false,
-      ),
+    return CustomPaint(
+      painter: BackgroundColor(MediaQuery.of(context).size),
+      isComplex: true,
+      willChange: false,
     );
   }
 
   Widget _buildCursor() {
-    return Listener(
+    // By wrapping the moving part in its own RepaintBoundary, we give a strong
+    // hint to the engine to isolate it in a separate layer. This makes it much
+    // easier for the engine to decide to cache the background layer.
+    final cursorWidget = Listener(
       onPointerDown: _updateOffset,
       onPointerMove: _updateOffset,
       child: CustomPaint(
@@ -56,6 +76,14 @@ class _DemoRepaintState extends State<DemoRepaint> {
         ),
       ),
     );
+
+    if (isRepaintBoundary) {
+      // After adding RepaintBoundary, the drawing of cursorWidget is isolated,
+      // preventing it from causing _buildBackground to repaint, thus improving performance.
+      return RepaintBoundary(child: cursorWidget);
+    }
+
+    return cursorWidget;
   }
 
   _updateOffset(PointerEvent event) {
@@ -77,8 +105,8 @@ class CursorPointer extends CustomPainter {
     debugPrint("DemoRepaint CursorPointer paint()");
     canvas.drawCircle(
       _offset,
-      10.0,
-      Paint()..color = Colors.green,
+      50.0,
+      Paint()..color = Colors.white,
     );
   }
 
@@ -105,17 +133,18 @@ class BackgroundColor extends CustomPainter {
     debugPrint("DemoRepaint BackgroundColor paint()");
     final Random rand = Random(12345);
 
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 500; i++) {
       canvas.drawOval(
-          Rect.fromCenter(
-            center: Offset(
-              rand.nextDouble() * _size.width - 100,
-              rand.nextDouble() * _size.height,
-            ),
-            width: rand.nextDouble() * rand.nextInt(150) + 200,
-            height: rand.nextDouble() * rand.nextInt(150) + 200,
+        Rect.fromCenter(
+          center: Offset(
+            rand.nextDouble() * _size.width - 100,
+            rand.nextDouble() * _size.height,
           ),
-          Paint()..color = colors[rand.nextInt(colors.length)].withOpacity(0.3));
+          width: rand.nextDouble() * rand.nextInt(150) + 200,
+          height: rand.nextDouble() * rand.nextInt(150) + 200,
+        ),
+        Paint()..color = colors[rand.nextInt(colors.length)].withAlpha(60),
+      );
     }
   }
 
