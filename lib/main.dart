@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/pages.dart';
+import 'package:flutter_gallery_next/base/common/translations/app_translations.dart';
 import 'package:flutter_gallery_next/base/widget/base/global_navigation.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_dialog.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_loading_widget.dart';
@@ -77,6 +78,13 @@ class _MyAppState extends State<MyApp> {
           style: ButtonStyle(splashFactory: NoSplash.splashFactory),
         ),
       ),
+
+      // ##### GetX internationalization configuration #####
+      translations: Messages(),
+      locale: AppLocalizations.getEnLocale(),
+      fallbackLocale: AppLocalizations.getEnLocale(),
+      // ##### GetX internationalization configuration #####
+
       initialRoute: '/',
       getPages: [
         GetPage(name: '/${Routers.tab1}', page: () => Tab1()),
