@@ -44,9 +44,6 @@ class Constant {
     "status bar": (context) {
       return const DemoStatusBarColor();
     },
-    "state": (context) {
-      return const DemoState();
-    },
     "demo drawer": (context) {
       return const DemoDrawer();
     },
