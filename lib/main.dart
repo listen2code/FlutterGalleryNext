@@ -4,6 +4,9 @@ import 'package:flutter_gallery_next/base/widget/base/global_navigation.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_dialog.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_loading_widget.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_toast_widget.dart';
+import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab1.dart';
+import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab2.dart';
+import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab3.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_empty.dart';
 import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -74,9 +77,12 @@ class _MyAppState extends State<MyApp> {
       ),
       initialRoute: '/',
       getPages: [
-        GetPage(name: '/${Routers.tab1}', page: () => DemoEmpty(title: Routers.tab1)),
-        GetPage(name: '/${Routers.tab2}', page: () => DemoEmpty(title: Routers.tab2)),
-        GetPage(name: '/${Routers.tab3}', page: () => DemoEmpty(title: Routers.tab3)),
+        GetPage(name: '/${Routers.tab1}', page: () => Tab1()),
+        GetPage(name: '/${Routers.tab11}', page: () => DemoEmpty(title: Routers.tab11)),
+        GetPage(name: '/${Routers.tab2}', page: () => Tab2()),
+        GetPage(name: '/${Routers.tab21}', page: () => DemoEmpty(title: Routers.tab21)),
+        GetPage(name: '/${Routers.tab3}', page: () => Tab3()),
+        GetPage(name: '/${Routers.tab31}', page: () => DemoEmpty(title: Routers.tab31)),
         GetPage(name: '/${Routers.placeHolder}', page: () => DemoEmpty(title: Routers.placeHolder)),
       ],
       home: const SplashPage(),

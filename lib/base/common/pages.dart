@@ -11,8 +11,11 @@ import 'package:flutter_gallery_next/biz/user_info/view/user_info_page.dart';
 
 class Routers {
   static const String tab1 = "tab1";
+  static const String tab11 = "tab11";
   static const String tab2 = "tab2";
+  static const String tab21 = "tab21";
   static const String tab3 = "tab3";
+  static const String tab31 = "tab31";
   static const String home = "home";
   static const String placeHolder = "placeHolder";
   static const String unknownPage = "unknownPage";
