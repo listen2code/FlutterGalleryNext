@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/pages.dart';
+import 'package:flutter_gallery_next/base/common/theme/app_theme.dart';
 import 'package:flutter_gallery_next/base/common/translations/app_translations.dart';
 import 'package:flutter_gallery_next/base/widget/base/global_navigation.dart';
 import 'package:flutter_gallery_next/base/widget/dialog/common_dialog.dart';
@@ -8,9 +9,8 @@ import 'package:flutter_gallery_next/base/widget/dialog/common_toast_widget.dart
 import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab1.dart';
 import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab2.dart';
 import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab3.dart';
-import 'package:flutter_gallery_next/biz/demos/demo_empty.dart';
+import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_main.dart';
-import 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
 import 'package:flutter_gallery_next/biz/login/view/login_page.dart';
 import 'package:flutter_gallery_next/biz/user_info/view/user_info_page.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -40,9 +40,20 @@ class MyApp extends StatefulWidget {
 
   @override
   State<MyApp> createState() => _MyAppState();
+
+  // Add a static method to allow descendant widgets to access and change the theme.
+  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
 }
 
 class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -72,12 +83,11 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       navigatorKey: GlobalNavigation.navigatorKey,
       title: 'Listen Flutter Gallery',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        textButtonTheme: const TextButtonThemeData(
-          style: ButtonStyle(splashFactory: NoSplash.splashFactory),
-        ),
-      ),
+      // Provide light and dark themes.
+      theme: AppTheme.of(AppThemes.light).themeData,
+      darkTheme: AppTheme.of(AppThemes.dark).themeData,
+      // Control the current theme mode.
+      themeMode: _themeMode,
 
       // ##### GetX internationalization configuration #####
       translations: Messages(),
