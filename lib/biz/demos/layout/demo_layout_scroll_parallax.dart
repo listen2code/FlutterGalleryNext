@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 
 const Color darkBlue = Color.fromARGB(255, 18, 32, 47);
 
+// todo learning
 class DemoLayoutScrollParallax extends StatelessWidget {
   const DemoLayoutScrollParallax({super.key});
 
@@ -143,7 +144,6 @@ class ParallaxFlowDelegate extends FlowDelegate {
     required this.backgroundImageKey,
   }) : super(repaint: scrollable.position);
 
-
   final ScrollableState scrollable;
   final BuildContext listItemContext;
   final GlobalKey backgroundImageKey;
@@ -160,15 +160,12 @@ class ParallaxFlowDelegate extends FlowDelegate {
     // Calculate the position of this list item within the viewport.
     final scrollableBox = scrollable.context.findRenderObject() as RenderBox;
     final listItemBox = listItemContext.findRenderObject() as RenderBox;
-    final listItemOffset = listItemBox.localToGlobal(
-        listItemBox.size.centerLeft(Offset.zero),
-        ancestor: scrollableBox);
+    final listItemOffset = listItemBox.localToGlobal(listItemBox.size.centerLeft(Offset.zero), ancestor: scrollableBox);
 
     // Determine the percent position of this list item within the
     // scrollable area.
     final viewportDimension = scrollable.position.viewportDimension;
-    final scrollFraction =
-    (listItemOffset.dy / viewportDimension).clamp(0.0, 1.0);
+    final scrollFraction = (listItemOffset.dy / viewportDimension).clamp(0.0, 1.0);
 
     // Calculate the vertical alignment of the background
     // based on the scroll percent.
@@ -176,18 +173,14 @@ class ParallaxFlowDelegate extends FlowDelegate {
 
     // Convert the background alignment into a pixel offset for
     // painting purposes.
-    final backgroundSize =
-        (backgroundImageKey.currentContext!.findRenderObject() as RenderBox)
-            .size;
+    final backgroundSize = (backgroundImageKey.currentContext!.findRenderObject() as RenderBox).size;
     final listItemSize = context.size;
-    final childRect =
-    verticalAlignment.inscribe(backgroundSize, Offset.zero & listItemSize);
+    final childRect = verticalAlignment.inscribe(backgroundSize, Offset.zero & listItemSize);
 
     // Paint the background.
     context.paintChild(
       0,
-      transform:
-      Transform.translate(offset: Offset(0.0, childRect.top)).transform,
+      transform: Transform.translate(offset: Offset(0.0, childRect.top)).transform,
     );
   }
 
@@ -211,16 +204,14 @@ class Parallax extends SingleChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(
-      BuildContext context, covariant RenderParallax renderObject) {
+  void updateRenderObject(BuildContext context, covariant RenderParallax renderObject) {
     renderObject.scrollable = Scrollable.of(context)!;
   }
 }
 
 class ParallaxParentData extends ContainerBoxParentData<RenderBox> {}
 
-class RenderParallax extends RenderBox
-    with RenderObjectWithChildMixin<RenderBox>, RenderProxyBoxMixin {
+class RenderParallax extends RenderBox with RenderObjectWithChildMixin<RenderBox>, RenderProxyBoxMixin {
   RenderParallax({
     required ScrollableState scrollable,
   }) : _scrollable = scrollable;
@@ -267,8 +258,7 @@ class RenderParallax extends RenderBox
     // Force the background to take up all available width
     // and then scale its height based on the image's aspect ratio.
     final background = child!;
-    final backgroundImageConstraints =
-    BoxConstraints.tightFor(width: size.width);
+    final backgroundImageConstraints = BoxConstraints.tightFor(width: size.width);
     background.layout(backgroundImageConstraints, parentUsesSize: true);
 
     // Set the background's local offset, which is zero.
@@ -282,13 +272,11 @@ class RenderParallax extends RenderBox
 
     // Calculate the global position of this list item.
     final scrollableBox = scrollable.context.findRenderObject() as RenderBox;
-    final backgroundOffset =
-    localToGlobal(size.centerLeft(Offset.zero), ancestor: scrollableBox);
+    final backgroundOffset = localToGlobal(size.centerLeft(Offset.zero), ancestor: scrollableBox);
 
     // Determine the percent position of this list item within the
     // scrollable area.
-    final scrollFraction =
-    (backgroundOffset.dy / viewportDimension).clamp(0.0, 1.0);
+    final scrollFraction = (backgroundOffset.dy / viewportDimension).clamp(0.0, 1.0);
 
     // Calculate the vertical alignment of the background
     // based on the scroll percent.
@@ -299,15 +287,10 @@ class RenderParallax extends RenderBox
     final background = child!;
     final backgroundSize = background.size;
     final listItemSize = size;
-    final childRect =
-    verticalAlignment.inscribe(backgroundSize, Offset.zero & listItemSize);
+    final childRect = verticalAlignment.inscribe(backgroundSize, Offset.zero & listItemSize);
 
     // Paint the background.
-    context.paintChild(
-        background,
-        (background.parentData as ParallaxParentData).offset +
-            offset +
-            Offset(0.0, childRect.top));
+    context.paintChild(background, (background.parentData as ParallaxParentData).offset + offset + Offset(0.0, childRect.top));
   }
 }
 
@@ -323,8 +306,7 @@ class Location {
   final String imageUrl;
 }
 
-const urlPrefix =
-    'https://docs.flutter.dev/cookbook/img-files/effects/parallax';
+const urlPrefix = 'https://docs.flutter.dev/assets/images/exercise/effects/parallax';
 const locations = [
   Location(
     name: 'Mount Rushmore',

@@ -14,7 +14,7 @@ class DemoDrawerDraggable extends StatelessWidget {
           Container(
             color: Colors.green,
             child: ListView.builder(
-              itemCount: 30, // 假设有30个列表项
+              itemCount: 30,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   title: Text('Item $index'),
@@ -37,7 +37,7 @@ class DemoDrawerDraggable extends StatelessWidget {
                 color: Colors.red,
                 child: ListView.builder(
                   controller: scrollController,
-                  itemCount: 30, // 假设有30个列表项
+                  itemCount: 30,
                   itemBuilder: (BuildContext context, int index) {
                     if (index == 0) {
                       return Container(

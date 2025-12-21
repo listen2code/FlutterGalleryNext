@@ -23,27 +23,24 @@ class _DemoDrawerState extends State<DemoDrawer> {
           children: [
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const DemoDrawerLeft()));
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const DemoDrawerLeft()),
+                  );
                 },
                 child: const Text("drawer left")),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const DemoDrawerDraggable()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoDrawerDraggable()));
                 },
                 child: const Text("drawer draggable")),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          const DemoDrawerDraggableHandler()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoDrawerDraggableHandler()));
                 },
                 child: const Text("drawer draggable handler")),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const DemoDrawerStagger()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoDrawerStagger()));
                 },
                 child: const Text("drawer stagger")),
           ],
