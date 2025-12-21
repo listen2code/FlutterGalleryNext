@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery_next/base/common/pages.dart';
 import 'package:flutter_gallery_next/base/utils/app_constants.dart';
 import 'package:flutter_gallery_next/base/widget/bottom_navi/route_ext.dart';
+import 'package:flutter_gallery_next/biz/demos/demo_empty.dart';
 import 'package:flutter_gallery_next/generated/r.dart';
 import 'package:flutter_gallery_next/main.dart';
 import 'package:get/get.dart';
@@ -53,9 +55,9 @@ class Tab1 extends BottomNavigationButton {
   }) : super(
           iconPath: R.imagesLake,
           activeIconPath: R.imagesLake,
-          label: "tab1",
-          top: "/tab1",
-          page: "/tab1",
+          label: Routers.tab1,
+          top: "/${Routers.tab1}",
+          page: "/${Routers.tab1}",
         );
 }
 
@@ -65,9 +67,9 @@ class Tab2 extends BottomNavigationButton {
   }) : super(
           iconPath: R.imagesLake,
           activeIconPath: R.imagesLake,
-          label: "tab2",
-          top: "/tab2",
-          page: "/tab2",
+          label: Routers.tab2,
+          top: "/${Routers.tab2}",
+          page: "/${Routers.tab2}",
         );
 }
 
@@ -77,9 +79,9 @@ class Tab3 extends BottomNavigationButton {
   }) : super(
           iconPath: R.imagesLake,
           activeIconPath: R.imagesLake,
-          label: "tab3",
-          top: "/tab3",
-          page: "/tab3",
+          label: Routers.tab3,
+          top: "/${Routers.tab3}",
+          page: "/${Routers.tab3}",
         );
 }
 
@@ -167,7 +169,7 @@ class BottomNaviImpl implements IBottomNavi {
         canGoto = false;
       } else {
         bool isTopIntent = (BottomNaviImpl.instance().getRoutingByIndex(to).history.isEmpty ||
-            BottomNaviImpl.instance().getRoutingByIndex(to).history.first.settings.name == "/placeHolder");
+            BottomNaviImpl.instance().getRoutingByIndex(to).history.first.settings.name == "/${Routers.placeHolder}");
         if (isTopIntent) {
           Get.toNamedWithNavi(BottomNaviImpl.instance().getTabByIndex(to).top, id: to);
         }
@@ -210,7 +212,7 @@ class BottomNaviImpl implements IBottomNavi {
       return MultiNavigator(
         key: Get.nestedKey(index),
         routingNavi: getRoutingByIndex(index),
-        initialRoute: index != getNavigatorSelectedIndex() ? "/placeHolder" : getTabByIndex(index).top,
+        initialRoute: index != getNavigatorSelectedIndex() ? "/${Routers.placeHolder}" : getTabByIndex(index).top,
         onGenerateInitialRoutes: (navi, name) =>
             initialRoutesGenerate(name, unknownRoute: unknownPage, args: _initialRoutesArgs[index]),
         onGenerateRoute: (routeSettings) => findNavigatorRoute(routeSettings, unknownRoute: unknownPage),
@@ -235,7 +237,7 @@ class BottomNaviImpl implements IBottomNavi {
   void removeHolderPageIfTop(int to, bool isTopIntent) {
     if (isTopIntent &&
         BottomNaviImpl.instance().getRoutingByIndex(to).history.isNotEmpty &&
-        BottomNaviImpl.instance().getRoutingByIndex(to).history.first.settings.name == "/placeHolder") {
+        BottomNaviImpl.instance().getRoutingByIndex(to).history.first.settings.name == "/${Routers.placeHolder}") {
       Get.global(to).currentState?.removeRoute(BottomNaviImpl.instance().getRoutingByIndex(to).history.first);
     }
   }
@@ -270,7 +272,7 @@ class BottomNaviImpl implements IBottomNavi {
     }
 
     Get.until((r) {
-      return r.settings.name == "/home";
+      return r.settings.name == "/${Routers.home}";
     }, id: mainRouteKey);
 
     gotoOtherTab(tab1);
@@ -289,11 +291,6 @@ void saveNavigatorSelectedIndex(int selectedIndex) {
 }
 
 final unknownPage = GetPage(
-  name: "/unknownPage",
-  page: () => Container(
-    color: Colors.red,
-    child: const Center(
-      child: Text("unknownPage"),
-    ),
-  ),
+  name: "/${Routers.unknownPage}",
+  page: () => const DemoEmpty(title: Routers.unknownPage),
 );

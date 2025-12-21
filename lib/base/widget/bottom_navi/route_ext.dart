@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery_next/base/common/pages.dart';
 import 'package:flutter_gallery_next/base/widget/base/base_view.dart';
 import 'package:flutter_gallery_next/base/widget/bottom_navi/bottom_navi.dart';
 import 'package:flutter_gallery_next/base/widget/bottom_navi/route_interceptor.dart';
@@ -192,14 +193,15 @@ extension GetExtension on GetInterface {
             );
       }
     } else if (closeCurrentAll || closeTargetAll) {
-      RoutePredicate routePredicate = predicate ?? (route) => route.settings.name == "home";
+      RoutePredicate routePredicate = predicate ?? (route) => route.settings.name == Routers.home;
       if (id != (isFullScreen ? mainRouteKey : currentStackIndex)) {
         // 現在の画面と遷移先の画面は異なるルーティング スタックです
         if (closeCurrentAll) {
           if (!isFullScreen && page != BottomNaviImpl.instance().currentTab.top) {
             routePredicate = predicate ??
                 (route) =>
-                    route.settings.name == BottomNaviImpl.instance().currentTab.top || route.settings.name == "/placeHolder";
+                    route.settings.name == BottomNaviImpl.instance().currentTab.top ||
+                    route.settings.name == "/${Routers.placeHolder}";
           }
           Get.until(routePredicate, id: isFullScreen ? mainRouteKey : currentStackIndex);
         }
@@ -208,7 +210,7 @@ extension GetExtension on GetInterface {
             routePredicate = predicate ??
                 (route) =>
                     route.settings.name == BottomNaviImpl.instance().getTabByIndex(id).top ||
-                    route.settings.name == "/placeHolder";
+                    route.settings.name == "/${Routers.placeHolder}";
           }
           Get.until(routePredicate, id: id);
         }
@@ -220,7 +222,8 @@ extension GetExtension on GetInterface {
         if (id != mainRouteKey && page != BottomNaviImpl.instance().getTabByIndex(id).top) {
           routePredicate = predicate ??
               (route) =>
-                  route.settings.name == BottomNaviImpl.instance().getTabByIndex(id).top || route.settings.name == "/placeHolder";
+                  route.settings.name == BottomNaviImpl.instance().getTabByIndex(id).top ||
+                  route.settings.name == "/${Routers.placeHolder}";
         }
         Get.until(routePredicate, id: id);
         return global(id).currentState?.pushNamed<T>(

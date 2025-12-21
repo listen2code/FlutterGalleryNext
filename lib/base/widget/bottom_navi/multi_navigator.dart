@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery_next/base/common/pages.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/router_report.dart';
 
@@ -60,7 +61,7 @@ class MultiNavigatorState extends NavigatorState {
     int naviStack = Get.keys.entries.firstWhere((element) => element.value == navi).key;
     var canPop = Get.global(naviStack).currentState?.canPop();
     bool isPlaceHolder = BottomNaviImpl.instance().getRoutingByIndex(naviStack).history.length == 2 &&
-        BottomNaviImpl.instance().getRoutingByIndex(naviStack).history.first.settings.name == "/placeHolder";
+        BottomNaviImpl.instance().getRoutingByIndex(naviStack).history.first.settings.name == "/${Routers.placeHolder}";
     if (canPop == true && !isPlaceHolder) {
     } else {
       Get.find<NavigationController>().remove(naviStack);
