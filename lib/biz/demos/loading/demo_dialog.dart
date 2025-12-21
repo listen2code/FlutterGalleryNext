@@ -36,7 +36,7 @@ class _DemoDialogState extends State<DemoDialog> {
                 child: Text("toast by overlay")),
             ElevatedButton(
                 onPressed: () {
-                  Future dialogFuture = showDialog(
+                  showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return Center(
@@ -45,7 +45,6 @@ class _DemoDialogState extends State<DemoDialog> {
                           ),
                         );
                       });
-                  print("dialogFuture=${dialogFuture}");
                   Future.delayed(const Duration(seconds: 1), () {
                     Navigator.of(context).pop();
                   });
@@ -54,9 +53,6 @@ class _DemoDialogState extends State<DemoDialog> {
             ElevatedButton(
                 onPressed: () async {
                   GlobalLoading.showLoading();
-                  Future.delayed(const Duration(seconds: 1), () {
-                    GlobalLoading.dismiss();
-                  });
                 },
                 child: Text("loading by global loading")),
             ElevatedButton(
@@ -68,21 +64,11 @@ class _DemoDialogState extends State<DemoDialog> {
                 child: Text("show message dialog")),
             ElevatedButton(
                 onPressed: () async {
-                  showMessageDialog(
-                      "message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1message1",
-                      title: "title", onOkPressed: () {
+                  showConfirmDialog("message", title: "title", onCancelPressed: () {
+                    dismissDialog();
+                  }, onOkPressed: () {
                     dismissDialog();
                   });
-
-                  showMessageDialog("message2", title: "title", onOkPressed: () {
-                    dismissDialog();
-                  });
-                  // showConfirmDialog("message", title: "title",
-                  //     onCancelPressed: () {
-                  //   dismissDialog();
-                  // }, onOkPressed: () {
-                  //   dismissDialog();
-                  // });
                 },
                 child: Text("show confirm dialog")),
             ElevatedButton(
@@ -91,258 +77,110 @@ class _DemoDialogState extends State<DemoDialog> {
                 },
                 child: Text("show custom dialog")),
             ElevatedButton(
-                onPressed: () async {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Container(
-                          height: 200,
+              onPressed: () async {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      height: 200,
+                      width: 200,
+                      color: Theme.of(context).colorScheme.surface,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(width: 200, color: Colors.green, child: Text("data1")),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(width: 200, color: Colors.green, child: Text("data2")),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              child: Text("show bottom sheet dialog"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SimpleDialog(
+                      backgroundColor: Colors.grey,
+                      title: Center(child: Text("title")),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0), side: const BorderSide(width: 1, color: Colors.white)),
+                      children: [
+                        Container(
                           width: 200,
-                          color: Theme.of(context).colorScheme.surface,
+                          height: 200,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Container(width: 200, color: Colors.green, child: Text("data1")),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(width: 200, color: Colors.green, child: Text("data2")),
+                              Expanded(
+                                  child: Container(
+                                child: Center(
+                                  child: Text("content"),
+                                ),
+                              )),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(width: 10),
+                                  Expanded(child: ElevatedButton(onPressed: () {}, child: Text("cancel"))),
+                                  SizedBox(width: 5),
+                                  Expanded(
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text("ok"))),
+                                  SizedBox(width: 10),
+                                ],
+                              )
                             ],
                           ),
-                        );
-                      });
-                },
-                child: Text("show bottom sheet dialog")),
+                        )
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Text("diy by simpleDialog2"),
+            ),
             ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SimpleDialog(
-                          backgroundColor: Colors.grey,
-                          title: Center(child: Text("title")),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0), side: const BorderSide(width: 1, color: Colors.white)),
-                          children: [
-                            Container(
-                              width: 200,
-                              height: 200,
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                      child: Container(
-                                    child: Center(child: Text("content")),
-                                  )),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(width: 5),
-                                      ElevatedButton(onPressed: () {}, child: Text("cancel")),
-                                      SizedBox(width: 5),
-                                      ElevatedButton(onPressed: () {}, child: Text("confirm")),
-                                      SizedBox(width: 5),
-                                      ElevatedButton(
-                                          onPressed: () {
-                                            dismissDialog();
-                                          },
-                                          child: Text("ok")),
-                                      SizedBox(width: 5),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        );
-                      });
-                },
-                child: Text("diy by simpleDialog1")),
-            ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SimpleDialog(
-                          backgroundColor: Colors.grey,
-                          title: Center(child: Text("title")),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0), side: const BorderSide(width: 1, color: Colors.white)),
-                          children: [
-                            Container(
-                              width: 200,
-                              height: 200,
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                      child: Container(
-                                    child: Center(child: Text("content")),
-                                  )),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(width: 10),
-                                      Expanded(child: ElevatedButton(onPressed: () {}, child: Text("cancel"))),
-                                      SizedBox(width: 5),
-                                      Expanded(
-                                          child: ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text("ok"))),
-                                      SizedBox(width: 10),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        );
-                      });
-                },
-                child: Text("diy by simpleDialog2")),
-            ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SimpleDialog(
-                          backgroundColor: Colors.grey,
-                          title: Center(child: Text("title")),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0), side: const BorderSide(width: 1, color: Colors.white)),
-                          children: [
-                            Container(
-                              width: 300,
-                              height: 200,
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                      child: Container(
-                                    child: Center(child: Text("content")),
-                                  )),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(width: 10),
-                                      Expanded(child: ElevatedButton(onPressed: () {}, child: Text("cancel"))),
-                                      SizedBox(width: 5),
-                                      Expanded(child: ElevatedButton(onPressed: () {}, child: Text("confirm"))),
-                                      SizedBox(width: 5),
-                                      Expanded(
-                                          child: ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text("ok"))),
-                                      SizedBox(width: 10),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        );
-                      });
-                },
-                child: Text("diy by simpleDialog3")),
-            ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Center(child: Text("titletitletitletitletitletitletitletitletitletitletitletitle")),
-                          content: const SizedBox(
-                            height: 100,
-                            width: 100,
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: Text("contentcontentcontentcontentcontentcontentcontentcontentcontentconten"),
-                            ),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Center(child: Text("title")),
+                        content: const SizedBox(
+                          height: 100,
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: Text("content"),
                           ),
-                          actions: [
-                            Center(
-                              child: SizedBox(
-                                width: 100,
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text("ok")),
-                              ),
-                            ),
-                          ],
-                        );
-                      });
-                },
-                child: Text("diy by AlertDialog1")),
-            ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Center(child: Text("title")),
-                          content: const SizedBox(
-                            height: 100,
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: Text("content"),
-                            ),
-                          ),
-                          actions: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ElevatedButton(onPressed: () {}, child: Text("cancel")),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text("ok")),
-                              ],
-                            )
-                          ],
-                        );
-                      });
-                },
-                child: Text("diy by AlertDialog2")),
-            ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Center(child: Text("title")),
-                          content: const SizedBox(
-                            height: 100,
-                            width: 100,
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: Text("content"),
-                            ),
-                          ),
-                          actions: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ElevatedButton(onPressed: () {}, child: Text("cancel")),
-                                SizedBox(width: 10),
-                                ElevatedButton(onPressed: () {}, child: Text("confirm")),
-                                SizedBox(width: 10),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text("ok")),
-                              ],
-                            )
-                          ],
-                        );
-                      });
-                },
-                child: Text("diy by AlertDialog3")),
+                        ),
+                        actions: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(onPressed: () {}, child: Text("cancel")),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text("ok")),
+                            ],
+                          )
+                        ],
+                      );
+                    });
+              },
+              child: Text("diy by AlertDialog2"),
+            ),
           ],
         ),
       ),
