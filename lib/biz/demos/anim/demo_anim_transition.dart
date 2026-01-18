@@ -1,35 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/generated/r.dart';
 
-class DemoAnimTransition extends StatelessWidget {
-  const DemoAnimTransition({super.key});
+class DemoAnimTransitionPage extends StatelessWidget {
+  const DemoAnimTransitionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("DemoAnimTransition"),
+        title: const Text("Demo Anim Transition"),
       ),
       body: Center(
         child: InkWell(
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
+            Navigator.of(context).push(
+              MaterialPageRoute(
                 builder: (context) {
-                  return const HonorPage();
+                  return const BigImagePage();
                 },
-                fullscreenDialog: true));
+                fullscreenDialog: true,
+              ),
+            );
           },
-
-          /// Hero  tag 共享
           child: Hero(
             tag: "image",
-            child: Image.asset(
-              R.imagesLake,
-              fit: BoxFit.cover,
-              width: 100,
-              height: 100,
-            ),
+            child: Image.asset(R.imagesLake, fit: BoxFit.cover, width: 100, height: 100),
           ),
         ),
       ),
@@ -37,13 +32,12 @@ class DemoAnimTransition extends StatelessWidget {
   }
 }
 
-class HonorPage extends StatelessWidget {
-  const HonorPage({super.key});
+class BigImagePage extends StatelessWidget {
+  const BigImagePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
       body: InkWell(
         onTap: () {
           Navigator.of(context).pop();

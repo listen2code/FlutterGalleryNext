@@ -32,6 +32,9 @@ class Constant {
     "demo intl": (context) {
       return const DemoIntl();
     },
+    "demo theme": (context) {
+      return const DemoTheme();
+    },
     "demo auth": (context) {
       return const DemoEmpty();
     },
@@ -50,17 +53,11 @@ class Constant {
     "demo expand float button": (context) {
       return const DemoExpandFloatButton();
     },
-    "layout complex": (context) {
-      return const DemoLayoutComplex();
-    },
     "layout scrolling parallax": (context) {
       return const DemoLayoutScrollParallax();
     },
     "demo tab": (context) {
       return const DemoTab();
-    },
-    "demo theme": (context) {
-      return const DemoTheme();
     },
     "demo anim": (context) {
       return const DemoAnim();

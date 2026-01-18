@@ -11,7 +11,6 @@ export 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer_left.dart';
 export 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer_stagger.dart';
 export 'package:flutter_gallery_next/biz/demos/grid/demo_grid.dart';
 export 'package:flutter_gallery_next/biz/demos/image/demo_image.dart';
-export 'package:flutter_gallery_next/biz/demos/layout/demo_layout_complex.dart';
 export 'package:flutter_gallery_next/biz/demos/layout/demo_layout_scroll_parallax.dart';
 export 'package:flutter_gallery_next/biz/demos/list/demo_list.dart';
 export 'package:flutter_gallery_next/biz/demos/loading/demo_dialog.dart';

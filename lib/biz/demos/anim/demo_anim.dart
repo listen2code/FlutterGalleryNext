@@ -24,22 +24,22 @@ class _DemoAnimState extends State<DemoAnim> {
           children: [
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoAnimOpacity()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoAnimOpacityPage()));
                 },
                 child: const Text("anim opacity")),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoAnimPhysicsDrag()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoAnimPhysicsDragPage()));
                 },
                 child: const Text("anim physics drag")),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoAnimRandom()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoAnimRandomPage()));
                 },
                 child: const Text("anim random")),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => DemoAnimTransition()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DemoAnimTransitionPage()));
                 },
                 child: const Text("anim transition")),
           ],
