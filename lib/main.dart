@@ -9,7 +9,6 @@ import 'package:flutter_gallery_next/base/widget/dialog/common_toast_widget.dart
 import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab1.dart';
 import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab2.dart';
 import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab3.dart';
-import 'package:flutter_gallery_next/biz/demos/demo_empty.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_main.dart';
 import 'package:flutter_gallery_next/biz/login/view/login_page.dart';
@@ -84,8 +83,7 @@ class MyAppState extends State<MyApp> {
     return GetMaterialApp(
       navigatorKey: GlobalNavigation.navigatorKey,
       title: 'Listen Flutter Gallery',
-      theme: AppTheme.of(AppThemes.light).themeData,
-      darkTheme: AppTheme.of(AppThemes.dark).themeData,
+      theme: AppTheme.fromMode(_themeMode).themeData,
       themeMode: _themeMode,
 
       // --- Localization ---
