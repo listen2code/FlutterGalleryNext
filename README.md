@@ -10,6 +10,8 @@
 8.rules
 9.multi service to vm
 10.upgrade freeze
+11.Ai import
+12.chart
 
 # architecture
 
