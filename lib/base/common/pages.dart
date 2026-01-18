@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_intl.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_repaint.dart';
@@ -19,78 +19,160 @@ class Routers {
   static const String userInfo = "userInfo";
   static const String placeHolder = "placeHolder";
   static const String unknownPage = "unknownPage";
+
+  // Demo routes
+  static const String theme = "theme";
+  static const String statusBar = "status bar";
+  static const String intl = "intl";
+  static const String repaint = "repaint";
+  static const String tab = "tab";
+  static const String drawer = "drawer";
+  static const String parallax = "layout scrolling parallax";
+  static const String grid = "grid";
+  static const String list = "list";
+  static const String anim = "anim";
+  static const String dialog = "dialog";
+  static const String expandFab = "expand float button";
+  static const String eventBus = "event bus";
+  static const String net = "net";
+  static const String dbFile = "db file";
+  static const String dbSp = "db sp";
+  static const String proxy = "proxy";
+  static const String auth = "auth";
+  static const String image = "image";
+}
+
+/// Configuration for a demo item to centralize management
+class DemoConfig {
+  final String route;
+  final String title;
+  final IconData icon;
+  final String category;
+  final WidgetBuilder builder;
+
+  const DemoConfig({
+    required this.route,
+    required this.title,
+    required this.icon,
+    required this.category,
+    required this.builder,
+  });
 }
 
 class Constant {
-  static final Map<String, WidgetBuilder> router = {
-    "home": (context) {
-      return HomePage();
-    },
-    "repaint": (context) {
-      return const DemoRepaint();
-    },
-    "intl": (context) {
-      return const DemoIntl();
-    },
-    "theme": (context) {
-      return const DemoTheme();
-    },
-    "auth": (context) {
-      return const DemoEmpty();
-    },
-    "proxy": (context) {
-      return const DemoProxy();
-    },
-    "dialog": (context) {
-      return const DemoDialog();
-    },
-    "status bar": (context) {
-      return const DemoStatusBarColor();
-    },
-    "drawer": (context) {
-      return const DemoDrawer();
-    },
-    "expand float button": (context) {
-      return const DemoExpandFloatButton();
-    },
-    "layout scrolling parallax": (context) {
-      return const DemoLayoutScrollParallax();
-    },
-    "tab": (context) {
-      return const DemoTab();
-    },
-    "anim": (context) {
-      return const DemoAnim();
-    },
-    "button": (context) {
-      return const DemoButton();
-    },
-    "db file": (context) {
-      return DemoDbFile(storage: CounterStorage());
-    },
-    "db sp": (context) {
-      return const DemoDbSp();
-    },
-    "grid": (context) {
-      return const DemoGrid();
-    },
-    "list": (context) {
-      return const DemoList();
-    },
-    "nav": (context) {
-      return const DemoNav();
-    },
-    "net": (context) {
-      return const DemoNet();
-    },
-    "text": (context) {
-      return const DemoText();
-    },
-    "image": (context) {
-      return const DemoImage();
-    },
-    "event bus": (context) {
-      return const DemoEventBus();
-    },
-  };
+  static const String catCore = "Core & Theme";
+  static const String catUI = "UI & Layout";
+  static const String catLogic = "Interaction & Logic";
+  static const String catStorage = "System & Storage";
+
+  /// The master list of all demos. All routes are now managed here.
+  static final List<DemoConfig> demoConfigs = [
+    // Core & Theme
+    DemoConfig(
+        route: Routers.theme, title: "Theme", icon: Icons.color_lens, category: catCore, builder: (context) => const DemoTheme()),
+    DemoConfig(
+        route: Routers.statusBar,
+        title: "Status Bar",
+        icon: Icons.screenshot,
+        category: catCore,
+        builder: (context) => const DemoStatusBarColor()),
+    DemoConfig(
+        route: Routers.intl,
+        title: "Internationalization",
+        icon: Icons.language,
+        category: catCore,
+        builder: (context) => const DemoIntl()),
+
+    // UI & Layout
+    DemoConfig(
+        route: Routers.repaint,
+        title: "Repaint Boundary",
+        icon: Icons.brush,
+        category: catUI,
+        builder: (context) => const DemoRepaint()),
+    DemoConfig(route: Routers.tab, title: "Tab Bar", icon: Icons.tab, category: catUI, builder: (context) => const DemoTab()),
+    DemoConfig(
+        route: Routers.drawer,
+        title: "Drawer Variations",
+        icon: Icons.menu_open,
+        category: catUI,
+        builder: (context) => const DemoDrawer()),
+    DemoConfig(
+        route: Routers.parallax,
+        title: "Parallax Scroll",
+        icon: Icons.view_day,
+        category: catUI,
+        builder: (context) => const DemoLayoutScrollParallax()),
+    DemoConfig(
+        route: Routers.grid, title: "Grid View", icon: Icons.grid_view, category: catUI, builder: (context) => const DemoGrid()),
+    DemoConfig(
+        route: Routers.list, title: "List View", icon: Icons.list, category: catUI, builder: (context) => const DemoList()),
+
+    // Interaction & Logic
+    DemoConfig(
+        route: Routers.anim,
+        title: "Animations",
+        icon: Icons.animation,
+        category: catLogic,
+        builder: (context) => const DemoAnim()),
+    DemoConfig(
+        route: Routers.dialog,
+        title: "Dialogs & Loading",
+        icon: Icons.chat_bubble_outline,
+        category: catLogic,
+        builder: (context) => const DemoDialog()),
+    DemoConfig(
+        route: Routers.expandFab,
+        title: "Expandable FAB",
+        icon: Icons.add_circle_outline,
+        category: catLogic,
+        builder: (context) => const DemoExpandFloatButton()),
+    DemoConfig(
+        route: Routers.image,
+        title: "Image Handling",
+        icon: Icons.image_outlined,
+        category: catLogic,
+        builder: (context) => const DemoImage()),
+
+    // System & Storage
+    DemoConfig(
+        route: Routers.eventBus,
+        title: "Event Bus",
+        icon: Icons.multiple_stop,
+        category: catStorage,
+        builder: (context) => const DemoEventBus()),
+    DemoConfig(
+        route: Routers.net,
+        title: "Network",
+        icon: Icons.cloud_queue,
+        category: catStorage,
+        builder: (context) => const DemoNet()),
+    DemoConfig(
+        route: Routers.dbFile,
+        title: "Database File",
+        icon: Icons.description_outlined,
+        category: catStorage,
+        builder: (context) => DemoDbFile(storage: CounterStorage())),
+    DemoConfig(
+        route: Routers.dbSp,
+        title: "Shared Prefs",
+        icon: Icons.save_outlined,
+        category: catStorage,
+        builder: (context) => const DemoDbSp()),
+    DemoConfig(
+        route: Routers.proxy,
+        title: "Proxy Settings",
+        icon: Icons.settings_ethernet,
+        category: catStorage,
+        builder: (context) => const DemoProxy()),
+    DemoConfig(
+        route: Routers.auth, title: "Auth", icon: Icons.security, category: catStorage, builder: (context) => const DemoEmpty()),
+    DemoConfig(
+        route: Routers.home, title: "Home", icon: Icons.home_outlined, category: catStorage, builder: (context) => HomePage()),
+  ];
+
+  /// Automatically generated router map from demoConfigs.
+  static Map<String, WidgetBuilder> get router => {
+        for (var config in demoConfigs) config.route: config.builder,
+      };
 }
