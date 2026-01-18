@@ -4,12 +4,10 @@ class DemoDrawerDraggableHandler extends StatefulWidget {
   const DemoDrawerDraggableHandler({super.key});
 
   @override
-  State<DemoDrawerDraggableHandler> createState() =>
-      _DemoDrawerDraggableHandlerState();
+  State<DemoDrawerDraggableHandler> createState() => _DemoDrawerDraggableHandlerState();
 }
 
-class _DemoDrawerDraggableHandlerState
-    extends State<DemoDrawerDraggableHandler> {
+class _DemoDrawerDraggableHandlerState extends State<DemoDrawerDraggableHandler> {
   double _sheetPosition = 0.1;
   final double _dragSensitivity = 600;
 
@@ -18,7 +16,7 @@ class _DemoDrawerDraggableHandlerState
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('demo drawer draggable handler')),
+      appBar: AppBar(title: const Text('drawer draggable handler')),
       body: DraggableScrollableSheet(
         initialChildSize: _sheetPosition,
         minChildSize: 0.1,

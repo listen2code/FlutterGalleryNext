@@ -7,7 +7,7 @@ class DemoDrawerDraggable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('demo drawer draggable'),
+        title: const Text('drawer draggable'),
       ),
       body: Stack(
         children: [
