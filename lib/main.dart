@@ -16,6 +16,7 @@ import 'package:flutter_gallery_next/biz/user_info/view/user_info_page.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:package_libs/utils/app_links_util.dart';
+import 'package:package_libs/utils/auth_util.dart';
 import 'package:package_libs/utils/connectivity_util.dart';
 import 'package:package_libs/utils/logger_util.dart';
 
@@ -103,6 +104,14 @@ class MyAppState extends State<MyApp> {
         GetPage(name: '/${Routers.login}', page: () => LoginPage()),
         GetPage(name: '/${Routers.userInfo}', page: () => UserInfoPage()),
       ],
+      onInit: () {
+        log("addObserver(appLifecycleWatcher)", type: LoggerType.easy);
+        WidgetsBinding.instance.addObserver(appLifecycleWatcher);
+      },
+      onDispose: () {
+        log("removeObserver(appLifecycleWatcher)", type: LoggerType.easy);
+        WidgetsBinding.instance.removeObserver(appLifecycleWatcher);
+      },
       home: const DemoMainPage(),
       routes: Constant.router,
       builder: FlutterSmartDialog.init(

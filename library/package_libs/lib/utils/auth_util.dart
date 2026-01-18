@@ -107,7 +107,8 @@ class AuthUtil {
         LoggerUtil.log("AuthUtil checkAuthority isStatusDoing", type: LoggerType.easy);
       } else {
         LoggerUtil.log("AuthUtil checkAuthority 生体認証画面へ", type: LoggerType.easy);
-        // BiometricAuthLockDialog.show();
+        authenticate();
+        // todo BiometricAuthLockDialog.show();
       }
       // 生体認証を行う場合にのみtrueが返る
       return true;
@@ -265,13 +266,13 @@ class AuthUtil {
   Future<String> getAuthTypeName() async {
     bool isFaceAvailable = await AuthUtil.instance().isFaceAvailable();
     bool isFingerprintAvailable = await AuthUtil.instance().isFingerprintAvailable();
-    String result = "useBiometricAuth";
+    String result = "Biometric Auth";
     if (isFingerprintAvailable && isFaceAvailable) {
-      result = "touchIdFaceIdUse";
+      result = "Finger & Face";
     } else if (isFingerprintAvailable) {
-      result = "touchIdUse";
+      result = "Finger";
     } else if (isFaceAvailable) {
-      result = "useFaceId";
+      result = "Face";
     }
     return result;
   }

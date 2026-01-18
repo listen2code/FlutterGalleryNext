@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery_next/biz/demos/demo_auth.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_intl.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_repaint.dart';
@@ -155,9 +156,9 @@ class Constant {
         category: catStorage,
         builder: (context) => const DemoProxy()),
     DemoConfig(
-        route: Routers.auth, title: "Auth", icon: Icons.security, category: catStorage, builder: (context) => const DemoEmpty()),
+        route: Routers.auth, title: "Auth", icon: Icons.security, category: catStorage, builder: (context) => const DemoAuth()),
     DemoConfig(
-        route: Routers.home, title: "Home", icon: Icons.home_outlined, category: catStorage, builder: (context) => HomePage()),
+        route: Routers.home, title: "MVVM", icon: Icons.home_outlined, category: catStorage, builder: (context) => HomePage()),
   ];
 
   /// Automatically generated router map from demoConfigs.
