@@ -6,9 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gallery_next/base/utils/app_constants.dart';
+import 'package:flutter_gallery_next/base/widget/base/biometric_auth_lock_dialog.dart';
 import 'package:flutter_gallery_next/base/widget/refresh/refresh_manager.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:package_libs/utils/auth_util.dart';
 import 'package:package_libs/utils/crypto_util.dart';
 import 'package:package_libs/utils/logger_util.dart';
 import 'package:package_libs/utils/secure_storage_util.dart';
@@ -31,6 +33,11 @@ Future<void> appInit() async {
   // todo app links
   // todo keyString: get from SecureStorageUtil
   CryptoUtil.init(keyString: "", ivString: "");
+  AuthUtil.instance().init(onShow: () {
+    BiometricAuthLockDialog.show();
+  }, onDismiss: () {
+    BiometricAuthLockDialog.dismiss();
+  });
 }
 
 void initErrorHandler() {

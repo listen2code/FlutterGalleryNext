@@ -7,338 +7,207 @@ import 'package:package_libs/utils/logger_util.dart';
 import 'package:package_libs/utils/sp_util.dart';
 
 enum AuthStatus {
-  // 初期化
-  init,
-  // 認証 検査必要
-  todo,
-  // 認証 検査中
-  doing,
-  // 認証 完了
-  done,
-  // スキップ
-  skip,
+  init, // 初期化
+  todo, // 認証 検査必要
+  doing, // 認証 検査中
+  done, // 認証 完了
+  skip, // スキップ
 }
 
 enum AuthResult {
-  // 成功
   success,
-  // エラー
   error,
-  // 失敗
   fail,
 }
 
-AppLifecycleWatcher appLifecycleWatcher = AppLifecycleWatcher();
-
+// todo update
 class AuthUtil {
+  static const String tag = "AuthUtil";
+
+  // --- SP Keys ---
+  static const String keyAuthEnable = "keyAuthEnable";
+  static const String keyAuthTimeout = "keyAuthTimeout";
+
   static final AuthUtil _instance = AuthUtil._private();
   static final LocalAuthentication _auth = LocalAuthentication();
 
-  /// 背景に戻る時間
   DateTime? _pausedDate;
-
-  /// 認証ステータス
   AuthStatus _status = AuthStatus.init;
+
+  VoidCallback? _onShowAuth;
+  VoidCallback? _onDismissAuth;
 
   AuthUtil._private();
 
   factory AuthUtil.instance() => _instance;
 
+  void init({required VoidCallback onShow, required VoidCallback onDismiss}) {
+    _onShowAuth = onShow;
+    _onDismissAuth = onDismiss;
+  }
+
   Future<AuthResult> authenticate() async {
-    LoggerUtil.log("AuthUtil authenticate start", type: LoggerType.easy);
+    LoggerUtil.log("$tag: authenticate start", type: LoggerType.easy);
+
+    if (_status == AuthStatus.doing) return AuthResult.fail;
+    setStatus(AuthStatus.doing);
+
     AuthResult authResult = AuthResult.fail;
     try {
-      bool result = await _auth.authenticate(
-        localizedReason: ' ',
-        authMessages: <AuthMessages>[
-          const AndroidAuthMessages(
-            signInTitle: "user auth",
-            cancelButton: "cancel",
-            biometricHint: ' ',
+      final bool result = await _auth.authenticate(
+        localizedReason: 'Please authenticate to continue',
+        authMessages: const <AuthMessages>[
+          AndroidAuthMessages(
+            signInTitle: "Security Check",
+            cancelButton: "Cancel",
+            biometricHint: 'Verify your identity',
           ),
-          const IOSAuthMessages(
-            cancelButton: "cancel",
-          ),
+          IOSAuthMessages(cancelButton: "Cancel"),
         ],
         options: const AuthenticationOptions(
           stickyAuth: true,
           biometricOnly: true,
         ),
       );
-      if (result) {
-        authResult = AuthResult.success;
-      }
+      authResult = result ? AuthResult.success : AuthResult.fail;
     } on PlatformException catch (e) {
       authResult = AuthResult.error;
-      LoggerUtil.log("AuthUtil authenticate error=$e", type: LoggerType.error);
+      LoggerUtil.error("$tag: Authentication error", error: e);
     }
-    LoggerUtil.log("AuthUtil authenticate authResult=$authResult", type: LoggerType.easy);
+
     if (authResult == AuthResult.success) {
       setStatus(AuthStatus.done);
+      _onDismissAuth?.call();
+    } else {
+      setStatus(AuthStatus.todo);
     }
+
     return authResult;
   }
 
   Future<bool> checkAuthority() async {
-    if (isStatusSkip()) {
-      LoggerUtil.log("AuthUtil checkAuthority skip=true", type: LoggerType.easy);
-      return false;
-    }
-    bool isAvailableBool = await isAvailable();
-    if (isAvailableBool == false) {
-      LoggerUtil.log("AuthUtil checkAuthority isAvailableBool=false", type: LoggerType.easy);
-      setStatus(AuthStatus.done);
-      await SpUtil.instance.set("lockPassWordId", "");
-      await SpUtil.instance.set("authenticationTime", "");
-      await stopAuthentication();
-      // GlobalDialog.dismissDialog(tag: BiometricAuthLockDialog.tag);
-      return false;
-    }
-    bool isFaceAvailableBool = await isFaceAvailable();
-    bool isFingerprintAvailableBool = await isFingerprintAvailable();
-    LoggerUtil.log(
-        "AuthUtil checkAuthority status=$_status "
-        "isAvailable=$isAvailableBool isFace=$isFaceAvailableBool isFingerprint=$isFingerprintAvailableBool",
-        type: LoggerType.easy);
+    if (isStatusSkip()) return false;
 
-    bool shouldAuthBool = await shouldAuth();
-    if (shouldAuthBool) {
-      if (isStatusDoing()) {
-        LoggerUtil.log("AuthUtil checkAuthority isStatusDoing", type: LoggerType.easy);
-      } else {
-        LoggerUtil.log("AuthUtil checkAuthority 生体認証画面へ", type: LoggerType.easy);
-        authenticate();
-        // todo BiometricAuthLockDialog.show();
+    if (!await isAvailable()) {
+      LoggerUtil.log("$tag: Biometrics not available, cleanup settings", type: LoggerType.easy);
+      clearWhenForgetPassword();
+      await stopAuthentication();
+      _onDismissAuth?.call();
+      return false;
+    }
+
+    if (await shouldAuth()) {
+      if (!isStatusDoing()) {
+        LoggerUtil.log("$tag: Triggering Auth UI", type: LoggerType.easy);
+        _onShowAuth?.call();
       }
-      // 生体認証を行う場合にのみtrueが返る
       return true;
     }
-    clearPauseDate();
-    LoggerUtil.log("AuthUtil checkAuthority end", type: LoggerType.easy);
 
+    clearPauseDate();
     return false;
   }
 
   Future<bool> shouldAuth() async {
-    if (isStatusDone()) {
-      LoggerUtil.log("AuthUtil shouldAuth=false isStatusDone", type: LoggerType.easy);
-      return false;
+    if (isStatusDone()) return false;
+
+    if (await isAuthEnabled()) {
+      if (isStatusInit()) return true;
+
+      final String timeoutStr = SpUtil.instance.getString(keyAuthTimeout);
+      final int timeout = int.tryParse(timeoutStr) ?? -1;
+
+      return await isRequiredIfEnabled(getPausedDate(), timeout);
     }
-
-    bool isAuthTimeEnabledBool = await isAuthEnabled();
-    LoggerUtil.log("AuthUtil shouldAuth isAuthTimeEnabled=$isAuthTimeEnabledBool", type: LoggerType.easy);
-    if (isAuthTimeEnabledBool) {
-      if (isStatusInit()) {
-        // アプリ起動 -> 生体認証へ
-        LoggerUtil.log("AuthUtil shouldAuth=true isStatusInit", type: LoggerType.easy);
-        return true;
-      }
-
-      String authenticationTime = SpUtil.instance.getString("authenticationTime", defaultValue: "");
-      bool isRequiredIfEnabledBool = await isRequiredIfEnabled(getPausedDate(), int.tryParse(authenticationTime) ?? -1);
-      LoggerUtil.log(
-          "AuthUtil shouldAuth "
-          "authenticationTime=$authenticationTime "
-          "isRequiredIfEnabledBool=$isRequiredIfEnabledBool ",
-          type: LoggerType.easy);
-      if (isRequiredIfEnabledBool == true) {
-        LoggerUtil.log("AuthUtil shouldAuth=true isRequiredIfEnabledBool=true", type: LoggerType.easy);
-        return true;
-      }
-    }
-
-    LoggerUtil.log("AuthUtil shouldAuth=false", type: LoggerType.easy);
     return false;
   }
 
   Future<bool> isAuthEnabled() async {
-    String authenticationTime = SpUtil.instance.getString("authenticationTime", defaultValue: "");
-    String lockPassword = SpUtil.instance.getString("lockPassWordId", defaultValue: "");
-
-    if (lockPassword.isEmpty == true) {
-      // lockPasswordが設定されていない
-      LoggerUtil.log("AuthUtil isAuthTimeEnabled lockPasswordが設定されていない", type: LoggerType.easy);
-      return false;
-    }
-
-    if (authenticationTime.isEmpty == true) {
-      // timeoutが設定されていない
-      LoggerUtil.log("AuthUtil isAuthTimeEnabled timeoutが設定されていない", type: LoggerType.easy);
-      return false;
-    }
-
-    if (num.tryParse(authenticationTime) == null) {
-      // 設定無効
-      LoggerUtil.log("AuthUtil isAuthTimeEnabled 設定無効=$authenticationTime", type: LoggerType.easy);
-      return false;
-    }
-
-    return true;
+    final String timeout = SpUtil.instance.getString(keyAuthTimeout);
+    final bool enabled = SpUtil.instance.getBool(keyAuthEnable, defaultValue: false);
+    return enabled && timeout.isNotEmpty && num.tryParse(timeout) != null;
   }
 
-  Future<bool> isRequiredIfEnabled(DateTime? startTime, int timeout) async {
-    LoggerUtil.log("AuthUtil isRequiredIfEnabled startTime=$startTime timeout=$timeout", type: LoggerType.easy);
-    if (timeout < 0) {
-      LoggerUtil.log("AuthUtil isRequiredIfEnabled timeout invalid", type: LoggerType.easy);
-      return false;
-    }
+  Future<bool> isRequiredIfEnabled(DateTime? startTime, int timeoutMinutes) async {
+    if (timeoutMinutes < 0 || startTime == null) return false;
+    if (timeoutMinutes == 0) return true;
 
-    if (startTime == null) {
-      // 認証有効中
-      LoggerUtil.log("AuthUtil isRequiredIfEnabled 認証有効中 startTime=$startTime timeout=$timeout", type: LoggerType.easy);
-      return false;
-    }
-
-    if (timeout == 0) {
-      // 即時認証
-      LoggerUtil.log("AuthUtil isRequiredIfEnabled 即時認証", type: LoggerType.easy);
-      return true;
-    }
-
-    DateTime currentTime = DateTime.now();
-    Duration dif = currentTime.difference(startTime);
-    LoggerUtil.log(
-        "AuthUtil isRequiredIfEnabled "
-        "startTime=$startTime currentTime=$currentTime timeout=$timeout "
-        "dif=$dif dif.inMinutes=${dif.inMinutes}",
-        type: LoggerType.easy);
-
-    if (dif.inMinutes >= timeout) {
-      LoggerUtil.log("AuthUtil isRequiredIfEnabled=true ${dif.inMinutes} >= $timeout", type: LoggerType.easy);
-      return true;
-    } else {
-      LoggerUtil.log("AuthUtil isRequiredIfEnabled=false ${dif.inMinutes} < $timeout", type: LoggerType.easy);
-      return false;
-    }
+    final Duration difference = DateTime.now().difference(startTime);
+    return difference.inMinutes >= timeoutMinutes;
   }
 
   Future<bool> isAvailable() async {
-    bool isDeviceSupportedBool = false;
-    List<BiometricType> biometricList = [];
     try {
-      isDeviceSupportedBool = await _auth.isDeviceSupported();
-      biometricList = await _auth.getAvailableBiometrics();
-      bool canCheckBiometricsBool = await canCheckBiometrics();
-      LoggerUtil.log(
-          "AuthUtil isAvailable "
-          "isDeviceSupported=$isDeviceSupportedBool "
-          "canCheckBiometrics=$canCheckBiometricsBool "
-          "getAvailableBiometrics=$biometricList",
-          type: LoggerType.easy);
-    } on PlatformException catch (e) {
-      LoggerUtil.log("AuthUtil isAvailable error=$e", type: LoggerType.error);
+      final bool isSupported = await _auth.isDeviceSupported();
+      final bool canCheck = await _auth.canCheckBiometrics;
+      final List<BiometricType> available = await _auth.getAvailableBiometrics();
+      return isSupported && canCheck && available.isNotEmpty;
+    } catch (e) {
+      return false;
     }
-    return isDeviceSupportedBool && biometricList.isNotEmpty;
-  }
-
-  Future<bool> canCheckBiometrics() async {
-    bool canCheckBiometrics = false;
-    try {
-      canCheckBiometrics = await _auth.canCheckBiometrics;
-    } on PlatformException catch (e) {
-      LoggerUtil.log("AuthUtil canCheckBiometrics error=$e", type: LoggerType.error);
-    }
-    return canCheckBiometrics;
-  }
-
-  Future<bool> isFaceAvailable() async {
-    // Android の場合、[BiometricType.weak, BiometricType.strong]を返信します
-    List<BiometricType> biometricList = [];
-    try {
-      biometricList = await _auth.getAvailableBiometrics();
-    } on PlatformException catch (e) {
-      LoggerUtil.log("AuthUtil isFaceAvailable error=$e", type: LoggerType.error);
-    }
-    return biometricList.contains(BiometricType.face);
-  }
-
-  Future<bool> isFingerprintAvailable() async {
-    // Android の場合、[BiometricType.weak, BiometricType.strong]を返信します
-    List<BiometricType> biometricList = [];
-    try {
-      biometricList = await _auth.getAvailableBiometrics();
-    } on PlatformException catch (e) {
-      LoggerUtil.log("AuthUtil isFingerprintAvailable error=$e", type: LoggerType.error);
-    }
-    return biometricList.contains(BiometricType.fingerprint);
   }
 
   Future<String> getAuthTypeName() async {
-    bool isFaceAvailable = await AuthUtil.instance().isFaceAvailable();
-    bool isFingerprintAvailable = await AuthUtil.instance().isFingerprintAvailable();
-    String result = "Biometric Auth";
-    if (isFingerprintAvailable && isFaceAvailable) {
-      result = "Finger & Face";
-    } else if (isFingerprintAvailable) {
-      result = "Finger";
-    } else if (isFaceAvailable) {
-      result = "Face";
+    final List<BiometricType> available = await _auth.getAvailableBiometrics();
+    if (available.contains(BiometricType.fingerprint) && available.contains(BiometricType.face)) {
+      return "Fingerprint & Face";
+    } else if (available.contains(BiometricType.fingerprint)) {
+      return "Fingerprint";
+    } else if (available.contains(BiometricType.face)) {
+      return "Face ID";
     }
-    return result;
+    return "Biometric";
   }
 
-  Future<bool> stopAuthentication() async {
-    bool result = false;
+  Future<bool> isFaceAvailable() async {
+    final list = await _auth.getAvailableBiometrics();
+    return list.contains(BiometricType.face);
+  }
+
+  Future<bool> isFingerprintAvailable() async {
+    final list = await _auth.getAvailableBiometrics();
+    return list.contains(BiometricType.fingerprint);
+  }
+
+  Future<void> stopAuthentication() async {
     try {
-      result = await _auth.stopAuthentication();
-    } on PlatformException catch (e) {
-      LoggerUtil.log("AuthUtil stopAuthentication error=$e", type: LoggerType.error);
-    }
-    return result;
+      await _auth.stopAuthentication();
+    } catch (_) {}
   }
 
-  DateTime? getPausedDate() {
-    return _pausedDate;
-  }
+  DateTime? getPausedDate() => _pausedDate;
 
   void clearPauseDate() {
-    LoggerUtil.log("AuthUtil clearPauseDate", type: LoggerType.easy);
     _pausedDate = null;
-  }
-
-  void clearWhenForgetPassword() {
-    /// reset status
-    setStatus(AuthStatus.done);
-    clearPauseDate();
-
-    // Lockのパスワード
-    SpUtil.instance.set("lockPassWordId", "");
-    // 生体認証有効時間
-    SpUtil.instance.set("authenticationTime", "");
   }
 
   void setPausedDate() {
     _pausedDate = DateTime.now();
-    LoggerUtil.log("AuthUtil setPausedDate pausedDate=$_pausedDate", type: LoggerType.easy);
     setStatusTodo();
   }
 
-  bool isStatusDoing() {
-    return _status == AuthStatus.doing;
-  }
+  bool isStatusDoing() => _status == AuthStatus.doing;
 
-  bool isStatusSkip() {
-    return _status == AuthStatus.skip;
-  }
+  bool isStatusSkip() => _status == AuthStatus.skip;
 
-  bool isStatusInit() {
-    return _status == AuthStatus.init;
-  }
+  bool isStatusInit() => _status == AuthStatus.init;
 
-  bool isStatusDone() {
-    return _status == AuthStatus.done;
-  }
+  bool isStatusDone() => _status == AuthStatus.done;
 
   void setStatus(AuthStatus status) {
-    log("AuthUtil setStatus from $_status to $status", type: LoggerType.easy);
+    LoggerUtil.log("$tag: Status -> $status", type: LoggerType.easy);
     _status = status;
   }
 
   void setStatusTodo() {
-    log("AuthUtil setStatusTodo from $_status to AuthStatus.todo", type: LoggerType.easy);
-    if (_status != AuthStatus.doing) {
-      _status = AuthStatus.todo;
-    }
+    if (_status != AuthStatus.doing) setStatus(AuthStatus.todo);
+  }
+
+  void clearWhenForgetPassword() {
+    setStatus(AuthStatus.done);
+    clearPauseDate();
+    SpUtil.instance.set(keyAuthEnable, false);
+    SpUtil.instance.set(keyAuthTimeout, "");
   }
 }
 
@@ -346,24 +215,12 @@ class AppLifecycleWatcher extends WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    switch (state) {
-      case AppLifecycleState.detached:
-        log("AuthUtil detached", type: LoggerType.easy);
-        break;
-      case AppLifecycleState.inactive:
-        log("AuthUtil inactive", type: LoggerType.easy);
-        break;
-      case AppLifecycleState.hidden:
-        log("AuthUtil hidden", type: LoggerType.easy);
-        break;
-      case AppLifecycleState.resumed:
-        log("AuthUtil resumed", type: LoggerType.easy);
-        AuthUtil.instance().checkAuthority();
-        break;
-      case AppLifecycleState.paused:
-        log("AuthUtil paused", type: LoggerType.easy);
-        AuthUtil.instance().setPausedDate();
-        break;
+    if (state == AppLifecycleState.resumed) {
+      AuthUtil.instance().checkAuthority();
+    } else if (state == AppLifecycleState.paused) {
+      AuthUtil.instance().setPausedDate();
     }
   }
 }
+
+final AppLifecycleWatcher appLifecycleWatcher = AppLifecycleWatcher();

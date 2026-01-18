@@ -34,8 +34,8 @@ class _DemoAuthState extends State<DemoAuth> {
 
   void _loadSettings() {
     setState(() {
-      _isLockEnabled = SpUtil.instance.getString("lockPassWordId").isNotEmpty;
-      String timeStr = SpUtil.instance.getString("authenticationTime", defaultValue: "0");
+      _isLockEnabled = SpUtil.instance.getBool(AuthUtil.keyAuthEnable);
+      String timeStr = SpUtil.instance.getString(AuthUtil.keyAuthTimeout, defaultValue: "0");
       _timeoutMinutes = int.tryParse(timeStr) ?? 0;
     });
   }
@@ -51,13 +51,13 @@ class _DemoAuthState extends State<DemoAuth> {
   }
 
   Future<void> _toggleLock(bool value) async {
-    // In a real app, this would involve setting a pin/pattern
-    await SpUtil.instance.set("lockPassWordId", value ? "MOCK_PIN_1234" : "");
+    await SpUtil.instance.set(AuthUtil.keyAuthEnable, value);
+    _updateTimeout(0);
     _loadSettings();
   }
 
   Future<void> _updateTimeout(double value) async {
-    await SpUtil.instance.set("authenticationTime", value.toInt().toString());
+    await SpUtil.instance.set(AuthUtil.keyAuthTimeout, value.toInt().toString());
     _loadSettings();
   }
 
