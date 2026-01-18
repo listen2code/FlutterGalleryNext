@@ -100,9 +100,8 @@ class Constant {
         category: catUI,
         builder: (context) => const DemoLayoutScrollParallax()),
     DemoConfig(
-        route: Routers.grid, title: "Grid View", icon: Icons.grid_view, category: catUI, builder: (context) => const DemoGrid()),
-    DemoConfig(
-        route: Routers.list, title: "List View", icon: Icons.list, category: catUI, builder: (context) => const DemoList()),
+        route: Routers.grid, title: "Grid", icon: Icons.grid_view, category: catUI, builder: (context) => const DemoGrid()),
+    DemoConfig(route: Routers.list, title: "List", icon: Icons.list, category: catUI, builder: (context) => const DemoList()),
 
     // Interaction & Logic
     DemoConfig(
