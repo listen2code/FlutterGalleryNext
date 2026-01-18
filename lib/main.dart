@@ -9,6 +9,7 @@ import 'package:flutter_gallery_next/base/widget/dialog/common_toast_widget.dart
 import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab1.dart';
 import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab2.dart';
 import 'package:flutter_gallery_next/biz/demos/bottom_navi/tab3.dart';
+import 'package:flutter_gallery_next/biz/demos/demo_empty.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_main.dart';
 import 'package:flutter_gallery_next/biz/login/view/login_page.dart';
@@ -39,14 +40,15 @@ class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MyApp> createState() => MyAppState();
 
-  // Add a static method to allow descendant widgets to access and change the theme.
-  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
+  static MyAppState? of(BuildContext context) => context.findAncestorStateOfType<MyAppState>();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.light;
+
+  ThemeMode get themeMode => _themeMode;
 
   void changeTheme(ThemeMode themeMode) {
     setState(() {
@@ -77,23 +79,19 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       navigatorKey: GlobalNavigation.navigatorKey,
       title: 'Listen Flutter Gallery',
-      // Provide light and dark themes.
       theme: AppTheme.of(AppThemes.light).themeData,
       darkTheme: AppTheme.of(AppThemes.dark).themeData,
-      // Control the current theme mode.
       themeMode: _themeMode,
 
-      // ##### GetX internationalization configuration #####
+      // --- Localization ---
       translations: Messages(),
       locale: AppLocalizations.getEnLocale(),
       fallbackLocale: AppLocalizations.getEnLocale(),
-      // ##### GetX internationalization configuration #####
 
       initialRoute: '/',
       getPages: [
