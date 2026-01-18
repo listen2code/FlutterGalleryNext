@@ -1,95 +1,129 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery_next/base/common/theme/app_theme.dart';
 
-class DemoExpandFloatButton extends StatelessWidget {
+class DemoExpandFloatButton extends StatefulWidget {
   const DemoExpandFloatButton({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: ExampleExpandableFab(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
+  State<DemoExpandFloatButton> createState() => _DemoExpandFloatButtonState();
 }
 
-@immutable
-class ExampleExpandableFab extends StatelessWidget {
-  static const _actionTitles = ['Create Post', 'Upload Photo', 'Upload Video'];
-
-  const ExampleExpandableFab({super.key});
-
-  void _showAction(BuildContext context, int index) {
-    showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text(_actionTitles[index]),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('CLOSE'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+class _DemoExpandFloatButtonState extends State<DemoExpandFloatButton> {
+  bool _isFanStyle = true;
 
   @override
   Widget build(BuildContext context) {
+    final colors = AppTheme.colors(context);
+
     return Scaffold(
+      backgroundColor: colors.background,
       appBar: AppBar(
-        title: const Text('Expandable Fab'),
+        title: const Text('Expandable FAB'),
+        actions: [
+          TextButton(
+            onPressed: () => setState(() => _isFanStyle = !_isFanStyle),
+            child: Text(_isFanStyle ? "Switch to Vertical" : "Switch to Fan", style: const TextStyle(color: Colors.white)),
+          )
+        ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        itemCount: 25,
-        itemBuilder: (context, index) {
-          return FakeItem(isBig: index.isOdd);
-        },
+      body: ListView.separated(
+        padding: const EdgeInsets.all(16.0),
+        itemCount: 20,
+        separatorBuilder: (context, index) => const SizedBox(height: 12),
+        itemBuilder: (context, index) => _buildPostCard(context, index),
       ),
       floatingActionButton: ExpandableFab(
-        distance: 112.0,
+        distance: 90.0,
+        isFanStyle: _isFanStyle,
         children: [
           ActionButton(
-            onPressed: () => _showAction(context, 0),
-            icon: const Icon(Icons.format_size),
-          ),
-          ActionButton(
-            onPressed: () => _showAction(context, 1),
-            icon: const Icon(Icons.insert_photo),
-          ),
-          ActionButton(
-            onPressed: () => _showAction(context, 2),
+            onPressed: () => _showAction(context, 'Video Uploaded'),
             icon: const Icon(Icons.videocam),
+            color: colors.blue500,
+          ),
+          ActionButton(
+            onPressed: () => _showAction(context, 'Photo Shared'),
+            icon: const Icon(Icons.insert_photo),
+            color: colors.rose500,
+          ),
+          ActionButton(
+            onPressed: () => _showAction(context, 'Post Created'),
+            icon: const Icon(Icons.format_size),
+            color: colors.green500,
           ),
         ],
       ),
     );
   }
+
+  void _showAction(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+    );
+  }
+
+  Widget _buildPostCard(BuildContext context, int index) {
+    final colors = AppTheme.colors(context);
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                    backgroundColor: colors.blue100, child: Text("${index + 1}", style: TextStyle(color: colors.blue600))),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("User Name", style: TextStyle(color: colors.foreground, fontWeight: FontWeight.bold)),
+                    Text("2 hours ago", style: TextStyle(color: colors.neutral500, fontSize: 12)),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Container(
+                height: 10,
+                width: double.infinity,
+                decoration: BoxDecoration(color: colors.neutral100, borderRadius: BorderRadius.circular(5))),
+            const SizedBox(height: 8),
+            Container(
+                height: 10,
+                width: 200,
+                decoration: BoxDecoration(color: colors.neutral100, borderRadius: BorderRadius.circular(5))),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-@immutable
 class ExpandableFab extends StatefulWidget {
   const ExpandableFab({
     super.key,
     this.initialOpen,
     required this.distance,
     required this.children,
+    this.isFanStyle = true,
   });
 
   final bool? initialOpen;
   final double distance;
   final List<Widget> children;
+  final bool isFanStyle;
 
   @override
   State<ExpandableFab> createState() => _ExpandableFabState();
 }
 
-class _ExpandableFabState extends State<ExpandableFab>
-    with SingleTickerProviderStateMixin {
+class _ExpandableFabState extends State<ExpandableFab> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _expandAnimation;
   bool _open = false;
@@ -143,6 +177,7 @@ class _ExpandableFabState extends State<ExpandableFab>
   }
 
   Widget _buildTapToCloseFab() {
+    final colors = AppTheme.colors(context);
     return SizedBox(
       width: 56.0,
       height: 56.0,
@@ -151,14 +186,12 @@ class _ExpandableFabState extends State<ExpandableFab>
           shape: const CircleBorder(),
           clipBehavior: Clip.antiAlias,
           elevation: 4.0,
+          color: colors.background,
           child: InkWell(
             onTap: _toggle,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Icon(
-                Icons.close,
-                color: Theme.of(context).primaryColor,
-              ),
+              child: Icon(Icons.close, color: colors.blue600),
             ),
           ),
         ),
@@ -169,18 +202,31 @@ class _ExpandableFabState extends State<ExpandableFab>
   List<Widget> _buildExpandingActionButtons() {
     final children = <Widget>[];
     final count = widget.children.length;
-    final step = 90.0 / (count - 1);
-    for (var i = 0, angleInDegrees = 0.0;
-    i < count;
-    i++, angleInDegrees += step) {
-      children.add(
-        _ExpandingActionButton(
-          directionInDegrees: angleInDegrees,
-          maxDistance: widget.distance,
-          progress: _expandAnimation,
-          child: widget.children[i],
-        ),
-      );
+
+    if (widget.isFanStyle) {
+      final step = 90.0 / (count - 1);
+      for (var i = 0, angleInDegrees = 0.0; i < count; i++, angleInDegrees += step) {
+        children.add(
+          _ExpandingActionButton(
+            directionInDegrees: angleInDegrees,
+            maxDistance: widget.distance,
+            progress: _expandAnimation,
+            child: widget.children[i],
+          ),
+        );
+      }
+    } else {
+      // Vertical (Speed Dial) Style
+      for (var i = 0; i < count; i++) {
+        children.add(
+          _ExpandingActionButton(
+            directionInDegrees: 90, // Upwards
+            maxDistance: widget.distance * (i + 1),
+            progress: _expandAnimation,
+            child: widget.children[i],
+          ),
+        );
+      }
     }
     return children;
   }
@@ -190,11 +236,7 @@ class _ExpandableFabState extends State<ExpandableFab>
       ignoring: _open,
       child: AnimatedContainer(
         transformAlignment: Alignment.center,
-        transform: Matrix4.diagonal3Values(
-          _open ? 0.7 : 1.0,
-          _open ? 0.7 : 1.0,
-          1.0,
-        ),
+        transform: Matrix4.diagonal3Values(_open ? 0.7 : 1.0, _open ? 0.7 : 1.0, 1.0),
         duration: const Duration(milliseconds: 250),
         curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
         child: AnimatedOpacity(
@@ -203,7 +245,7 @@ class _ExpandableFabState extends State<ExpandableFab>
           duration: const Duration(milliseconds: 250),
           child: FloatingActionButton(
             onPressed: _toggle,
-            child: const Icon(Icons.create),
+            child: const Icon(Icons.add),
           ),
         ),
       ),
@@ -257,45 +299,24 @@ class ActionButton extends StatelessWidget {
     super.key,
     this.onPressed,
     required this.icon,
+    required this.color,
   });
 
   final VoidCallback? onPressed;
   final Widget icon;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Material(
       shape: const CircleBorder(),
       clipBehavior: Clip.antiAlias,
-      color: theme.colorScheme.secondary,
+      color: color,
       elevation: 4.0,
       child: IconButton(
         onPressed: onPressed,
         icon: icon,
-        color: theme.colorScheme.onSecondary,
-      ),
-    );
-  }
-}
-
-@immutable
-class FakeItem extends StatelessWidget {
-  const FakeItem({
-    super.key,
-    required this.isBig,
-  });
-
-  final bool isBig;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
-      height: isBig ? 128.0 : 36.0,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        color: Colors.grey.shade300,
+        color: Colors.white,
       ),
     );
   }
