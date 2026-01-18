@@ -15,5 +15,4 @@ export 'package:flutter_gallery_next/biz/demos/loading/demo_dialog.dart';
 export 'package:flutter_gallery_next/biz/demos/loading/global_loading.dart';
 export 'package:flutter_gallery_next/biz/demos/nav/demo_nav.dart';
 export 'package:flutter_gallery_next/biz/demos/net/demo_net.dart';
-export 'package:flutter_gallery_next/biz/demos/tab/demo_tab_basic.dart';
 export 'package:flutter_gallery_next/biz/demos/text/demo_text.dart';

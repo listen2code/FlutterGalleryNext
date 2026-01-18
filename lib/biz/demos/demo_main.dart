@@ -33,7 +33,9 @@ class DemoMainPage extends StatelessWidget {
             floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text("Listen Gallery", style: TextStyle(color: colors.foreground, fontWeight: FontWeight.bold)),
+              title: Text("Listen Gallery",
+                  style: TextStyle(
+                      color: colors.foreground, fontWeight: FontWeight.bold)),
               background: Container(color: colors.blue100),
             ),
           ),
@@ -51,7 +53,8 @@ class DemoMainPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCategorySliver(BuildContext context, String title, IconData icon, List<DemoConfig> items) {
+  Widget _buildCategorySliver(BuildContext context, String title, IconData icon,
+      List<DemoConfig> items) {
     final colors = AppTheme.colors(context);
 
     return SliverMainAxisGroup(
@@ -63,7 +66,11 @@ class DemoMainPage extends StatelessWidget {
               children: [
                 Icon(icon, size: 20, color: colors.blue500),
                 const SizedBox(width: 8),
-                Text(title, style: TextStyle(color: colors.neutral900, fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(title,
+                    style: TextStyle(
+                        color: colors.neutral900,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16)),
               ],
             ),
           ),
@@ -104,7 +111,10 @@ class DemoMainPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: colors.neutral200),
           boxShadow: [
-            BoxShadow(color: colors.foreground.withAlpha(10), blurRadius: 8, offset: const Offset(0, 4)),
+            BoxShadow(
+                color: colors.foreground.withAlpha(10),
+                blurRadius: 8,
+                offset: const Offset(0, 4)),
           ],
         ),
         padding: const EdgeInsets.all(12),
@@ -119,7 +129,10 @@ class DemoMainPage extends StatelessWidget {
             ),
             Text(
               item.title,
-              style: TextStyle(color: colors.neutral1000, fontWeight: FontWeight.w600, fontSize: 13),
+              style: TextStyle(
+                  color: colors.neutral1000,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

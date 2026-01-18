@@ -4,7 +4,7 @@ import 'package:flutter_gallery_next/biz/demos/demo_intl.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_repaint.dart';
 import 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer.dart';
 import 'package:flutter_gallery_next/biz/demos/event_bus/demo_event_bus.dart';
-import 'package:flutter_gallery_next/biz/demos/tab/demo_tab.dart';
+import 'package:flutter_gallery_next/biz/demos/tab/demo_tab_bar.dart';
 import 'package:flutter_gallery_next/biz/home_page.dart';
 
 class Routers {
@@ -90,13 +90,9 @@ class Constant {
         icon: Icons.brush,
         category: catUI,
         builder: (context) => const DemoRepaint()),
-    DemoConfig(route: Routers.tab, title: "Tab Bar", icon: Icons.tab, category: catUI, builder: (context) => const DemoTab()),
+    DemoConfig(route: Routers.tab, title: "TabBar", icon: Icons.tab, category: catUI, builder: (context) => const DemoTabBar()),
     DemoConfig(
-        route: Routers.drawer,
-        title: "Drawer Variations",
-        icon: Icons.menu_open,
-        category: catUI,
-        builder: (context) => const DemoDrawer()),
+        route: Routers.drawer, title: "Drawer", icon: Icons.menu_open, category: catUI, builder: (context) => const DemoDrawer()),
     DemoConfig(
         route: Routers.parallax,
         title: "Parallax Scroll",
