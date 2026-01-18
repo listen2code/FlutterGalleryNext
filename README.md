@@ -12,6 +12,7 @@
 10.upgrade freeze
 11.Ai import
 12.chart
+13.video, image, ffmpeg
 
 # architecture
 
