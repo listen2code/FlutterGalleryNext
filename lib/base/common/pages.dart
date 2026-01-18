@@ -26,70 +26,70 @@ class Constant {
     "home": (context) {
       return HomePage();
     },
-    "demo repaint": (context) {
+    "repaint": (context) {
       return const DemoRepaint();
     },
-    "demo intl": (context) {
+    "intl": (context) {
       return const DemoIntl();
     },
-    "demo theme": (context) {
+    "theme": (context) {
       return const DemoTheme();
     },
-    "demo auth": (context) {
+    "auth": (context) {
       return const DemoEmpty();
     },
-    "demo proxy": (context) {
+    "proxy": (context) {
       return const DemoProxy();
     },
-    "demo dialog": (context) {
+    "dialog": (context) {
       return const DemoDialog();
     },
     "status bar": (context) {
       return const DemoStatusBarColor();
     },
-    "demo drawer": (context) {
+    "drawer": (context) {
       return const DemoDrawer();
     },
-    "demo expand float button": (context) {
+    "expand float button": (context) {
       return const DemoExpandFloatButton();
     },
     "layout scrolling parallax": (context) {
       return const DemoLayoutScrollParallax();
     },
-    "demo tab": (context) {
+    "tab": (context) {
       return const DemoTab();
     },
-    "demo anim": (context) {
+    "anim": (context) {
       return const DemoAnim();
     },
-    "demo button": (context) {
+    "button": (context) {
       return const DemoButton();
     },
-    "demo db file": (context) {
+    "db file": (context) {
       return DemoDbFile(storage: CounterStorage());
     },
-    "demo db sp": (context) {
+    "db sp": (context) {
       return const DemoDbSp();
     },
-    "demo grid": (context) {
+    "grid": (context) {
       return const DemoGrid();
     },
-    "demo list": (context) {
+    "list": (context) {
       return const DemoList();
     },
-    "demo nav": (context) {
+    "nav": (context) {
       return const DemoNav();
     },
-    "demo net": (context) {
+    "net": (context) {
       return const DemoNet();
     },
-    "demo text": (context) {
+    "text": (context) {
       return const DemoText();
     },
-    "demo image": (context) {
+    "image": (context) {
       return const DemoImage();
     },
-    "demo event bus": (context) {
+    "event bus": (context) {
       return const DemoEventBus();
     },
   };
