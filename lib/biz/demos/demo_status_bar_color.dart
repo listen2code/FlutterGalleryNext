@@ -167,7 +167,7 @@ class ImageAppBar extends StatelessWidget implements PreferredSizeWidget {
               icon: const Icon(Icons.arrow_back_ios_new),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: const Text("Status Bar Demo", style: TextStyle(color: Colors.white)),
+            title: const Text("Demo Status Bar", style: TextStyle(color: Colors.white)),
           ),
         )
       ],
