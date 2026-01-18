@@ -99,7 +99,7 @@ class Constant {
         title: "Parallax Scroll",
         icon: Icons.view_day,
         category: catUI,
-        builder: (context) => const DemoLayoutScrollParallax()),
+        builder: (context) => const ExampleParallaxPage()),
     DemoConfig(
         route: Routers.grid, title: "Grid", icon: Icons.grid_view, category: catUI, builder: (context) => const DemoGrid()),
     DemoConfig(route: Routers.list, title: "List", icon: Icons.list, category: catUI, builder: (context) => const DemoList()),

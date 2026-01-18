@@ -4,25 +4,8 @@ import 'package:flutter/rendering.dart';
 const Color darkBlue = Color.fromARGB(255, 18, 32, 47);
 
 // todo learning
-class DemoLayoutScrollParallax extends StatelessWidget {
-  const DemoLayoutScrollParallax({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: darkBlue),
-      debugShowCheckedModeBanner: false,
-      home: const Scaffold(
-        body: Center(
-          child: ExampleParallax(),
-        ),
-      ),
-    );
-  }
-}
-
-class ExampleParallax extends StatelessWidget {
-  const ExampleParallax({
+class ExampleParallaxPage extends StatelessWidget {
+  const ExampleParallaxPage({
     super.key,
   });
 
@@ -180,7 +163,9 @@ class ParallaxFlowDelegate extends FlowDelegate {
     // Paint the background.
     context.paintChild(
       0,
-      transform: Transform.translate(offset: Offset(0.0, childRect.top)).transform,
+      transform: Transform
+          .translate(offset: Offset(0.0, childRect.top))
+          .transform,
     );
   }
 
