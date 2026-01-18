@@ -137,12 +137,6 @@ class Constant {
         category: catStorage,
         builder: (context) => const DemoEventBus()),
     DemoConfig(
-        route: Routers.net,
-        title: "Network",
-        icon: Icons.cloud_queue,
-        category: catStorage,
-        builder: (context) => const DemoNet()),
-    DemoConfig(
         route: Routers.dbFile,
         title: "Database File",
         icon: Icons.description_outlined,
