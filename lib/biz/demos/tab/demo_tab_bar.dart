@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_next/base/common/theme/app_theme.dart';
 import 'package:flutter_gallery_next/base/common/theme/color/base_theme_colors.dart';
-import 'package:flutter_gallery_next/biz/demos/tab/demo_tab_nested_sticky.dart';
 
 class DemoTabBar extends StatefulWidget {
   const DemoTabBar({super.key});
@@ -34,7 +33,7 @@ class _DemoTabBarState extends State<DemoTabBar> with TickerProviderStateMixin {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Advanced Tab System'),
+        title: const Text('Demo TabBar'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -49,56 +48,11 @@ class _DemoTabBarState extends State<DemoTabBar> with TickerProviderStateMixin {
             _buildSectionTitle(context, "3. Custom Styled & Scrollable"),
             _buildScrollableCustomTabBar(colors),
             const SizedBox(height: 40),
-
-            // --- New Entry Section ---
-            _buildSectionTitle(context, "4. Full Screen Nested Sticky Tabs"),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: _buildNavigationCard(
-                context,
-                "Explore Nested Sticky Headers",
-                "A sophisticated implementation of 2-level sticky tabs using NestedScrollView.",
-                Icons.layers_outlined,
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const DemoTabNestedSticky()),
-                ),
-              ),
-            ),
-            const SizedBox(height: 60),
           ],
         ),
       ),
     );
   }
-
-  Widget _buildNavigationCard(BuildContext context, String title, String subtitle, IconData icon, VoidCallback onTap) {
-    final colors = AppTheme.colors(context);
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: colors.blue500.withAlpha(50)),
-      ),
-      color: colors.blue100.withAlpha(30),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
-        leading: CircleAvatar(
-          backgroundColor: colors.blue100,
-          child: Icon(icon, color: colors.blue600),
-        ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(top: 4.0),
-          child: Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-        ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-        onTap: onTap,
-      ),
-    );
-  }
-
-  // --- Existing Builders ---
 
   Widget _buildCapsuleTabBar(BaseThemeColors colors) {
     return Container(
