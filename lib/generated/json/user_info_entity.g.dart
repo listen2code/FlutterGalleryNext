@@ -3,6 +3,10 @@ import 'package:flutter_gallery_next/generated/json/base/json_convert_content.da
 
 UserInfoEntity $UserInfoEntityFromJson(Map<String, dynamic> json) {
   final UserInfoEntity userInfoEntity = UserInfoEntity();
+  final String? id = jsonConvert.convert<String>(json['id']);
+  if (id != null) {
+    userInfoEntity.id = id;
+  }
   final String? name = jsonConvert.convert<String>(json['name']);
   if (name != null) {
     userInfoEntity.name = name;
@@ -28,6 +32,7 @@ UserInfoEntity $UserInfoEntityFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> $UserInfoEntityToJson(UserInfoEntity entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
   data['name'] = entity.name;
   data['age'] = entity.age;
   data['address'] = entity.address;
@@ -38,6 +43,7 @@ Map<String, dynamic> $UserInfoEntityToJson(UserInfoEntity entity) {
 
 extension UserInfoEntityExtension on UserInfoEntity {
   UserInfoEntity copyWith({
+    String? id,
     String? name,
     String? age,
     String? address,
@@ -45,6 +51,7 @@ extension UserInfoEntityExtension on UserInfoEntity {
     String? email,
   }) {
     return UserInfoEntity()
+      ..id = id ?? this.id
       ..name = name ?? this.name
       ..age = age ?? this.age
       ..address = address ?? this.address

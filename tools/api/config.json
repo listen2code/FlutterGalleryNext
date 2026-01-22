@@ -13,7 +13,17 @@
     "httpCode": 200
   },
   {
-    "api": "userInfo",
+    "api": "userList",
+    "timeout": 1000,
+    "httpCode": 200
+  },
+  {
+    "api": "userUpdate",
+    "timeout": 1000,
+    "httpCode": 200
+  },
+  {
+    "api": "userDelete",
     "timeout": 1000,
     "httpCode": 200
   }

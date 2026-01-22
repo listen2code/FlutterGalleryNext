@@ -12,7 +12,6 @@ JsonConvert jsonConvert = JsonConvert();
 typedef JsonConvertFunction<T> = T Function(Map<String, dynamic> json);
 typedef EnumConvertFunction<T> = T Function(String value);
 typedef ConvertExceptionHandler = void Function(Object error, StackTrace stackTrace);
-
 extension MapSafeExt<K, V> on Map<K, V> {
   T? getOrNull<T>(K? key) {
     if (!containsKey(key) || key == null) {
@@ -94,7 +93,8 @@ class JsonConvert {
     }
   }
 
-  T? _asT<T extends Object?>(dynamic value, {EnumConvertFunction? enumConvert}) {
+  T? _asT<T extends Object?>(dynamic value,
+      {EnumConvertFunction? enumConvert}) {
     final String type = T.toString();
     final String valueS = value.toString();
     if (enumConvert != null) {

@@ -1,17 +1,16 @@
-import 'dart:convert';
-
 import 'package:flutter_gallery_next/generated/json/base/json_field.dart';
 import 'package:flutter_gallery_next/generated/json/user_info_entity.g.dart';
-
+import 'dart:convert';
 export 'package:flutter_gallery_next/generated/json/user_info_entity.g.dart';
 
 @JsonSerializable()
 class UserInfoEntity {
-  late String name;
-  late String age;
-  late String address;
-  late String phone;
-  late String email;
+  String? id = '';
+  String? name = '';
+  String? age = '';
+  String? address = '';
+  String? phone = '';
+  String? email = '';
 
   UserInfoEntity();
 

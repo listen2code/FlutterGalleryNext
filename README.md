@@ -13,7 +13,6 @@
 11.Ai import
 12.chart
 13.video, image, ffmpeg
-14.auth
 
 # architecture
 

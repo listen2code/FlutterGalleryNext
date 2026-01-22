@@ -7,6 +7,7 @@ import 'package:flutter_gallery_next/biz/demos/drawer/demo_drawer.dart';
 import 'package:flutter_gallery_next/biz/demos/event_bus/demo_event_bus.dart';
 import 'package:flutter_gallery_next/biz/demos/tab/demo_tab_bar.dart';
 import 'package:flutter_gallery_next/biz/home_page.dart';
+import 'package:flutter_gallery_next/biz/user_info/view/user_info_page.dart';
 
 class Routers {
   static const String tab1 = "tab1";
@@ -41,6 +42,7 @@ class Routers {
   static const String proxy = "proxy";
   static const String auth = "auth";
   static const String image = "image";
+  static const String awsUserList = "aws user list";
 }
 
 /// Configuration for a demo item to centralize management
@@ -65,6 +67,7 @@ class Constant {
   static const String catUI = "UI & Layout";
   static const String catLogic = "Interaction & Logic";
   static const String catStorage = "System & Storage";
+  static const String catAWS = "AWS Services";
 
   /// The master list of all demos. All routes are now managed here.
   static final List<DemoConfig> demoConfigs = [
@@ -159,6 +162,14 @@ class Constant {
         route: Routers.auth, title: "Auth", icon: Icons.security, category: catStorage, builder: (context) => const DemoAuth()),
     DemoConfig(
         route: Routers.home, title: "MVVM", icon: Icons.home_outlined, category: catStorage, builder: (context) => HomePage()),
+
+    // AWS Services
+    DemoConfig(
+        route: Routers.awsUserList,
+        title: "User List",
+        icon: Icons.cloud_queue,
+        category: catAWS,
+        builder: (context) => const UserInfoPage()),
   ];
 
   /// Automatically generated router map from demoConfigs.

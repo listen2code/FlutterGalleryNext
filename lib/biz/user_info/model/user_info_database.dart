@@ -9,7 +9,7 @@ class UserInfoDataBase {
   static const String _tableName = "UserInfo";
 
   static String createTableSQL = "CREATE TABLE IF NOT EXISTS $_tableName ("
-      "userId INTEGER PRIMARY KEY AUTOINCREMENT,"
+      "id TEXT PRIMARY KEY,"
       "name TEXT,"
       "age TEXT,"
       "address TEXT,"
@@ -34,8 +34,17 @@ class UserInfoDataBase {
     return DatabaseManager.instance().saveObject(db, map, tableName: _tableName);
   }
 
-  static Future<UserInfoEntity?> getByUserId(String userId) async {
-    return get(condition: "userId = ?", values: [userId]);
+  static Future<int> saveOrUpdate(UserInfoEntity userInfo) async {
+    UserInfoEntity? ollUerInfo = await getByUserId(userInfo.id ?? "");
+    if (ollUerInfo != null) {
+      return update(userInfo, condition: "id = ?", values: [userInfo.id]);
+    } else {
+      return save(userInfo);
+    }
+  }
+
+  static Future<UserInfoEntity?> getByUserId(String id) async {
+    return get(condition: "id = ?", values: [id]);
   }
 
   static Future<UserInfoEntity?> get({String? condition, List<dynamic>? values}) async {
@@ -71,7 +80,7 @@ class UserInfoDataBase {
   }
 
   static Future<int> updateLast(UserInfoEntity userInfo) async {
-    return update(userInfo, condition: "userId = (SELECT MAX(userId) FROM $_tableName)");
+    return update(userInfo, condition: "id = (SELECT MAX(id) FROM $_tableName)");
   }
 
   static Future<int> update(UserInfoEntity userInfo, {String? condition, List<dynamic>? values}) async {
@@ -90,11 +99,11 @@ class UserInfoDataBase {
   }
 
   static Future<int> deleteLast() async {
-    return delete(condition: "userId = (SELECT MAX(userId) FROM $_tableName)");
+    return delete(condition: "id = (SELECT MAX(id) FROM $_tableName)");
   }
 
-  static Future<int> deleteByUserId(String userId) async {
-    return delete(condition: "userId = ?", values: [userId]);
+  static Future<int> deleteByUserId(String id) async {
+    return delete(condition: "id = ?", values: [id]);
   }
 
   static Future<int> delete({String? condition, List<dynamic>? values}) async {

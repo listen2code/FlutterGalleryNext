@@ -16,27 +16,27 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$UserInfoActions {
-  UserInfoRequest? get request => throw _privateConstructorUsedError;
+  BaseRequest? get request => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 
-class _$GetUserInfoImpl implements GetUserInfo {
-  const _$GetUserInfoImpl({this.request});
+class _$GetUserListImpl implements GetUserList {
+  const _$GetUserListImpl({this.request});
 
   @override
-  final UserInfoRequest? request;
+  final UserListRequest? request;
 
   @override
   String toString() {
-    return 'UserInfoActions.getUserInfo(request: $request)';
+    return 'UserInfoActions.getUserList(request: $request)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$GetUserInfoImpl &&
+            other is _$GetUserListImpl &&
             (identical(other.request, request) || other.request == request));
   }
 
@@ -44,10 +44,76 @@ class _$GetUserInfoImpl implements GetUserInfo {
   int get hashCode => Object.hash(runtimeType, request);
 }
 
-abstract class GetUserInfo implements UserInfoActions {
-  const factory GetUserInfo({final UserInfoRequest? request}) =
-      _$GetUserInfoImpl;
+abstract class GetUserList implements UserInfoActions {
+  const factory GetUserList({final UserListRequest? request}) =
+      _$GetUserListImpl;
 
   @override
-  UserInfoRequest? get request;
+  UserListRequest? get request;
+}
+
+/// @nodoc
+
+class _$UpdateUserImpl implements UpdateUser {
+  const _$UpdateUserImpl({this.request});
+
+  @override
+  final UserUpdateRequest? request;
+
+  @override
+  String toString() {
+    return 'UserInfoActions.updateUser(request: $request)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$UpdateUserImpl &&
+            (identical(other.request, request) || other.request == request));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, request);
+}
+
+abstract class UpdateUser implements UserInfoActions {
+  const factory UpdateUser({final UserUpdateRequest? request}) =
+      _$UpdateUserImpl;
+
+  @override
+  UserUpdateRequest? get request;
+}
+
+/// @nodoc
+
+class _$DeleteUserImpl implements DeleteUser {
+  const _$DeleteUserImpl({this.request});
+
+  @override
+  final UserDeleteRequest? request;
+
+  @override
+  String toString() {
+    return 'UserInfoActions.deleteUser(request: $request)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DeleteUserImpl &&
+            (identical(other.request, request) || other.request == request));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, request);
+}
+
+abstract class DeleteUser implements UserInfoActions {
+  const factory DeleteUser({final UserDeleteRequest? request}) =
+      _$DeleteUserImpl;
+
+  @override
+  UserDeleteRequest? get request;
 }
