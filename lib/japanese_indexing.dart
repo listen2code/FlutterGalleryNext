@@ -64,6 +64,9 @@ class JapaneseIndexListView<T> extends StatefulWidget {
   /// インデックスバーのアイテムの高さ
   final double indexItemHeight;
 
+  /// 触覚フィードバック（震動）を有効にするかどうか
+  final bool enableHapticFeedback;
+
   const JapaneseIndexListView({
     super.key,
     required this.data,
@@ -71,6 +74,7 @@ class JapaneseIndexListView<T> extends StatefulWidget {
     required this.itemBuilder,
     this.headerBuilder,
     this.indexItemHeight = 22.0,
+    this.enableHapticFeedback = false,
   });
 
   @override
@@ -79,6 +83,7 @@ class JapaneseIndexListView<T> extends StatefulWidget {
 
 class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
   final ItemScrollController _scrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
   final Map<String, int> _tagMap = {};
   late List<T> _sortedData;
   String _activeTag = "";
@@ -117,11 +122,42 @@ class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
   /// インデックスがタッチされた際の処理
   void _onIndexTouch(String tag) {
     if (_tagMap.containsKey(tag)) {
-      // 同じタグで既に表示中の場合は、重複して jumpTo や setState を行わない（閃き防止）
-      if (_activeTag == tag && _showOverlay) return;
+      final int targetIndex = _tagMap[tag]!;
 
-      _scrollController.jumpTo(index: _tagMap[tag]!);
-      HapticFeedback.selectionClick();
+      // 智能判断是否需要跳转，防止列表末尾回弹闪烁
+      bool shouldJump = true;
+      final positions = _itemPositionsListener.itemPositions.value;
+
+      if (positions.isNotEmpty) {
+        final targetPos = positions.where((p) => p.index == targetIndex).toList();
+        if (targetPos.isNotEmpty) {
+          final item = targetPos.first;
+          // 如果已经在顶部，无需跳转
+          if (item.itemLeadingEdge == 0) {
+            shouldJump = false;
+          } else {
+            // 检查是否已经滚动到底部
+            final lastVisibleItem = positions.reduce((a, b) => a.index > b.index ? a : b);
+            if (lastVisibleItem.index == _sortedData.length - 1 && lastVisibleItem.itemTrailingEdge <= 1.0) {
+              // 已经到底了，且目标项已在屏幕内，则不再跳转以防回弹
+              shouldJump = false;
+            }
+          }
+        }
+      }
+
+      // 如果标签没变且无需跳转，直接返回
+      if (_activeTag == tag && _showOverlay && !shouldJump) return;
+
+      if (shouldJump) {
+        _scrollController.jumpTo(index: targetIndex);
+      }
+
+      // 属性に基づいて震動を制御
+      if (widget.enableHapticFeedback) {
+        HapticFeedback.selectionClick();
+      }
+
       setState(() {
         _activeTag = tag;
         _showOverlay = true;
@@ -137,6 +173,7 @@ class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
         ScrollablePositionedList.builder(
           itemCount: _sortedData.length,
           itemScrollController: _scrollController,
+          itemPositionsListener: _itemPositionsListener,
           itemBuilder: (context, index) {
             final item = _sortedData[index];
             final String phonetic = widget.phoneticProvider(item);
@@ -275,7 +312,7 @@ class JapaneseIndexingDemo extends StatelessWidget {
       const Contact(name: "本田 翼", reading: "ほんだ つばさ"),
       const Contact(name: "松本 潤", reading: "まつもと じゅん"),
       const Contact(name: "山崎 賢人", reading: "やまざき けんと"),
-      const Contact(name: "渡辺 謙", reading: "わたなべ けん"),
+      const Contact(name: "渡辺 謙", reading: "わたなべ ken"),
       const Contact(name: "Apple Store", reading: "apple store"),
     ];
 
@@ -293,7 +330,6 @@ class JapaneseIndexingDemo extends StatelessWidget {
         // アイテムの見た目を定義
         itemBuilder: (context, item) => ListTile(
           title: Text(item.name, style: const TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text(item.reading, style: TextStyle(color: Colors.grey[500], fontSize: 12)),
           onTap: () => print("Selected: ${item.name}"),
         ),
         // オプション: ヘッダーのカスタマイズ
@@ -306,6 +342,8 @@ class JapaneseIndexingDemo extends StatelessWidget {
             style: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold, fontSize: 13),
           ),
         ),
+        // 震動を有効にしたい場合は true に設定
+        enableHapticFeedback: false,
       ),
     );
   }
