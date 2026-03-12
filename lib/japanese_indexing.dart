@@ -117,6 +117,9 @@ class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
   /// インデックスがタッチされた際の処理
   void _onIndexTouch(String tag) {
     if (_tagMap.containsKey(tag)) {
+      // 同じタグで既に表示中の場合は、重複して jumpTo や setState を行わない（閃き防止）
+      if (_activeTag == tag && _showOverlay) return;
+
       _scrollController.jumpTo(index: _tagMap[tag]!);
       HapticFeedback.selectionClick();
       setState(() {
@@ -228,6 +231,7 @@ class _IndexBar extends StatelessWidget {
       onTapUp: (_) => onTouchEnd(),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8),
+        color: Colors.transparent, // タッチ領域を確保
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: JapaneseIndexUtil.indexList.map((tag) {
@@ -261,7 +265,7 @@ class JapaneseIndexingDemo extends StatelessWidget {
       const Contact(name: "安倍 晋三", reading: "あべ しんぞう"),
       const Contact(name: "伊藤 博文", reading: "いとう ひろぶみ"),
       const Contact(name: "上野 樹里", reading: "うえの じゅり"),
-      const Contact(name: "加藤 剛", reading: "かとう ごう"),
+      const Contact(name: "加藤 刚", reading: "かとう ごう"),
       const Contact(name: "木村 拓哉", reading: "きむら たくや"),
       const Contact(name: "佐藤 健", reading: "さとう たける"),
       const Contact(name: "鈴木 亮平", reading: "すずき りょうへい"),
