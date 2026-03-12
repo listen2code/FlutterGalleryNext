@@ -7,15 +7,16 @@ void main() {
   runApp(const MaterialApp(home: JapaneseIndexingDemo(), debugShowCheckedModeBanner: false));
 }
 
-/// コンタクトモデル
+/// 連絡先モデルクラス
 class Contact {
-  final String name;
-  final String reading;
+  final String name; // 表示名
+  final String reading; // 読み仮名（ソートおよびインデックス用）
 
   const Contact({required this.name, required this.reading});
 }
 
 /// 1. 日本語インデックスユーティリティ
+/// 読み仮名から対応する五十音の「行」を判定する機能を提供します。
 class JapaneseIndexUtil {
   /// インデックスバーに表示する行のリスト
   static const List<String> indexList = ["あ", "か", "さ", "た", "な", "は", "ま", "や", "ら", "わ", "#"];
@@ -26,7 +27,8 @@ class JapaneseIndexUtil {
     // 最初の文字を取得
     String firstChar = phonetic.substring(0, 1);
 
-    // 各行に対応する文字のマップ
+    // 各行に対応する文字のマッピング
+    // 清音、濁音、半濁音、およびカタカナを同じ「行」として扱います。
     const rowMap = {
       'あ': ['あ', 'い', 'う', 'え', 'お', 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ', 'ア', 'イ', 'ウ', 'エ', 'オ'],
       'か': ['か', 'き', 'く', 'け', 'こ', 'が', 'ぎ', 'ぐ', 'げ', 'ご', 'カ', 'キ', 'ク', 'ケ', 'コ'],
@@ -48,6 +50,7 @@ class JapaneseIndexUtil {
 }
 
 /// 2. 汎用的な日本語インデックスリストコンポーネント
+/// 任意のデータ型 T に対して、五十音順のインデックスナビゲーションを提供します。
 class JapaneseIndexListView<T> extends StatefulWidget {
   /// 表示するデータのリスト
   final List<T> data;
@@ -61,10 +64,10 @@ class JapaneseIndexListView<T> extends StatefulWidget {
   /// グループヘッダーを構築するオプション関数
   final Widget Function(BuildContext context, String tag)? headerBuilder;
 
-  /// インデックスバーのアイテムの高さ
+  /// インデックスバーの各アイテムの高さ
   final double indexItemHeight;
 
-  /// 触覚フィードバック（震動）を有効にするかどうか
+  /// 触覚フィードバック（バイブレーション）を有効にするかどうか
   final bool enableHapticFeedback;
 
   const JapaneseIndexListView({
@@ -82,11 +85,22 @@ class JapaneseIndexListView<T> extends StatefulWidget {
 }
 
 class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
+  /// リストのスクロール制御用
   final ItemScrollController _scrollController = ItemScrollController();
+
+  /// 現在の表示位置を監視するためのリスナー
   final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
+
+  /// 各「行」タグとその開始インデックスのマップ
   final Map<String, int> _tagMap = {};
+
+  /// ソート済みのデータリスト
   late List<T> _sortedData;
+
+  /// 現在選択されている（またはタッチされている）タグ
   String _activeTag = "";
+
+  /// 中央のオーバーレイを表示するかどうか
   bool _showOverlay = false;
 
   @override
@@ -98,7 +112,7 @@ class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
   @override
   void didUpdateWidget(JapaneseIndexListView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // データが変更された場合に再準備
+    // データが変更された場合に再ソートとインデックスの再構築を行う
     if (oldWidget.data != widget.data) _prepareData();
   }
 
@@ -119,41 +133,44 @@ class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
     }
   }
 
-  /// インデックスがタッチされた際の処理
+  /// インデックスバーがタッチまたはスライドされた際の処理
   void _onIndexTouch(String tag) {
     if (_tagMap.containsKey(tag)) {
       final int targetIndex = _tagMap[tag]!;
 
-      // 智能判断是否需要跳转，防止列表末尾回弹闪烁
+      // 無駄なスクロール（ガタつき）を防ぐための判定ロジック
       bool shouldJump = true;
       final positions = _itemPositionsListener.itemPositions.value;
 
       if (positions.isNotEmpty) {
+        // ターゲットとなるアイテムの現在の表示状態を確認
         final targetPos = positions.where((p) => p.index == targetIndex).toList();
         if (targetPos.isNotEmpty) {
           final item = targetPos.first;
-          // 如果已经在顶部，无需跳转
+          // すでにターゲットが最上部にある場合はジャンプ不要
           if (item.itemLeadingEdge == 0) {
             shouldJump = false;
           } else {
-            // 检查是否已经滚动到底部
+            // リストが最下部まで到達しているか確認
             final lastVisibleItem = positions.reduce((a, b) => a.index > b.index ? a : b);
             if (lastVisibleItem.index == _sortedData.length - 1 && lastVisibleItem.itemTrailingEdge <= 1.0) {
-              // 已经到底了，且目标项已在屏幕内，则不再跳转以防回弹
+              // すでにリストの末尾が表示されており、ターゲットも画面内にある場合は
+              // 無理にスクロールさせない（不自然な跳ね返りを防ぐ）
               shouldJump = false;
             }
           }
         }
       }
 
-      // 如果标签没变且无需跳转，直接返回
+      // 状態に変更がない場合は処理をスキップ（フラッシュ防止）
       if (_activeTag == tag && _showOverlay && !shouldJump) return;
 
+      // 必要に応じてターゲットインデックスへジャンプ
       if (shouldJump) {
         _scrollController.jumpTo(index: targetIndex);
       }
 
-      // 属性に基づいて震動を制御
+      // 設定に基づいて触覚フィードバックを実行
       if (widget.enableHapticFeedback) {
         HapticFeedback.selectionClick();
       }
@@ -169,7 +186,7 @@ class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // メインリスト
+        // メインの連絡先リスト
         ScrollablePositionedList.builder(
           itemCount: _sortedData.length,
           itemScrollController: _scrollController,
@@ -179,7 +196,7 @@ class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
             final String phonetic = widget.phoneticProvider(item);
             final String tag = JapaneseIndexUtil.getRowTag(phonetic);
 
-            // 前のアイテムと行が異なる場合にヘッダーを表示
+            // 前のアイテムと「行」が異なる場合にのみヘッダーを表示
             final bool isFirstInGroup = index == 0 ||
                 JapaneseIndexUtil.getRowTag(widget.phoneticProvider(_sortedData[index - 1])) != tag;
 
@@ -192,7 +209,7 @@ class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
             );
           },
         ),
-        // 右側のインデックスバー
+        // 右側のインデックスバー（ナビゲーション）
         Align(
           alignment: Alignment.centerRight,
           child: _IndexBar(
@@ -202,13 +219,13 @@ class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
             itemHeight: widget.indexItemHeight,
           ),
         ),
-        // 中央のオーバーレイ提示
+        // タッチ操作中に中央に表示される大きなタグプレビュー
         if (_showOverlay) _buildCenterOverlay(),
       ],
     );
   }
 
-  /// デフォルトのグループヘッダー
+  /// デフォルトのグループヘッダーウィジェット
   Widget _defaultHeader(String tag) => Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -219,7 +236,7 @@ class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
         ),
       );
 
-  /// 中央に表示される現在のタグプレビュー
+  /// 中央のプレビュー用オーバーレイウィジェット
   Widget _buildCenterOverlay() => Center(
         child: Container(
           width: 80,
@@ -235,6 +252,7 @@ class _JapaneseIndexListViewState<T> extends State<JapaneseIndexListView<T>> {
 }
 
 /// 3. インデックスバーコンポーネント
+/// ユーザーのドラッグやタップ操作を検知し、タグの切り替えを通知します。
 class _IndexBar extends StatelessWidget {
   final Function(String) onTouch;
   final VoidCallback onTouchEnd;
@@ -252,7 +270,7 @@ class _IndexBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onVerticalDragUpdate: (details) {
-        // タッチ位置からインデックスを計算
+        // タッチ位置からどのタグの上に指があるかを計算
         int index = (details.localPosition.dy / itemHeight).floor();
         if (index >= 0 && index < JapaneseIndexUtil.indexList.length) {
           onTouch(JapaneseIndexUtil.indexList[index]);
@@ -268,7 +286,7 @@ class _IndexBar extends StatelessWidget {
       onTapUp: (_) => onTouchEnd(),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        color: Colors.transparent, // タッチ領域を確保
+        color: Colors.transparent, // タッチ判定領域を確保するために必要
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: JapaneseIndexUtil.indexList.map((tag) {
@@ -280,6 +298,7 @@ class _IndexBar extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
+                  // データが存在するタグは強調表示、存在しないものは薄く表示
                   color: hasData ? Colors.blueAccent : Colors.grey[300],
                 ),
               ),
@@ -291,18 +310,18 @@ class _IndexBar extends StatelessWidget {
   }
 }
 
-/// 4. 利用例（呼び出し側）
+/// 4. 利用例（呼び出し側ウィジェット）
 class JapaneseIndexingDemo extends StatelessWidget {
   const JapaneseIndexingDemo({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 外部から渡されるデータ例
+    // デモ用のデータリスト
     final List<Contact> contacts = [
       const Contact(name: "安倍 晋三", reading: "あべ しんぞう"),
       const Contact(name: "伊藤 博文", reading: "いとう ひろぶみ"),
       const Contact(name: "上野 樹里", reading: "うえの じゅり"),
-      const Contact(name: "加藤 刚", reading: "かとう ごう"),
+      const Contact(name: "加藤 剛", reading: "かとう ごう"),
       const Contact(name: "木村 拓哉", reading: "きむら たくや"),
       const Contact(name: "佐藤 健", reading: "さとう たける"),
       const Contact(name: "鈴木 亮平", reading: "すずき りょうへい"),
@@ -312,7 +331,7 @@ class JapaneseIndexingDemo extends StatelessWidget {
       const Contact(name: "本田 翼", reading: "ほんだ つばさ"),
       const Contact(name: "松本 潤", reading: "まつもと じゅん"),
       const Contact(name: "山崎 賢人", reading: "やまざき けんと"),
-      const Contact(name: "渡辺 謙", reading: "わたなべ ken"),
+      const Contact(name: "渡辺 謙", reading: "わたなべ けん"),
       const Contact(name: "Apple Store", reading: "apple store"),
     ];
 
@@ -325,14 +344,14 @@ class JapaneseIndexingDemo extends StatelessWidget {
       ),
       body: JapaneseIndexListView<Contact>(
         data: contacts,
-        // アイテムから読み仮名を取得するロジックを渡す
+        // データオブジェクトから読み仮名を取得する方法を指定
         phoneticProvider: (item) => item.reading,
-        // アイテムの見た目を定義
+        // リストアイテムの見た目を定義
         itemBuilder: (context, item) => ListTile(
           title: Text(item.name, style: const TextStyle(fontWeight: FontWeight.w500)),
           onTap: () => print("Selected: ${item.name}"),
         ),
-        // オプション: ヘッダーのカスタマイズ
+        // 必要に応じてグループヘッダーのデザインをカスタマイズ可能
         headerBuilder: (context, tag) => Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -342,7 +361,7 @@ class JapaneseIndexingDemo extends StatelessWidget {
             style: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold, fontSize: 13),
           ),
         ),
-        // 震動を有効にしたい場合は true に設定
+        // フィードバックが必要な場合は true に設定
         enableHapticFeedback: false,
       ),
     );
