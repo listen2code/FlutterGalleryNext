@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -9,23 +10,73 @@ void main() {
   ));
 }
 
-class MarqueeDemo extends StatelessWidget {
+class MarqueeDemo extends StatefulWidget {
   const MarqueeDemo({super.key});
 
   @override
+  State<MarqueeDemo> createState() => _MarqueeDemoState();
+}
+
+class _MarqueeDemoState extends State<MarqueeDemo> {
+  Timer? _dataTimer;
+  List<Map<String, dynamic>> _stocks = [
+    {"symbol": "AAPL", "price": 150.25, "change": 1.2},
+    {"symbol": "GOOGL", "price": 2800.10, "change": -0.5},
+    {"symbol": "TSLA", "price": 700.45, "change": 2.8},
+    {"symbol": "AMZN", "price": 3300.00, "change": -1.1},
+    {"symbol": "MSFT", "price": 290.50, "change": 0.3},
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _dataTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (mounted) {
+        setState(() {
+          _stocks = _stocks.map((stock) {
+            final double randomMove = (Random().nextDouble() * 2 - 1);
+            final double newPrice = stock["price"] + randomMove;
+            return {
+              "symbol": stock["symbol"],
+              "price": newPrice,
+              "change": randomMove > 0 ? (Random().nextDouble() * 5) : -(Random().nextDouble() * 5),
+            };
+          }).toList();
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _dataTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final String stockText = _stocks.map((s) {
+      final String sign = s["change"] >= 0 ? "+" : "";
+      return "${s["symbol"]}: ${s["price"].toStringAsFixed(2)} ($sign${s["change"].toStringAsFixed(2)}%)";
+    }).join("   |   ");
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Scroll Marquee with Pause")),
+      appBar: AppBar(title: const Text("Stock Index Marquee")),
       body: Center(
         child: Container(
-          height: 50,
-          color: Colors.black12,
-          child: const MarqueeWidget(
-            velocity: 50,
+          height: 60,
+          color: Colors.black,
+          child: MarqueeWidget(
+            velocity: 60,
             resumeAfterTouch: true,
             child: Text(
-              "11111111111111111222222222222222223333333333333333",
-              style: TextStyle(fontSize: 18),
+              stockText,
+              style: const TextStyle(
+                fontSize: 18,
+                color: Colors.greenAccent,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'monospace',
+              ),
             ),
           ),
         ),
@@ -58,12 +109,30 @@ class _MarqueeWidgetState extends State<MarqueeWidget> {
   Timer? _timer;
   double _childWidth = 0;
   bool _isPaused = false;
-  int _logCounter = 0;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _initScrolling());
+  }
+
+  @override
+  void didUpdateWidget(MarqueeWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.child != widget.child) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final box = _childKey.currentContext?.findRenderObject() as RenderBox?;
+        if (box != null) {
+          final double newWidth = box.size.width;
+          if (_childWidth != newWidth) {
+            setState(() {
+              _childWidth = newWidth;
+            });
+          }
+        }
+      });
+    }
   }
 
   void _initScrolling() {
@@ -78,31 +147,16 @@ class _MarqueeWidgetState extends State<MarqueeWidget> {
 
   void _startTimer() {
     _timer?.cancel();
-    debugPrint("Timer Started. Velocity: ${widget.velocity}, Gap: ${widget.gap}, ChildWidth: $_childWidth");
-
     _timer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       if (!_isPaused && _scrollController.hasClients && _childWidth > 0) {
         double currentOffset = _scrollController.offset;
 
         // velocity represents pixels per second.
         // 0.016 is the time elapsed in one timer tick (16ms / 1000ms = 0.016s).
-        // Displacement (pixelsPerFrame) = Velocity * Time
         double pixelsPerFrame = widget.velocity * 0.016;
 
         double newOffset = currentOffset + pixelsPerFrame;
         double loopThreshold = _childWidth + widget.gap;
-
-        if (_logCounter % 60 == 0) {
-          debugPrint("--- Marquee Status ---");
-          debugPrint("Paused: $_isPaused");
-          debugPrint("Current Offset: ${currentOffset.toStringAsFixed(2)}");
-          debugPrint("New Offset: ${newOffset.toStringAsFixed(2)}");
-          debugPrint("Loop Threshold: $loopThreshold (ChildWidth + Gap)");
-          if (newOffset >= loopThreshold) {
-            debugPrint(">>> Loop Triggered! Jumping back by $loopThreshold");
-          }
-        }
-        _logCounter++;
 
         if (newOffset >= loopThreshold) {
           _scrollController.jumpTo(newOffset - loopThreshold);
@@ -123,21 +177,12 @@ class _MarqueeWidgetState extends State<MarqueeWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (_) {
-        debugPrint("User touched down - Pausing");
-        setState(() => _isPaused = true);
-      },
+      onTapDown: (_) => setState(() => _isPaused = true),
       onTapUp: (_) {
-        if (widget.resumeAfterTouch) {
-          debugPrint("User lifted up - Resuming");
-          setState(() => _isPaused = false);
-        }
+        if (widget.resumeAfterTouch) setState(() => _isPaused = false);
       },
       onTapCancel: () {
-        if (widget.resumeAfterTouch) {
-          debugPrint("Touch canceled - Resuming");
-          setState(() => _isPaused = false);
-        }
+        if (widget.resumeAfterTouch) setState(() => _isPaused = false);
       },
       child: SingleChildScrollView(
         controller: _scrollController,
