@@ -22,6 +22,7 @@ class MarqueeDemo extends StatelessWidget {
           color: Colors.black12,
           child: const MarqueeWidget(
             velocity: 50,
+            resumeAfterTouch: true,
             child: Text(
               "11111111111111111222222222222222223333333333333333",
               style: TextStyle(fontSize: 18),
@@ -37,12 +38,14 @@ class MarqueeWidget extends StatefulWidget {
   final Widget child;
   final double velocity;
   final double gap;
+  final bool resumeAfterTouch;
 
   const MarqueeWidget({
     super.key,
     required this.child,
     this.velocity = 50.0,
     this.gap = 50.0,
+    this.resumeAfterTouch = true,
   });
 
   @override
@@ -80,7 +83,12 @@ class _MarqueeWidgetState extends State<MarqueeWidget> {
     _timer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       if (!_isPaused && _scrollController.hasClients && _childWidth > 0) {
         double currentOffset = _scrollController.offset;
+
+        // velocity represents pixels per second.
+        // 0.016 is the time elapsed in one timer tick (16ms / 1000ms = 0.016s).
+        // Displacement (pixelsPerFrame) = Velocity * Time
         double pixelsPerFrame = widget.velocity * 0.016;
+
         double newOffset = currentOffset + pixelsPerFrame;
         double loopThreshold = _childWidth + widget.gap;
 
@@ -120,12 +128,16 @@ class _MarqueeWidgetState extends State<MarqueeWidget> {
         setState(() => _isPaused = true);
       },
       onTapUp: (_) {
-        debugPrint("User lifted up - Resuming");
-        setState(() => _isPaused = false);
+        if (widget.resumeAfterTouch) {
+          debugPrint("User lifted up - Resuming");
+          setState(() => _isPaused = false);
+        }
       },
       onTapCancel: () {
-        debugPrint("Touch canceled - Resuming");
-        setState(() => _isPaused = false);
+        if (widget.resumeAfterTouch) {
+          debugPrint("Touch canceled - Resuming");
+          setState(() => _isPaused = false);
+        }
       },
       child: SingleChildScrollView(
         controller: _scrollController,
