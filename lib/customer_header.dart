@@ -34,7 +34,6 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(title: const Text("Custom Header Demo")),
       body: EasyRefresh(
         header: const MyVerticalHeader(
-          // Trigger offset stays at 70 to keep the refreshing state compact (2 elements)
           triggerOffset: 90,
           clamping: false,
           secondaryText: "Last updated: 12:00",
@@ -97,8 +96,6 @@ class _MyVerticalHeaderWidget extends StatelessWidget {
     final isArmed = mode == IndicatorMode.armed;
     final isDone = mode == IndicatorMode.done;
 
-    // Control secondary text visibility
-    // Removed the offset > 70 constraint so it shows up during "Pull to refresh" (drag mode)
     final bool isRefreshing = isReady || isProcessing || isProcessed || isDone;
     final bool showSecondary = secondaryText != null && !isRefreshing;
 
@@ -120,23 +117,47 @@ class _MyVerticalHeaderWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Icon / Progress area
-                    _buildIcon(isReady, isProcessing, isProcessed, isArmed, isDone),
-                    const SizedBox(height: 6),
-                    // Main Text
-                    Text(
-                      _getDisplayText(state),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
+                    // Top Area: Show loading indicator when refreshing, otherwise show static icon
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: isRefreshing
+                          ? const SizedBox(
+                              key: ValueKey('loading'),
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(
+                              Icons.refresh,
+                              key: ValueKey('icon'),
+                              size: 24,
+                              color: Colors.blueGrey,
+                            ),
                     ),
-                    // Secondary Text - Shows during Drag and Armed modes
-
+                    const SizedBox(height: 6),
+                    // Main Content Row
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Hide arrow icon when refreshing
+                        if (!isRefreshing) ...[
+                          _buildArrow(isArmed),
+                          const SizedBox(width: 8),
+                        ],
+                        Text(
+                          _getDisplayText(state),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Secondary Text
                     Visibility(
                       visible: showSecondary,
-                      replacement: SizedBox(height: 10),
+                      replacement: const SizedBox(height: 10),
                       child: Padding(
                         padding: const EdgeInsets.only(top: 4.0),
                         child: Text(
@@ -155,27 +176,17 @@ class _MyVerticalHeaderWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildIcon(bool isReady, bool isProcessing, bool isProcessed, bool isArmed, bool isDone) {
-    return AnimatedSwitcher(
+  Widget _buildArrow(bool isArmed) {
+    return TweenAnimationBuilder<double>(
+      key: const ValueKey('arrow'),
+      tween: Tween<double>(begin: 0, end: isArmed ? 3.14159 : 0),
       duration: const Duration(milliseconds: 200),
-      child: (isReady || isProcessing || isProcessed || isDone)
-          ? const SizedBox(
-              key: ValueKey('loading'),
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : TweenAnimationBuilder<double>(
-              key: const ValueKey('arrow'),
-              tween: Tween<double>(begin: 0, end: isArmed ? 3.14159 : 0),
-              duration: const Duration(milliseconds: 200),
-              builder: (context, value, child) {
-                return Transform.rotate(
-                  angle: value,
-                  child: const Icon(Icons.arrow_downward, color: Colors.blue, size: 20),
-                );
-              },
-            ),
+      builder: (context, value, child) {
+        return Transform.rotate(
+          angle: value,
+          child: const Icon(Icons.arrow_downward, color: Colors.blue, size: 20),
+        );
+      },
     );
   }
 
