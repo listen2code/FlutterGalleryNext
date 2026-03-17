@@ -34,14 +34,14 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(title: const Text("Custom Header Demo")),
       body: EasyRefresh(
         header: const MyVerticalHeader(
-          triggerOffset: 100,
+          // Trigger offset stays at 70 to keep the refreshing state compact (2 elements)
+          triggerOffset: 90,
           clamping: false,
+          secondaryText: "Last updated: 12:00",
         ),
         onRefresh: () async {
           await Future.delayed(const Duration(seconds: 2));
-
           if (!mounted) return IndicatorResult.fail;
-
           setState(() {
             _count = 20;
           });
@@ -58,20 +58,49 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+/// A custom Header inspired by ClassicHeader but with Column layout and subTitle.
 class MyVerticalHeader extends Header {
+  final String? secondaryText;
+
   const MyVerticalHeader({
     super.triggerOffset = 70,
     super.clamping = false,
     super.position = IndicatorPosition.above,
-    super.processedDuration = const Duration(milliseconds: 1000),
+    super.processedDuration = Duration.zero,
+    this.secondaryText,
   });
 
   @override
   Widget build(BuildContext context, IndicatorState state) {
-    bool isProcessing = state.mode == IndicatorMode.processing;
-    bool isProcessed = state.mode == IndicatorMode.processed;
-    bool isArmed = state.mode == IndicatorMode.armed;
-    bool isDone = state.mode == IndicatorMode.done;
+    return _MyVerticalHeaderWidget(
+      state: state,
+      secondaryText: secondaryText,
+    );
+  }
+}
+
+class _MyVerticalHeaderWidget extends StatelessWidget {
+  final IndicatorState state;
+  final String? secondaryText;
+
+  const _MyVerticalHeaderWidget({
+    required this.state,
+    this.secondaryText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final mode = state.mode;
+    final isReady = mode == IndicatorMode.ready;
+    final isProcessing = mode == IndicatorMode.processing;
+    final isProcessed = mode == IndicatorMode.processed;
+    final isArmed = mode == IndicatorMode.armed;
+    final isDone = mode == IndicatorMode.done;
+
+    // Control secondary text visibility
+    // Removed the offset > 70 constraint so it shows up during "Pull to refresh" (drag mode)
+    final bool isRefreshing = isReady || isProcessing || isProcessed || isDone;
+    final bool showSecondary = secondaryText != null && !isRefreshing;
 
     return Container(
       width: double.infinity,
@@ -84,42 +113,40 @@ class MyVerticalHeader extends Header {
               left: 0,
               right: 0,
               bottom: 0,
-              height: state.triggerOffset,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (isProcessing)
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 8.0),
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Icon / Progress area
+                    _buildIcon(isReady, isProcessing, isProcessed, isArmed, isDone),
+                    const SizedBox(height: 6),
+                    // Main Text
+                    Text(
+                      _getDisplayText(state),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    // Secondary Text - Shows during Drag and Armed modes
+
+                    Visibility(
+                      visible: showSecondary,
+                      replacement: SizedBox(height: 10),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          secondaryText!,
+                          style: const TextStyle(fontSize: 11, color: Colors.blueGrey),
+                        ),
                       ),
                     )
-                  else if (isProcessed || isDone)
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 8.0),
-                      child: Icon(Icons.done, color: Colors.green),
-                    )
-                  else
-                    Transform.rotate(
-                      angle: isArmed ? 3.14 : 0,
-                      child: const Icon(Icons.arrow_downward, color: Colors.blue),
-                    ),
-                  Text(
-                    _getDisplayText(state),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const Text(
-                    "subTitle",
-                    style: TextStyle(fontSize: 12, color: Colors.blueGrey),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -128,18 +155,41 @@ class MyVerticalHeader extends Header {
     );
   }
 
+  Widget _buildIcon(bool isReady, bool isProcessing, bool isProcessed, bool isArmed, bool isDone) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      child: (isReady || isProcessing || isProcessed || isDone)
+          ? const SizedBox(
+              key: ValueKey('loading'),
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : TweenAnimationBuilder<double>(
+              key: const ValueKey('arrow'),
+              tween: Tween<double>(begin: 0, end: isArmed ? 3.14159 : 0),
+              duration: const Duration(milliseconds: 200),
+              builder: (context, value, child) {
+                return Transform.rotate(
+                  angle: value,
+                  child: const Icon(Icons.arrow_downward, color: Colors.blue, size: 20),
+                );
+              },
+            ),
+    );
+  }
+
   String _getDisplayText(IndicatorState state) {
     switch (state.mode) {
       case IndicatorMode.drag:
-        return "Pull to refresh...";
+        return "Pull to refresh";
       case IndicatorMode.armed:
         return "Release to refresh";
+      case IndicatorMode.ready:
       case IndicatorMode.processing:
-        return "Refreshing...";
       case IndicatorMode.processed:
-        return "Refresh success";
       case IndicatorMode.done:
-        return "Refresh success";
+        return "Refreshing...";
       default:
         return "Pull to refresh";
     }
