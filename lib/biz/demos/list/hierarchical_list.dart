@@ -28,46 +28,44 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
 
   @override
   Widget build(BuildContext context) {
+    EdgeInsets level1Padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12);
+    EdgeInsets level2Padding = const EdgeInsets.only(left: 36, right: 12, top: 10, bottom: 10);
+    EdgeInsets level3Padding = const EdgeInsets.only(left: 60, right: 12, top: 8, bottom: 8);
+    TextStyle level1LeftTitleStyle = const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
+    TextStyle level2LeftTitleStyle = const TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
+    TextStyle level3LeftTitleStyle = const TextStyle(fontSize: 13);
+
     final List<TreeNode> data = [
       TreeNode(
         leftTitle: 'leftTitle1leftTitle1leftTitle1',
         leftIconColor: Colors.blue,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        leftTitleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        hideRightOnExpand: true,
+        padding: level1Padding,
+        leftTitleStyle: level1LeftTitleStyle,
         rightTitle: '1200000',
-        rightUnit: '円',
         rightSubtitle1: '100000',
         rightSubtitle2: '15.5',
-        rightSubUnit: '%',
-        showStatusColors: true,
         children: [
           TreeNode(
             leftTitle: 'leftTitle11',
             leftIconColor: Colors.orange,
             leftIconSize: 6,
-            padding: const EdgeInsets.only(left: 36, right: 12, top: 10, bottom: 10),
-            leftTitleStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            padding: level2Padding,
+            leftTitleStyle: level2LeftTitleStyle,
             rightTitle: '800',
-            rightUnit: '円',
             rightSubtitle1: '-50',
             rightSubtitle2: '-2.1',
-            rightSubUnit: '%',
-            showStatusColors: true,
             children: [
               TreeNode(
                 leftTitle: 'leftTitle111',
-                padding: const EdgeInsets.only(left: 56, right: 12, top: 8, bottom: 8),
-                leftTitleStyle: const TextStyle(fontSize: 13),
+                padding: level3Padding,
+                leftTitleStyle: level3LeftTitleStyle,
                 rightTitle: '500',
-                rightUnit: '円',
               ),
               TreeNode(
                 leftTitle: 'leftTitle112',
-                padding: const EdgeInsets.only(left: 56, right: 12, top: 8, bottom: 8),
-                leftTitleStyle: const TextStyle(fontSize: 13),
+                padding: level3Padding,
+                leftTitleStyle: level3LeftTitleStyle,
                 rightTitle: '300',
-                rightUnit: '円',
               ),
             ],
           ),
@@ -77,10 +75,9 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
         leftTitle: 'leftTitle2',
         leftSubTitle: "leftSubTitle2leftSubTitle2leftSubTitle2leftSubTitle2leftSubTitle2",
         leftIconColor: Colors.purple,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        leftTitleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        padding: level1Padding,
+        leftTitleStyle: level1LeftTitleStyle,
         rightTitle: '500',
-        rightUnit: '円',
         rightIcon: Icons.edit,
         onTap: () => debugPrint('leftTitle2'),
       ),
@@ -457,12 +454,13 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
 
   Widget _buildRightSubtitles() {
     final s1 = widget.node.rightSubtitle1;
+    final unit1 = widget.node.rightSubUnit1 ?? '';
     final s2 = widget.node.rightSubtitle2;
-    final unit = widget.node.rightSubUnit ?? '';
+    final unit2 = widget.node.rightSubUnit2 ?? '';
 
     if (!widget.node.showStatusColors) {
       return Text(
-        '${s1 ?? ''}円(${s2 ?? ''}$unit)',
+        '${s1 ?? ''}$unit1(${s2 ?? ''}$unit2)',
         style: widget.node.rightSubtitleStyle ?? TextStyle(fontSize: 11, color: widget.secondaryColor),
       );
     }
@@ -482,7 +480,7 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
           if (s1 != null) TextSpan(text: '$prefix1$s1円', style: TextStyle(color: color1)),
           if (s2 != null) ...[
             const TextSpan(text: '('),
-            TextSpan(text: '$prefix2$s2$unit', style: TextStyle(color: color2)),
+            TextSpan(text: '$prefix2$s2$unit2', style: TextStyle(color: color2)),
             const TextSpan(text: ')'),
           ],
         ],
@@ -500,8 +498,9 @@ class TreeNode {
   final String? rightTitle;
   final String? rightUnit;
   final String? rightSubtitle1;
+  final String? rightSubUnit1;
   final String? rightSubtitle2;
-  final String? rightSubUnit;
+  final String? rightSubUnit2;
   final IconData? rightIcon;
   final VoidCallback? onTap;
   final EdgeInsets? padding;
@@ -521,10 +520,11 @@ class TreeNode {
     this.leftIconColor,
     this.leftIconSize,
     this.rightTitle,
-    this.rightUnit,
+    this.rightUnit = '円',
     this.rightSubtitle1,
+    this.rightSubUnit1 = '円',
     this.rightSubtitle2,
-    this.rightSubUnit,
+    this.rightSubUnit2 = '%',
     this.rightIcon,
     this.onTap,
     this.padding,
@@ -534,7 +534,7 @@ class TreeNode {
     this.rightSubtitleStyle,
     this.leftMaxLine = 2,
     this.leftSubMaxLine = 2,
-    this.hideRightOnExpand = false,
-    this.showStatusColors = false,
+    this.hideRightOnExpand = true,
+    this.showStatusColors = true,
   });
 }
