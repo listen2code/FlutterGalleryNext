@@ -34,7 +34,7 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
         leftIconColor: Colors.blue,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         leftTitleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        rightTitle: '1200000000',
+        rightTitle: '1200000',
         rightUnit: '円',
         rightSubtitle1: '100000',
         rightSubtitle2: '15.5',
@@ -69,7 +69,7 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
       ),
       TreeNode(
         leftTitle: 'leftTitle2',
-        leftSubTitle: "leftSubTitle2leftSubTitle2leftSubTitle2leftSubTitle2",
+        leftSubTitle: "leftSubTitle2leftSubTitle2leftSubTitle2leftSubTitle2leftSubTitle2",
         leftIconColor: Colors.purple,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         leftTitleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -318,7 +318,7 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if (widget.node.leftIconColor != null)
                               Padding(
@@ -334,6 +334,7 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                             Flexible(
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Flexible(
                                     child: Text(
@@ -341,6 +342,8 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                                       style: widget.node.leftTitleStyle ??
                                           TextStyle(fontSize: 15, color: widget.foregroundColor),
                                       softWrap: true,
+                                      maxLines: widget.node.leftMaxLine,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                   if (hasChildren) ...[
@@ -360,10 +363,14 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                                     ? (widget.node.leftIconSize ?? 8) + 8
                                     : 0,
                                 top: 2),
-                            child: Text(widget.node.leftSubTitle!,
-                                style: widget.node.leftSubTitleStyle ??
-                                    TextStyle(fontSize: 12, color: widget.secondaryColor),
-                                softWrap: true),
+                            child: Text(
+                              widget.node.leftSubTitle!,
+                              style: widget.node.leftSubTitleStyle ??
+                                  TextStyle(fontSize: 12, color: widget.secondaryColor),
+                              softWrap: true,
+                              maxLines: widget.node.leftSubMaxLine,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                       ],
                     ),
@@ -454,6 +461,8 @@ class TreeNode {
   final TextStyle? leftSubTitleStyle;
   final TextStyle? rightTitleStyle;
   final TextStyle? rightSubtitleStyle;
+  final int leftMaxLine;
+  final int leftSubMaxLine;
 
   TreeNode({
     required this.leftTitle,
@@ -473,5 +482,7 @@ class TreeNode {
     this.leftSubTitleStyle,
     this.rightTitleStyle,
     this.rightSubtitleStyle,
+    this.leftMaxLine = 2,
+    this.leftSubMaxLine = 2,
   });
 }
