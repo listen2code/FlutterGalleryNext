@@ -12,6 +12,7 @@ class HierarchicalListDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Example with data
     final List<TreeNode> data = [
       TreeNode(
         leftTitle: 'leftTitle1leftTitle1',
@@ -68,14 +69,30 @@ class HierarchicalListDemo extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Hierarchical Tree List')),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: HierarchicalTreeWidget(
-          data: data,
-          headerLeftTopTitle: 'LeftTopTitle',
-          headerRightTopTitle: 'RightTopTitle',
-          headerRightBottomTitle: 'RightBottomTitle',
-          accentColor: Colors.indigo,
+        child: Column(
+          children: [
+            const Text('Data List', style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            HierarchicalTreeWidget(
+              data: data,
+              headerLeftTopTitle: 'LeftTopTitle',
+              headerRightTopTitle: 'RightTopTitle',
+              headerRightBottomTitle: 'RightBottomTitle',
+              accentColor: Colors.indigo,
+            ),
+            const SizedBox(height: 32),
+            const Text('Empty List', style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            const HierarchicalTreeWidget(
+              data: [],
+              headerLeftTopTitle: 'LeftTopTitle',
+              headerRightTopTitle: 'RightTopTitle',
+              headerRightBottomTitle: 'RightBottomTitle',
+              accentColor: Colors.grey,
+            ),
+          ],
         ),
       ),
     );
@@ -87,6 +104,7 @@ class HierarchicalTreeWidget extends StatelessWidget {
   final String headerLeftTopTitle;
   final String headerRightTopTitle;
   final String? headerRightBottomTitle;
+  final String noDataMessage;
   final Color? backgroundColor;
   final Color? borderColor;
   final Color? foregroundColor;
@@ -99,6 +117,7 @@ class HierarchicalTreeWidget extends StatelessWidget {
     required this.headerLeftTopTitle,
     required this.headerRightTopTitle,
     this.headerRightBottomTitle,
+    this.noDataMessage = 'no data',
     this.backgroundColor,
     this.borderColor,
     this.foregroundColor,
@@ -144,21 +163,39 @@ class HierarchicalTreeWidget extends StatelessWidget {
             foregroundColor: effectiveForegroundColor,
             secondaryColor: effectiveSecondaryColor,
           ),
-          Flexible(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                return _TreeNodeWidget(
-                  node: data[index],
-                  depth: 0,
-                  foregroundColor: effectiveForegroundColor,
-                  accentColor: effectiveAccentColor,
-                  secondaryColor: effectiveSecondaryColor,
-                );
-              },
+          const Divider(height: 1),
+          if (data.isEmpty)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 48.0, horizontal: 16.0),
+              child: Center(
+                child: Text(
+                  noDataMessage,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: effectiveSecondaryColor,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            )
+          else
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  return _TreeNodeWidget(
+                    node: data[index],
+                    depth: 0,
+                    foregroundColor: effectiveForegroundColor,
+                    accentColor: effectiveAccentColor,
+                    secondaryColor: effectiveSecondaryColor,
+                  );
+                },
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -289,7 +326,6 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Left Part: Adaptive title and subTitle
                 Expanded(
                   flex: 3,
                   child: Column(
@@ -300,15 +336,12 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           if (widget.node.leftIconColor != null) ...[
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6.0),
-                              child: Container(
-                                width: widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6),
-                                height: widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6),
-                                decoration: BoxDecoration(
-                                  color: widget.node.leftIconColor,
-                                  shape: BoxShape.circle,
-                                ),
+                            Container(
+                              width: widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6),
+                              height: widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6),
+                              decoration: BoxDecoration(
+                                color: widget.node.leftIconColor,
+                                shape: BoxShape.circle,
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -355,7 +388,6 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                // Right Part: Adaptive values and subtitles
                 Expanded(
                   flex: 2,
                   child: Column(
@@ -430,7 +462,8 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
           ),
         ),
         if (hasChildren && _isExpanded)
-          ...widget.node.children.map((child) => _TreeNodeWidget(
+          ...widget.node.children.map((child) =>
+              _TreeNodeWidget(
                 node: child,
                 depth: widget.depth + 1,
                 foregroundColor: widget.foregroundColor,
