@@ -14,17 +14,16 @@ class HierarchicalListDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<TreeNode> data = [
       TreeNode(
-        leftTitle: 'Electronics',
-        subTitle: 'Devices and gadgets',
+        leftTitle: 'leftTitle1leftTitle1',
         leftIconColor: Colors.blue,
-        rightTitle: '1200',
+        rightTitle: '1200000',
         rightUnit: '円',
-        rightSubtitle1: '100',
-        rightSubtitle2: '5.5',
+        rightSubtitle1: '100000',
+        rightSubtitle2: '15.5',
         rightSubUnit: '%',
         children: [
           TreeNode(
-            leftTitle: 'Computers',
+            leftTitle: 'leftTitle11',
             leftIconColor: Colors.orange,
             leftIconSize: 6,
             rightTitle: '800',
@@ -33,28 +32,37 @@ class HierarchicalListDemo extends StatelessWidget {
             rightSubtitle2: '2.1',
             rightSubUnit: '%',
             children: [
-              TreeNode(leftTitle: 'Laptops', rightTitle: '500', rightUnit: '円'),
-              TreeNode(leftTitle: 'Desktops', rightTitle: '300', rightUnit: '円'),
+              TreeNode(leftTitle: 'leftTitle111', rightTitle: '500', rightUnit: '円'),
+              TreeNode(leftTitle: 'leftTitle112', rightTitle: '300', rightUnit: '円'),
             ],
           ),
           TreeNode(
-            leftTitle: 'Smartphones',
+            leftTitle: 'leftTitle12',
             leftIconColor: Colors.green,
             rightTitle: '400',
             rightUnit: '円',
             rightIcon: Icons.chevron_right,
+            onTap: () => debugPrint('leftTitle12'),
           ),
         ],
       ),
       TreeNode(
-        leftTitle: 'Clothing',
+        leftTitle: 'leftTitle2',
+        subTitle: 'subTitle2subTitle2subTitle2subTitle2',
         leftIconColor: Colors.purple,
         rightTitle: '500',
         rightUnit: '円',
-        rightSubtitle1: '20',
-        rightSubtitle2: '1.2',
-        rightSubUnit: '%',
+        rightIcon: Icons.chevron_right,
+        onTap: () => debugPrint('leftTitle2'),
+      ),
+      TreeNode(
+        leftTitle: 'leftTitle3',
+        subTitle: 'subTitle3subTitle3subTitle3',
+        leftIconColor: Colors.red,
+        rightTitle: '500',
+        rightUnit: '円',
         rightIcon: Icons.edit,
+        onTap: () => debugPrint('leftTitle3'),
       ),
     ];
 
@@ -64,10 +72,10 @@ class HierarchicalListDemo extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: HierarchicalTreeWidget(
           data: data,
-          headerLeftTitle: 'Department List',
-          headerRightTopTitle: 'Total Items: 128',
-          headerRightBottomTitle: 'Updated: Just now',
-          accentColor: Colors.blueAccent,
+          headerLeftTopTitle: 'LeftTopTitle',
+          headerRightTopTitle: 'RightTopTitle',
+          headerRightBottomTitle: 'RightBottomTitle',
+          accentColor: Colors.indigo,
         ),
       ),
     );
@@ -76,7 +84,7 @@ class HierarchicalListDemo extends StatelessWidget {
 
 class HierarchicalTreeWidget extends StatelessWidget {
   final List<TreeNode> data;
-  final String headerLeftTitle;
+  final String headerLeftTopTitle;
   final String headerRightTopTitle;
   final String? headerRightBottomTitle;
   final Color? backgroundColor;
@@ -88,7 +96,7 @@ class HierarchicalTreeWidget extends StatelessWidget {
   const HierarchicalTreeWidget({
     super.key,
     required this.data,
-    required this.headerLeftTitle,
+    required this.headerLeftTopTitle,
     required this.headerRightTopTitle,
     this.headerRightBottomTitle,
     this.backgroundColor,
@@ -129,7 +137,7 @@ class HierarchicalTreeWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _ListHeader(
-            leftTitle: headerLeftTitle,
+            leftTitle: headerLeftTopTitle,
             rightTopTitle: headerRightTopTitle,
             rightBottomTitle: headerRightBottomTitle,
             backgroundColor: effectiveBgColor,
@@ -188,15 +196,18 @@ class _ListHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            leftTitle,
-            style: leftTitleStyle ??
-                TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: foregroundColor,
-                ),
+          Expanded(
+            child: Text(
+              leftTitle,
+              style: leftTitleStyle ??
+                  TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: foregroundColor,
+                  ),
+            ),
           ),
+          const SizedBox(width: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
@@ -264,6 +275,8 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
               setState(() {
                 _isExpanded = !_isExpanded;
               });
+            } else if (widget.node.rightIcon != null && widget.node.onTap != null) {
+              widget.node.onTap!();
             }
           },
           child: Padding(
@@ -274,22 +287,28 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
               bottom: 10.0,
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // Left Part: Adaptive title and subTitle
                 Expanded(
+                  flex: 3,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
-                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           if (widget.node.leftIconColor != null) ...[
-                            Container(
-                              width: widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6),
-                              height: widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6),
-                              decoration: BoxDecoration(
-                                color: widget.node.leftIconColor,
-                                shape: BoxShape.circle,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6.0),
+                              child: Container(
+                                width: widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6),
+                                height: widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6),
+                                decoration: BoxDecoration(
+                                  color: widget.node.leftIconColor,
+                                  shape: BoxShape.circle,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -302,7 +321,7 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                                 color: widget.foregroundColor,
                                 fontSize: 16 - (widget.depth * 1.0),
                               ),
-                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
                             ),
                           ),
                           if (hasChildren) ...[
@@ -329,66 +348,81 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                               fontSize: 12,
                               color: widget.secondaryColor,
                             ),
+                            softWrap: true,
                           ),
                         ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        if (widget.node.rightTitle != null)
-                          Text(
-                            widget.node.rightTitle!,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: widget.foregroundColor,
-                            ),
-                          ),
-                        if (widget.node.rightUnit != null)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 2),
-                            child: Text(
-                              widget.node.rightUnit!,
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: widget.foregroundColor,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    if (widget.node.rightSubtitle1 != null || widget.node.rightSubtitle2 != null)
+                const SizedBox(width: 12),
+                // Right Part: Adaptive values and subtitles
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                       Row(
                         mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
                         children: [
-                          if (widget.node.rightSubtitle1 != null)
-                            Text(
-                              '${widget.node.rightSubtitle1}円',
-                              style: TextStyle(fontSize: 11, color: widget.secondaryColor),
+                          if (widget.node.rightTitle != null)
+                            Flexible(
+                              child: Text(
+                                widget.node.rightTitle!,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: widget.foregroundColor,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          if (widget.node.rightSubtitle2 != null)
-                            Text(
-                              '(${widget.node.rightSubtitle2}${widget.node.rightSubUnit ?? ''})',
-                              style: TextStyle(fontSize: 11, color: widget.secondaryColor),
+                          if (widget.node.rightUnit != null)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 2),
+                              child: Text(
+                                widget.node.rightUnit!,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: widget.foregroundColor,
+                                ),
+                              ),
                             ),
                         ],
                       ),
-                  ],
+                      if (widget.node.rightSubtitle1 != null || widget.node.rightSubtitle2 != null)
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (widget.node.rightSubtitle1 != null)
+                              Text(
+                                '${widget.node.rightSubtitle1}円',
+                                style: TextStyle(fontSize: 11, color: widget.secondaryColor),
+                              ),
+                            if (widget.node.rightSubtitle2 != null)
+                              Flexible(
+                                child: Text(
+                                  '(${widget.node.rightSubtitle2}${widget.node.rightSubUnit ?? ''})',
+                                  style: TextStyle(fontSize: 11, color: widget.secondaryColor),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                          ],
+                        ),
+                    ],
+                  ),
                 ),
                 if (widget.node.rightIcon != null) ...[
                   const SizedBox(width: 8),
-                  Icon(
-                    widget.node.rightIcon,
-                    size: 20,
-                    color: widget.secondaryColor,
+                  GestureDetector(
+                    onTap: widget.node.onTap,
+                    child: Icon(
+                      widget.node.rightIcon,
+                      size: 20,
+                      color: widget.secondaryColor,
+                    ),
                   ),
                 ],
               ],
@@ -420,6 +454,7 @@ class TreeNode {
   final String? rightSubtitle2;
   final String? rightSubUnit;
   final IconData? rightIcon;
+  final VoidCallback? onTap;
 
   TreeNode({
     required this.leftTitle,
@@ -433,5 +468,6 @@ class TreeNode {
     this.rightSubtitle2,
     this.rightSubUnit,
     this.rightIcon,
+    this.onTap,
   });
 }
