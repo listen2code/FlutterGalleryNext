@@ -28,9 +28,6 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
 
   @override
   Widget build(BuildContext context) {
-    EdgeInsets level1Padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12);
-    EdgeInsets level2Padding = const EdgeInsets.only(left: 36, right: 12, top: 10, bottom: 10);
-    EdgeInsets level3Padding = const EdgeInsets.only(left: 60, right: 12, top: 8, bottom: 8);
     TextStyle level1LeftTitleStyle = const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
     TextStyle level2LeftTitleStyle = const TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
     TextStyle level3LeftTitleStyle = const TextStyle(fontSize: 13);
@@ -39,7 +36,8 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
       TreeNode(
         leftTitle: 'leftTitle1leftTitle1leftTitle1',
         leftIconColor: Colors.blue,
-        padding: level1Padding,
+        leftPadding: 16.0,
+        dividerLeftPadding: 0.0,
         leftTitleStyle: level1LeftTitleStyle,
         rightTitle: '1200000',
         rightSubtitle1: '100000',
@@ -50,7 +48,8 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
             leftTitle: 'leftTitle11',
             leftIconColor: Colors.orange,
             leftIconSize: 6,
-            padding: level2Padding,
+            leftPadding: 32.0,
+            dividerLeftPadding: 32.0,
             leftTitleStyle: level2LeftTitleStyle,
             rightTitle: '800',
             rightSubtitle1: '-50',
@@ -58,13 +57,15 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
             children: [
               TreeNode(
                 leftTitle: 'leftTitle111',
-                padding: level3Padding,
+                leftPadding: 56.0,
+                dividerLeftPadding: 32.0,
                 leftTitleStyle: level3LeftTitleStyle,
                 rightTitle: '500',
               ),
               TreeNode(
                 leftTitle: 'leftTitle112',
-                padding: level3Padding,
+                leftPadding: 56.0,
+                dividerLeftPadding: 32.0,
                 leftTitleStyle: level3LeftTitleStyle,
                 rightTitle: '300',
               ),
@@ -76,7 +77,8 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
         leftTitle: 'leftTitle2',
         leftSubTitle: "leftSubTitle2leftSubTitle2leftSubTitle2leftSubTitle2leftSubTitle2",
         leftIconColor: Colors.purple,
-        padding: level1Padding,
+        leftPadding: 16.0,
+        dividerLeftPadding: 0.0,
         leftTitleStyle: level1LeftTitleStyle,
         rightTitle: '500',
         rightIcon: Icons.edit,
@@ -138,6 +140,9 @@ class HierarchicalTreeWidget extends StatelessWidget {
   final Color? accentColor;
   final Color? secondaryColor;
   final Color? dividerColor;
+  final double levelIndent;
+  final double? itemMinHeight;
+  final double? itemMaxHeight;
 
   const HierarchicalTreeWidget({
     super.key,
@@ -154,6 +159,9 @@ class HierarchicalTreeWidget extends StatelessWidget {
     this.accentColor,
     this.secondaryColor,
     this.dividerColor,
+    this.levelIndent = 20.0,
+    this.itemMinHeight,
+    this.itemMaxHeight,
   });
 
   @override
@@ -172,7 +180,7 @@ class HierarchicalTreeWidget extends StatelessWidget {
               rightTitle: '0000',
               rightUnit: '円',
               leftIconColor: Colors.grey,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              leftPadding: 16.0,
               minHeight: 60,
             ),
           )
@@ -215,6 +223,10 @@ class HierarchicalTreeWidget extends StatelessWidget {
                       foregroundColor: effectiveForegroundColor,
                       secondaryColor: effectiveSecondaryColor,
                       dividerColor: effectiveDividerColor,
+                      level: 0,
+                      levelIndent: levelIndent,
+                      defaultMinHeight: itemMinHeight,
+                      defaultMaxHeight: itemMaxHeight,
                     );
                   },
                 ),
@@ -284,12 +296,20 @@ class _TreeNodeWidget extends StatefulWidget {
   final Color foregroundColor;
   final Color secondaryColor;
   final Color dividerColor;
+  final int level;
+  final double levelIndent;
+  final double? defaultMinHeight;
+  final double? defaultMaxHeight;
 
   const _TreeNodeWidget({
     required this.node,
     required this.foregroundColor,
     required this.secondaryColor,
     required this.dividerColor,
+    this.level = 0,
+    this.levelIndent = 20.0,
+    this.defaultMinHeight,
+    this.defaultMaxHeight,
   });
 
   @override
@@ -303,6 +323,18 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
   Widget build(BuildContext context) {
     final bool hasChildren = widget.node.children.isNotEmpty;
     final bool shouldHideRight = hasChildren && _isExpanded && widget.node.hideRightOnExpand;
+
+    final double calculatedLeftPadding =
+        widget.node.leftPadding ?? (16.0 + widget.level * widget.levelIndent);
+    final double calculatedDividerPadding = widget.node.dividerLeftPadding ?? calculatedLeftPadding;
+
+    final EdgeInsets effectivePadding = widget.node.padding ??
+        EdgeInsets.only(
+          left: calculatedLeftPadding,
+          right: 12.0,
+          top: 10.0,
+          bottom: 10.0,
+        );
 
     return LayoutBuilder(builder: (context, constraints) {
       return Column(
@@ -318,11 +350,11 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
             },
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                minHeight: widget.node.minHeight ?? 0,
-                maxHeight: widget.node.maxHeight ?? double.infinity,
+                minHeight: widget.node.minHeight ?? widget.defaultMinHeight ?? 50,
+                maxHeight: widget.node.maxHeight ?? widget.defaultMaxHeight ?? double.infinity,
               ),
               child: Padding(
-                padding: widget.node.padding ?? const EdgeInsets.all(12.0),
+                padding: effectivePadding,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -334,7 +366,7 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               if (widget.node.leftIconColor != null)
                                 Padding(
@@ -350,7 +382,7 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                               Flexible(
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Flexible(
                                       child: Text(
@@ -462,13 +494,20 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
               ),
             ),
           ),
-          Divider(height: 1, thickness: 1, color: widget.dividerColor),
+          Padding(
+            padding: EdgeInsets.only(left: calculatedDividerPadding),
+            child: Divider(height: 1, thickness: 1, color: widget.dividerColor),
+          ),
           if (hasChildren && _isExpanded)
             ...widget.node.children.map((child) => _TreeNodeWidget(
                   node: child,
                   foregroundColor: widget.foregroundColor,
                   secondaryColor: widget.secondaryColor,
                   dividerColor: widget.dividerColor,
+                  level: widget.level + 1,
+                  levelIndent: widget.levelIndent,
+                  defaultMinHeight: widget.defaultMinHeight,
+                  defaultMaxHeight: widget.defaultMaxHeight,
                 )),
         ],
       );
@@ -527,6 +566,8 @@ class TreeNode {
   final IconData? rightIcon;
   final VoidCallback? onTap;
   final EdgeInsets? padding;
+  final double? leftPadding;
+  final double? dividerLeftPadding;
   final TextStyle? leftTitleStyle;
   final TextStyle? leftSubTitleStyle;
   final TextStyle? rightTitleStyle;
@@ -553,6 +594,8 @@ class TreeNode {
     this.rightIcon,
     this.onTap,
     this.padding,
+    this.leftPadding,
+    this.dividerLeftPadding,
     this.leftTitleStyle,
     this.leftSubTitleStyle,
     this.rightTitleStyle,
@@ -561,7 +604,7 @@ class TreeNode {
     this.leftSubMaxLine = 2,
     this.hideRightOnExpand = false,
     this.showStatusColors = true,
-    this.minHeight = 50,
+    this.minHeight = 56,
     this.maxHeight,
   });
 }
