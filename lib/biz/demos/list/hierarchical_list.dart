@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -7,12 +8,30 @@ void main() {
   ));
 }
 
-class HierarchicalListDemo extends StatelessWidget {
+class HierarchicalListDemo extends StatefulWidget {
   const HierarchicalListDemo({super.key});
 
   @override
+  State<HierarchicalListDemo> createState() => _HierarchicalListDemoState();
+}
+
+class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Example with data
     final List<TreeNode> data = [
       TreeNode(
         leftTitle: 'leftTitle1leftTitle1',
@@ -56,15 +75,6 @@ class HierarchicalListDemo extends StatelessWidget {
         rightIcon: Icons.chevron_right,
         onTap: () => debugPrint('leftTitle2'),
       ),
-      TreeNode(
-        leftTitle: 'leftTitle3',
-        subTitle: 'subTitle3subTitle3subTitle3',
-        leftIconColor: Colors.red,
-        rightTitle: '500',
-        rightUnit: '円',
-        rightIcon: Icons.edit,
-        onTap: () => debugPrint('leftTitle3'),
-      ),
     ];
 
     return Scaffold(
@@ -73,10 +83,19 @@ class HierarchicalListDemo extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const Text('Data List', style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Data List', style: TextStyle(fontWeight: FontWeight.bold)),
+                TextButton(
+                  onPressed: () => setState(() => _isLoading = !_isLoading),
+                  child: Text(_isLoading ? 'Stop Loading' : 'Start Loading'),
+                ),
+              ],
+            ),
             HierarchicalTreeWidget(
               data: data,
+              isLoading: _isLoading,
               headerLeftTopTitle: 'LeftTopTitle',
               headerRightTopTitle: 'RightTopTitle',
               headerRightBottomTitle: 'RightBottomTitle',
@@ -87,9 +106,9 @@ class HierarchicalListDemo extends StatelessWidget {
             const SizedBox(height: 8),
             const HierarchicalTreeWidget(
               data: [],
-              headerLeftTopTitle: 'LeftTopTitle',
-              headerRightTopTitle: 'RightTopTitle',
-              headerRightBottomTitle: 'RightBottomTitle',
+              headerLeftTopTitle: 'Empty List',
+              headerRightTopTitle: '-',
+              noDataMessage: 'No Data',
               accentColor: Colors.grey,
             ),
           ],
@@ -101,6 +120,8 @@ class HierarchicalListDemo extends StatelessWidget {
 
 class HierarchicalTreeWidget extends StatelessWidget {
   final List<TreeNode> data;
+  final bool isLoading;
+  final int loadingItemCount;
   final String headerLeftTopTitle;
   final String headerRightTopTitle;
   final String? headerRightBottomTitle;
@@ -114,10 +135,12 @@ class HierarchicalTreeWidget extends StatelessWidget {
   const HierarchicalTreeWidget({
     super.key,
     required this.data,
+    this.isLoading = false,
+    this.loadingItemCount = 3,
     required this.headerLeftTopTitle,
     required this.headerRightTopTitle,
     this.headerRightBottomTitle,
-    this.noDataMessage = 'no data',
+    this.noDataMessage = 'No Data',
     this.backgroundColor,
     this.borderColor,
     this.foregroundColor,
@@ -149,6 +172,22 @@ class HierarchicalTreeWidget extends StatelessWidget {
       ],
     );
 
+    final List<TreeNode> displayData = isLoading
+        ? List.generate(
+            loadingItemCount,
+            (_) => TreeNode(
+              leftTitle: 'Loading item title placeholder',
+              subTitle: 'Loading subtitle placeholder text',
+              rightTitle: '0000',
+              rightUnit: '円',
+              rightSubtitle1: '000',
+              rightSubtitle2: '0.0',
+              rightSubUnit: '%',
+              leftIconColor: Colors.grey,
+            ),
+          )
+        : data;
+
     return Container(
       decoration: containerDecoration,
       clipBehavior: Clip.antiAlias,
@@ -164,7 +203,7 @@ class HierarchicalTreeWidget extends StatelessWidget {
             secondaryColor: effectiveSecondaryColor,
           ),
           const Divider(height: 1),
-          if (data.isEmpty)
+          if (!isLoading && data.isEmpty)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 48.0, horizontal: 16.0),
@@ -181,19 +220,23 @@ class HierarchicalTreeWidget extends StatelessWidget {
             )
           else
             Flexible(
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  return _TreeNodeWidget(
-                    node: data[index],
-                    depth: 0,
-                    foregroundColor: effectiveForegroundColor,
-                    accentColor: effectiveAccentColor,
-                    secondaryColor: effectiveSecondaryColor,
-                  );
-                },
+              // ✅ 修复点：Flexible 必须是 Column 的直接子组件
+              child: Skeletonizer(
+                enabled: isLoading,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: displayData.length,
+                  itemBuilder: (context, index) {
+                    return _TreeNodeWidget(
+                      node: displayData[index],
+                      depth: 0,
+                      foregroundColor: effectiveForegroundColor,
+                      accentColor: effectiveAccentColor,
+                      secondaryColor: effectiveSecondaryColor,
+                    );
+                  },
+                ),
               ),
             ),
         ],
@@ -462,8 +505,7 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
           ),
         ),
         if (hasChildren && _isExpanded)
-          ...widget.node.children.map((child) =>
-              _TreeNodeWidget(
+          ...widget.node.children.map((child) => _TreeNodeWidget(
                 node: child,
                 depth: widget.depth + 1,
                 foregroundColor: widget.foregroundColor,
