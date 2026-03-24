@@ -108,7 +108,6 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
               headerLeftTopTitle: 'LeftTopTitle',
               headerRightTopTitle: 'RightTopTitle',
               headerRightBottomTitle: 'RightBottomTitle',
-              accentColor: Colors.indigo,
             ),
             const SizedBox(height: 32),
             const HierarchicalTreeWidget(
@@ -117,7 +116,6 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
               headerLeftTopTitle: 'Empty List',
               headerRightTopTitle: '-',
               noDataMessage: 'No Data available',
-              accentColor: Colors.grey,
             ),
           ],
         ),
@@ -137,7 +135,6 @@ class HierarchicalTreeWidget extends StatelessWidget {
   final Color? backgroundColor;
   final Color? borderColor;
   final Color? foregroundColor;
-  final Color? accentColor;
   final Color? secondaryColor;
   final Color? dividerColor;
   final double levelIndent;
@@ -156,7 +153,6 @@ class HierarchicalTreeWidget extends StatelessWidget {
     this.backgroundColor,
     this.borderColor,
     this.foregroundColor,
-    this.accentColor,
     this.secondaryColor,
     this.dividerColor,
     this.levelIndent = 20.0,
@@ -551,32 +547,84 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
   }
 }
 
+/// ツリー構造の各ノードのデータを保持するクラス
 class TreeNode {
+  /// 左側に表示されるメインタイトル
   final String leftTitle;
+
+  /// 左側のタイトルの下に表示されるサブタイトル（説明文など）
   final String? leftSubTitle;
+
+  /// 子ノードのリスト
   final List<TreeNode> children;
+
+  /// 左側のアイコン（またはドット）の色
   final Color? leftIconColor;
+
+  /// 左側のアイコン（またはドット）のサイズ
   final double? leftIconSize;
+
+  /// 右側に表示されるメインの数値やタイトル
   final String? rightTitle;
+
+  /// 右側のメインタイトルの単位（例：'円'）
   final String? rightUnit;
+
+  /// 右側のサブタイトル1（数値など）
   final String? rightSubtitle1;
+
+  /// 右側のサブタイトル1の単位（例：'円'）
   final String? rightSubUnit1;
+
+  /// 右側のサブタイトル2（騰落率など）
   final String? rightSubtitle2;
+
+  /// 右側のサブタイトル2の単位（例：'%'）
   final String? rightSubUnit2;
+
+  /// 右端に表示されるアイコン（詳細矢印や編集アイコンなど）
   final IconData? rightIcon;
+
+  /// アイテムまたは右側アイコンがタップされた際のコールバック
   final VoidCallback? onTap;
+
+  /// アイテム全体のパディング（個別に設定したい場合に使用）
   final EdgeInsets? padding;
+
+  /// 左側のパディング（階層に応じたインデント幅）
   final double? leftPadding;
+
+  /// 区切り線（Divider）の左側のパディング
   final double? dividerLeftPadding;
+
+  /// 左側タイトルのテキストスタイル
   final TextStyle? leftTitleStyle;
+
+  /// 左側サブタイトルのテキストスタイル
   final TextStyle? leftSubTitleStyle;
+
+  /// 右側タイトルのテキストスタイル
   final TextStyle? rightTitleStyle;
+
+  /// 右側サブタイトルのテキストスタイル
   final TextStyle? rightSubtitleStyle;
+
+  /// 左側タイトルの最大行数（デフォルトは2）
   final int leftMaxLine;
+
+  /// 左側サブタイトルの最大行数（デフォルトは2）
   final int leftSubMaxLine;
+
+  /// 展開時に右側の情報を非表示にするかどうか
   final bool hideRightOnExpand;
+
+  /// 数値の正負に応じて色（赤/緑）と符号（+/-）を表示するかどうか
   final bool showStatusColors;
+
+  /// アイテムの最小高さ
   final double? minHeight;
+
+  /// アイテムの最大高さ
   final double? maxHeight;
 
   TreeNode({
