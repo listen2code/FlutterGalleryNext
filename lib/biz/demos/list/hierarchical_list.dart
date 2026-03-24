@@ -34,9 +34,9 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
   Widget build(BuildContext context) {
     final List<TreeNode> data = [
       TreeNode(
-        leftTitle: 'leftTitle1leftTitle1',
+        leftTitle: 'leftTitle1leftTitle1leftTitle1',
         leftIconColor: Colors.blue,
-        rightTitle: '1200000',
+        rightTitle: '1200',
         rightUnit: '円',
         rightSubtitle1: '100000',
         rightSubtitle2: '15.5',
@@ -68,7 +68,7 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
       ),
       TreeNode(
         leftTitle: 'leftTitle2',
-        subTitle: 'subTitle2subTitle2subTitle2subTitle2',
+        leftSubTitle: "leftSubTitle2leftSubTitle2leftSubTitle2leftSubTitle2",
         leftIconColor: Colors.purple,
         rightTitle: '500',
         rightUnit: '円',
@@ -102,13 +102,12 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
               accentColor: Colors.indigo,
             ),
             const SizedBox(height: 32),
-            const Text('Empty List', style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
             const HierarchicalTreeWidget(
               data: [],
+              isLoading: false,
               headerLeftTopTitle: 'Empty List',
               headerRightTopTitle: '-',
-              noDataMessage: 'No Data',
+              noDataMessage: 'No Data available',
               accentColor: Colors.grey,
             ),
           ],
@@ -176,8 +175,8 @@ class HierarchicalTreeWidget extends StatelessWidget {
         ? List.generate(
             loadingItemCount,
             (_) => TreeNode(
-              leftTitle: 'Loading item title placeholder',
-              subTitle: 'Loading subtitle placeholder text',
+              leftTitle: 'leftTitle',
+              leftSubTitle: 'subTitle',
               rightTitle: '0000',
               rightUnit: '円',
               rightSubtitle1: '000',
@@ -220,7 +219,6 @@ class HierarchicalTreeWidget extends StatelessWidget {
             )
           else
             Flexible(
-              // ✅ 修复点：Flexible 必须是 Column 的直接子组件
               child: Skeletonizer(
                 enabled: isLoading,
                 child: ListView.builder(
@@ -346,180 +344,194 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
   Widget build(BuildContext context) {
     final bool hasChildren = widget.node.children.isNotEmpty;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        InkWell(
-          onTap: () {
-            if (hasChildren) {
-              setState(() {
-                _isExpanded = !_isExpanded;
-              });
-            } else if (widget.node.rightIcon != null && widget.node.onTap != null) {
-              widget.node.onTap!();
-            }
-          },
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: 16.0 + (widget.depth * 20.0),
-              right: 12.0,
-              top: 10.0,
-              bottom: 10.0,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          if (widget.node.leftIconColor != null) ...[
-                            Container(
-                              width: widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6),
-                              height: widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6),
-                              decoration: BoxDecoration(
-                                color: widget.node.leftIconColor,
-                                shape: BoxShape.circle,
+    return LayoutBuilder(builder: (context, constraints) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            onTap: () {
+              if (hasChildren) {
+                setState(() {
+                  _isExpanded = !_isExpanded;
+                });
+              } else if (widget.node.rightIcon != null && widget.node.onTap != null) {
+                widget.node.onTap!();
+              }
+            },
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 16.0 + (widget.depth * 20.0),
+                right: 12.0,
+                top: 10.0,
+                bottom: 10.0,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (widget.node.leftIconColor != null) ...[
+                              Padding(
+                                padding: const EdgeInsets.only(top: 6.0),
+                                child: Container(
+                                  width: widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6),
+                                  height: widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6),
+                                  decoration: BoxDecoration(
+                                    color: widget.node.leftIconColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                            Flexible(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      widget.node.leftTitle,
+                                      style: TextStyle(
+                                        fontWeight: widget.depth == 0 ? FontWeight.bold : FontWeight.normal,
+                                        color: widget.foregroundColor,
+                                        fontSize: 16 - (widget.depth * 1.0),
+                                      ),
+                                      softWrap: true,
+                                    ),
+                                  ),
+                                  if (hasChildren) ...[
+                                    const SizedBox(width: 4),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 2.0),
+                                      child: Icon(
+                                        _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                                        size: 18,
+                                        color: widget.secondaryColor,
+                                      ),
+                                    ),
+                                  ],
+                                ],
                               ),
                             ),
-                            const SizedBox(width: 8),
                           ],
-                          Flexible(
+                        ),
+                        if (widget.node.leftSubTitle != null)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: (widget.node.leftIconColor != null)
+                                  ? (widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6)) + 8
+                                  : 0,
+                              top: 2,
+                            ),
                             child: Text(
-                              widget.node.leftTitle,
+                              widget.node.leftSubTitle!,
                               style: TextStyle(
-                                fontWeight: widget.depth == 0 ? FontWeight.bold : FontWeight.normal,
-                                color: widget.foregroundColor,
-                                fontSize: 16 - (widget.depth * 1.0),
+                                fontSize: 12,
+                                color: widget.secondaryColor,
                               ),
                               softWrap: true,
                             ),
                           ),
-                          if (hasChildren) ...[
-                            const SizedBox(width: 4),
-                            Icon(
-                              _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                              size: 18,
-                              color: widget.secondaryColor,
-                            ),
-                          ],
-                        ],
-                      ),
-                      if (widget.node.subTitle != null)
-                        Padding(
-                          padding: EdgeInsets.only(
-                            left: (widget.node.leftIconColor != null)
-                                ? (widget.node.leftIconSize ?? (widget.depth == 0 ? 8 : 6)) + 8
-                                : 0,
-                            top: 2,
-                          ),
-                          child: Text(
-                            widget.node.subTitle!,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: widget.secondaryColor,
-                            ),
-                            softWrap: true,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          if (widget.node.rightTitle != null)
-                            Flexible(
-                              child: Text(
-                                widget.node.rightTitle!,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: widget.foregroundColor,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          if (widget.node.rightUnit != null)
-                            Padding(
-                              padding: const EdgeInsets.only(left: 2),
-                              child: Text(
-                                widget.node.rightUnit!,
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: widget.foregroundColor,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                      if (widget.node.rightSubtitle1 != null || widget.node.rightSubtitle2 != null)
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (widget.node.rightSubtitle1 != null)
-                              Text(
-                                '${widget.node.rightSubtitle1}円',
-                                style: TextStyle(fontSize: 11, color: widget.secondaryColor),
-                              ),
-                            if (widget.node.rightSubtitle2 != null)
-                              Flexible(
-                                child: Text(
-                                  '(${widget.node.rightSubtitle2}${widget.node.rightSubUnit ?? ''})',
-                                  style: TextStyle(fontSize: 11, color: widget.secondaryColor),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                          ],
-                        ),
-                    ],
-                  ),
-                ),
-                if (widget.node.rightIcon != null) ...[
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: widget.node.onTap,
-                    child: Icon(
-                      widget.node.rightIcon,
-                      size: 20,
-                      color: widget.secondaryColor,
+                      ],
                     ),
                   ),
+                  const SizedBox(width: 12),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: constraints.maxWidth / 3,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerRight,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.alphabetic,
+                                children: [
+                                  if (widget.node.rightTitle != null)
+                                    Text(
+                                      widget.node.rightTitle!,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: widget.foregroundColor,
+                                      ),
+                                    ),
+                                  if (widget.node.rightUnit != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 2),
+                                      child: Text(
+                                        widget.node.rightUnit!,
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          color: widget.foregroundColor,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            if (widget.node.rightSubtitle1 != null || widget.node.rightSubtitle2 != null)
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  '${widget.node.rightSubtitle1 ?? ''}円(${widget.node.rightSubtitle2 ?? ''}${widget.node.rightSubUnit ?? ''})',
+                                  style: TextStyle(fontSize: 11, color: widget.secondaryColor),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (widget.node.rightIcon != null) ...[
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: widget.node.onTap,
+                      child: Icon(
+                        widget.node.rightIcon,
+                        size: 20,
+                        color: widget.secondaryColor,
+                      ),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
-        ),
-        if (hasChildren && _isExpanded)
-          ...widget.node.children.map((child) => _TreeNodeWidget(
-                node: child,
-                depth: widget.depth + 1,
-                foregroundColor: widget.foregroundColor,
-                accentColor: widget.accentColor,
-                secondaryColor: widget.secondaryColor,
-              )),
-      ],
-    );
+          if (hasChildren && _isExpanded)
+            ...widget.node.children.map((child) => _TreeNodeWidget(
+                  node: child,
+                  depth: widget.depth + 1,
+                  foregroundColor: widget.foregroundColor,
+                  accentColor: widget.accentColor,
+                  secondaryColor: widget.secondaryColor,
+                )),
+        ],
+      );
+    });
   }
 }
 
 class TreeNode {
   final String leftTitle;
-  final String? subTitle;
+  final String? leftSubTitle;
   final List<TreeNode> children;
   final Color? leftIconColor;
   final double? leftIconSize;
@@ -533,7 +545,7 @@ class TreeNode {
 
   TreeNode({
     required this.leftTitle,
-    this.subTitle,
+    this.leftSubTitle,
     this.children = const [],
     this.leftIconColor,
     this.leftIconSize,
