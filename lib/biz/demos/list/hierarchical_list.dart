@@ -34,11 +34,13 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
         leftIconColor: Colors.blue,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         leftTitleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        hideRightOnExpand: true,
         rightTitle: '1200000',
         rightUnit: '円',
         rightSubtitle1: '100000',
         rightSubtitle2: '15.5',
         rightSubUnit: '%',
+        showStatusColors: true,
         children: [
           TreeNode(
             leftTitle: 'leftTitle11',
@@ -48,6 +50,10 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
             leftTitleStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             rightTitle: '800',
             rightUnit: '円',
+            rightSubtitle1: '-50',
+            rightSubtitle2: '-2.1',
+            rightSubUnit: '%',
+            showStatusColors: true,
             children: [
               TreeNode(
                 leftTitle: 'leftTitle111',
@@ -166,9 +172,6 @@ class HierarchicalTreeWidget extends StatelessWidget {
               leftSubTitle: 'subTitle',
               rightTitle: '0000',
               rightUnit: '円',
-              rightSubtitle1: '000',
-              rightSubtitle2: '0.0',
-              rightSubUnit: '%',
               leftIconColor: Colors.grey,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
@@ -293,6 +296,7 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
   @override
   Widget build(BuildContext context) {
     final bool hasChildren = widget.node.children.isNotEmpty;
+    final bool shouldHideRight = hasChildren && _isExpanded && widget.node.hideRightOnExpand;
 
     return LayoutBuilder(builder: (context, constraints) {
       return Column(
@@ -378,57 +382,66 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                   const SizedBox(width: 12),
                   Flexible(
                     fit: FlexFit.loose,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: constraints.maxWidth / 3),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerRight,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.baseline,
-                                textBaseline: TextBaseline.alphabetic,
-                                children: [
-                                  if (widget.node.rightTitle != null)
-                                    Text(widget.node.rightTitle!,
-                                        style: widget.node.rightTitleStyle ??
-                                            TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: widget.foregroundColor)),
-                                  if (widget.node.rightUnit != null)
-                                    Padding(
-                                        padding: const EdgeInsets.only(left: 2),
-                                        child: Text(widget.node.rightUnit!,
-                                            style: TextStyle(fontSize: 11, color: widget.foregroundColor))),
-                                ],
-                              ),
-                            ),
-                            if (widget.node.rightSubtitle1 != null || widget.node.rightSubtitle2 != null)
-                              FittedBox(
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  '${widget.node.rightSubtitle1 ?? ''}円(${widget.node.rightSubtitle2 ?? ''}${widget.node.rightSubUnit ?? ''})',
-                                  style: widget.node.rightSubtitleStyle ??
-                                      TextStyle(fontSize: 11, color: widget.secondaryColor),
+                    child: Opacity(
+                      opacity: shouldHideRight ? 0.0 : 1.0,
+                      child: IgnorePointer(
+                        ignoring: shouldHideRight,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: constraints.maxWidth / 3),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerRight,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    children: [
+                                      if (widget.node.rightTitle != null)
+                                        Text(widget.node.rightTitle!,
+                                            style: widget.node.rightTitleStyle ??
+                                                TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: widget.foregroundColor)),
+                                      if (widget.node.rightUnit != null)
+                                        Padding(
+                                            padding: const EdgeInsets.only(left: 2),
+                                            child: Text(widget.node.rightUnit!,
+                                                style:
+                                                    TextStyle(fontSize: 11, color: widget.foregroundColor))),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                          ],
+                                if (widget.node.rightSubtitle1 != null || widget.node.rightSubtitle2 != null)
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerRight,
+                                    child: _buildRightSubtitles(),
+                                  ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
                   if (widget.node.rightIcon != null) ...[
                     const SizedBox(width: 8),
-                    GestureDetector(
-                        onTap: widget.node.onTap,
-                        child: Icon(widget.node.rightIcon, size: 20, color: widget.secondaryColor)),
+                    Opacity(
+                      opacity: shouldHideRight ? 0.0 : 1.0,
+                      child: IgnorePointer(
+                        ignoring: shouldHideRight,
+                        child: GestureDetector(
+                            onTap: widget.node.onTap,
+                            child: Icon(widget.node.rightIcon, size: 20, color: widget.secondaryColor)),
+                      ),
+                    ),
                   ],
                 ],
               ),
@@ -440,6 +453,41 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
         ],
       );
     });
+  }
+
+  Widget _buildRightSubtitles() {
+    final s1 = widget.node.rightSubtitle1;
+    final s2 = widget.node.rightSubtitle2;
+    final unit = widget.node.rightSubUnit ?? '';
+
+    if (!widget.node.showStatusColors) {
+      return Text(
+        '${s1 ?? ''}円(${s2 ?? ''}$unit)',
+        style: widget.node.rightSubtitleStyle ?? TextStyle(fontSize: 11, color: widget.secondaryColor),
+      );
+    }
+
+    final double val1 = double.tryParse(s1 ?? '0') ?? 0;
+    final double val2 = double.tryParse(s2 ?? '0') ?? 0;
+
+    final Color color1 = val1 > 0 ? Colors.red : (val1 < 0 ? Colors.green : widget.secondaryColor);
+    final String prefix1 = val1 > 0 ? '+' : '';
+    final Color color2 = val2 > 0 ? Colors.red : (val2 < 0 ? Colors.green : widget.secondaryColor);
+    final String prefix2 = val2 > 0 ? '+' : '';
+
+    return RichText(
+      text: TextSpan(
+        style: widget.node.rightSubtitleStyle ?? TextStyle(fontSize: 11, color: widget.secondaryColor),
+        children: [
+          if (s1 != null) TextSpan(text: '$prefix1$s1円', style: TextStyle(color: color1)),
+          if (s2 != null) ...[
+            const TextSpan(text: '('),
+            TextSpan(text: '$prefix2$s2$unit', style: TextStyle(color: color2)),
+            const TextSpan(text: ')'),
+          ],
+        ],
+      ),
+    );
   }
 }
 
@@ -463,6 +511,8 @@ class TreeNode {
   final TextStyle? rightSubtitleStyle;
   final int leftMaxLine;
   final int leftSubMaxLine;
+  final bool hideRightOnExpand;
+  final bool showStatusColors;
 
   TreeNode({
     required this.leftTitle,
@@ -484,5 +534,7 @@ class TreeNode {
     this.rightSubtitleStyle,
     this.leftMaxLine = 2,
     this.leftSubMaxLine = 2,
+    this.hideRightOnExpand = false,
+    this.showStatusColors = false,
   });
 }
