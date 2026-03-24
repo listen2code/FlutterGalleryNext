@@ -156,10 +156,8 @@ class HierarchicalTreeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveBgColor = backgroundColor ?? Colors.white;
-    final effectiveBorderColor = borderColor ?? Colors.grey.shade300;
     final effectiveForegroundColor = foregroundColor ?? Colors.black;
     final effectiveSecondaryColor = secondaryColor ?? Colors.grey;
-    final effectiveAccentColor = accentColor ?? Colors.blue;
 
     final List<TreeNode> displayData = isLoading
         ? List.generate(
@@ -179,7 +177,6 @@ class HierarchicalTreeWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: effectiveBgColor,
         borderRadius: BorderRadius.circular(12.0),
-        border: Border.all(color: effectiveBorderColor),
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
         ],
