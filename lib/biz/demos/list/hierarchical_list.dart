@@ -33,6 +33,7 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
         leftTitle: 'leftTitle1leftTitle1leftTitle1',
         leftIconColor: Colors.blue,
         rightTitle: '1200000',
+        rightLabel: 'Current Balance',
         rightSubtitle1: '100000',
         rightSubtitle2: '15.5',
         hideRightOnExpand: true,
@@ -41,6 +42,7 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
             leftTitle: 'leftTitle11',
             leftIconColor: Colors.orange,
             rightTitle: '800',
+            rightLabel: 'Dept. Budget',
             rightSubtitle1: '-50',
             rightSubtitle2: '-2.1',
             children: [
@@ -155,6 +157,7 @@ class HierarchicalTreeWidget extends StatelessWidget {
               leftSubTitle: 'XXXXXXXXXXXXX',
               rightTitle: '0000',
               rightUnit: 'X',
+              rightLabel: 'XXXX',
               rightSubtitle1: "XX",
               rightSubtitle2: "XX",
               leftIconColor: Colors.grey,
@@ -456,6 +459,27 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (widget.node.rightLabel != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                          decoration: BoxDecoration(
+                            color: widget.secondaryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(2),
+                            border: Border.all(color: widget.secondaryColor.withOpacity(0.3), width: 0.5),
+                          ),
+                          child: Text(
+                            widget.node.rightLabel!,
+                            style: widget.node.rightLabelStyle ??
+                                TextStyle(fontSize: 10, color: widget.secondaryColor),
+                          ),
+                        ),
+                      ),
+                    ),
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerRight,
@@ -519,7 +543,7 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
       text: TextSpan(
         style: widget.node.rightSubtitleStyle ?? TextStyle(fontSize: 11, color: widget.secondaryColor),
         children: [
-          if (s1 != null) TextSpan(text: '$prefix1$s1円', style: TextStyle(color: color1)),
+          if (s1 != null) TextSpan(text: '$prefix1$s1$unit1', style: TextStyle(color: color1)),
           if (s2 != null) ...[
             const TextSpan(text: '('),
             TextSpan(text: '$prefix2$s2$unit2', style: TextStyle(color: color2)),
@@ -553,6 +577,9 @@ class TreeNode {
 
   /// 右側のメインタイトルの単位（例：'円'）
   final String? rightUnit;
+
+  /// 右側のメインタイトルの上に表示されるラベル
+  final String? rightLabel;
 
   /// 右側のサブタイトル1（数値など）
   final String? rightSubtitle1;
@@ -590,6 +617,9 @@ class TreeNode {
   /// 右側タイトルのテキストスタイル
   final TextStyle? rightTitleStyle;
 
+  /// 右側ラベルのテキストスタイル
+  final TextStyle? rightLabelStyle;
+
   /// 右側サブタイトルのテキストスタイル
   final TextStyle? rightSubtitleStyle;
 
@@ -619,6 +649,7 @@ class TreeNode {
     this.leftIconSize,
     this.rightTitle,
     this.rightUnit = '円',
+    this.rightLabel,
     this.rightSubtitle1,
     this.rightSubUnit1 = '円',
     this.rightSubtitle2,
@@ -631,6 +662,7 @@ class TreeNode {
     this.leftTitleStyle,
     this.leftSubTitleStyle,
     this.rightTitleStyle,
+    this.rightLabelStyle,
     this.rightSubtitleStyle,
     this.leftMaxLine = 2,
     this.leftSubMaxLine = 2,
@@ -649,6 +681,7 @@ class Level1Node extends TreeNode {
     super.children,
     super.leftIconColor,
     super.rightTitle,
+    super.rightLabel,
     super.rightSubtitle1,
     super.rightSubtitle2,
     super.rightIcon,
@@ -670,6 +703,7 @@ class Level2Node extends TreeNode {
     super.children,
     super.leftIconColor,
     super.rightTitle,
+    super.rightLabel,
     super.rightSubtitle1,
     super.rightSubtitle2,
     super.rightIcon,
@@ -689,6 +723,7 @@ class Level3Node extends TreeNode {
     required super.leftTitle,
     super.leftSubTitle,
     super.rightTitle,
+    super.rightLabel,
     super.rightSubtitle1,
     super.rightSubtitle2,
     super.rightIcon,
