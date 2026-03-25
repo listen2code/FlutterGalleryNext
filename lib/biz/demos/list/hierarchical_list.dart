@@ -354,125 +354,9 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      flex: 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              if (widget.node.leftIconColor != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 6.0),
-                                  child: Container(
-                                    width: widget.node.leftIconSize ?? 8,
-                                    height: widget.node.leftIconSize ?? 8,
-                                    decoration: BoxDecoration(
-                                        color: widget.node.leftIconColor, shape: BoxShape.circle),
-                                  ),
-                                ),
-                              if (widget.node.leftIconColor != null) const SizedBox(width: 8),
-                              Flexible(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                        widget.node.leftTitle,
-                                        style: widget.node.leftTitleStyle ??
-                                            TextStyle(fontSize: 15, color: widget.foregroundColor),
-                                        softWrap: true,
-                                        maxLines: widget.node.leftMaxLine,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    if (hasChildren) ...[
-                                      const SizedBox(width: 4),
-                                      Icon(_isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                                          size: 18, color: widget.secondaryColor),
-                                    ],
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          if (widget.node.leftSubTitle != null)
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: (widget.node.leftIconColor != null)
-                                      ? (widget.node.leftIconSize ?? 8) + 8
-                                      : 0,
-                                  top: 2),
-                              child: Text(
-                                widget.node.leftSubTitle!,
-                                style: widget.node.leftSubTitleStyle ??
-                                    TextStyle(fontSize: 12, color: widget.secondaryColor),
-                                softWrap: true,
-                                maxLines: widget.node.leftSubMaxLine,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
+                    _buildLeftArea(hasChildren),
                     const SizedBox(width: 12),
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: Opacity(
-                        opacity: shouldHideRight ? 0.0 : 1.0,
-                        child: IgnorePointer(
-                          ignoring: shouldHideRight,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: constraints.maxWidth / 3),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    alignment: Alignment.centerRight,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                                      textBaseline: TextBaseline.alphabetic,
-                                      children: [
-                                        if (widget.node.rightTitle != null)
-                                          Text(widget.node.rightTitle!,
-                                              style: widget.node.rightTitleStyle ??
-                                                  TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: widget.foregroundColor)),
-                                        if (widget.node.rightUnit != null)
-                                          Padding(
-                                              padding: const EdgeInsets.only(left: 2),
-                                              child: Text(widget.node.rightUnit!,
-                                                  style: TextStyle(
-                                                      fontSize: 11, color: widget.foregroundColor))),
-                                      ],
-                                    ),
-                                  ),
-                                  if (widget.node.rightSubtitle1 != null ||
-                                      widget.node.rightSubtitle2 != null)
-                                    FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      alignment: Alignment.centerRight,
-                                      child: _buildRightSubtitles(),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    _buildRightArea(shouldHideRight, constraints),
                     if (widget.node.rightIcon != null) ...[
                       const SizedBox(width: 8),
                       Opacity(
@@ -508,6 +392,124 @@ class _TreeNodeWidgetState extends State<_TreeNodeWidget> {
         ],
       );
     });
+  }
+
+  Expanded _buildLeftArea(bool hasChildren) {
+    return Expanded(
+      flex: 3,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (widget.node.leftIconColor != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 6.0),
+                  child: Container(
+                    width: widget.node.leftIconSize ?? 8,
+                    height: widget.node.leftIconSize ?? 8,
+                    decoration: BoxDecoration(color: widget.node.leftIconColor, shape: BoxShape.circle),
+                  ),
+                ),
+              if (widget.node.leftIconColor != null) const SizedBox(width: 8),
+              Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        widget.node.leftTitle,
+                        style: widget.node.leftTitleStyle ??
+                            TextStyle(fontSize: 15, color: widget.foregroundColor),
+                        softWrap: true,
+                        maxLines: widget.node.leftMaxLine,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (hasChildren) ...[
+                      const SizedBox(width: 4),
+                      Icon(_isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                          size: 18, color: widget.secondaryColor),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (widget.node.leftSubTitle != null)
+            Padding(
+              padding: EdgeInsets.only(
+                  left: (widget.node.leftIconColor != null) ? (widget.node.leftIconSize ?? 8) + 8 : 0,
+                  top: 2),
+              child: Text(
+                widget.node.leftSubTitle!,
+                style: widget.node.leftSubTitleStyle ?? TextStyle(fontSize: 12, color: widget.secondaryColor),
+                softWrap: true,
+                maxLines: widget.node.leftSubMaxLine,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Flexible _buildRightArea(bool shouldHideRight, BoxConstraints constraints) {
+    return Flexible(
+      fit: FlexFit.loose,
+      child: Opacity(
+        opacity: shouldHideRight ? 0.0 : 1.0,
+        child: IgnorePointer(
+          ignoring: shouldHideRight,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: constraints.maxWidth / 3),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        if (widget.node.rightTitle != null)
+                          Text(widget.node.rightTitle!,
+                              style: widget.node.rightTitleStyle ??
+                                  TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: widget.foregroundColor)),
+                        if (widget.node.rightUnit != null)
+                          Padding(
+                              padding: const EdgeInsets.only(left: 2),
+                              child: Text(widget.node.rightUnit!,
+                                  style: TextStyle(fontSize: 11, color: widget.foregroundColor))),
+                      ],
+                    ),
+                  ),
+                  if (widget.node.rightSubtitle1 != null || widget.node.rightSubtitle2 != null)
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerRight,
+                      child: _buildRightSubtitles(),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildRightSubtitles() {
