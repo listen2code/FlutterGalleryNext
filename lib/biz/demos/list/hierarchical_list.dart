@@ -28,58 +28,38 @@ class _HierarchicalListDemoState extends State<HierarchicalListDemo> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle level1LeftTitleStyle = const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
-    TextStyle level2LeftTitleStyle = const TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
-    TextStyle level3LeftTitleStyle = const TextStyle(fontSize: 13);
-
     final List<TreeNode> data = [
-      TreeNode(
+      Level1Node(
         leftTitle: 'leftTitle1leftTitle1leftTitle1',
         leftIconColor: Colors.blue,
-        leftPadding: 16.0,
-        dividerLeftPadding: 0.0,
-        leftTitleStyle: level1LeftTitleStyle,
         rightTitle: '1200000',
         rightSubtitle1: '100000',
         rightSubtitle2: '15.5',
         hideRightOnExpand: true,
         children: [
-          TreeNode(
+          Level2Node(
             leftTitle: 'leftTitle11',
             leftIconColor: Colors.orange,
-            leftIconSize: 6,
-            leftPadding: 32.0,
-            dividerLeftPadding: 32.0,
-            leftTitleStyle: level2LeftTitleStyle,
             rightTitle: '800',
             rightSubtitle1: '-50',
             rightSubtitle2: '-2.1',
             children: [
-              TreeNode(
+              Level3Node(
                 leftTitle: 'leftTitle111',
-                leftPadding: 56.0,
-                dividerLeftPadding: 32.0,
-                leftTitleStyle: level3LeftTitleStyle,
                 rightTitle: '500',
               ),
-              TreeNode(
+              Level3Node(
                 leftTitle: 'leftTitle112',
-                leftPadding: 56.0,
-                dividerLeftPadding: 32.0,
-                leftTitleStyle: level3LeftTitleStyle,
                 rightTitle: '300',
               ),
             ],
           ),
         ],
       ),
-      TreeNode(
+      Level1Node(
         leftTitle: 'leftTitle2',
         leftSubTitle: "leftSubTitle2leftSubTitle2leftSubTitle2leftSubTitle2leftSubTitle2",
         leftIconColor: Colors.purple,
-        leftPadding: 16.0,
-        dividerLeftPadding: 0.0,
-        leftTitleStyle: level1LeftTitleStyle,
         rightTitle: '500',
         rightIcon: Icons.edit,
         onTap: () => debugPrint('leftTitle2'),
@@ -171,10 +151,12 @@ class HierarchicalTreeWidget extends StatelessWidget {
         ? List.generate(
             loadingItemCount,
             (_) => TreeNode(
-              leftTitle: 'leftTitle',
-              leftSubTitle: 'subTitle',
+              leftTitle: 'XXXXXXXXXXXXX',
+              leftSubTitle: 'XXXXXXXXXXXXX',
               rightTitle: '0000',
-              rightUnit: '円',
+              rightUnit: 'X',
+              rightSubtitle1: "XX",
+              rightSubtitle2: "XX",
               leftIconColor: Colors.grey,
               leftPadding: 16.0,
               minHeight: 60,
@@ -657,4 +639,64 @@ class TreeNode {
     this.minHeight = 56,
     this.maxHeight,
   });
+}
+
+/// 第一層のノードクラス
+class Level1Node extends TreeNode {
+  Level1Node({
+    required super.leftTitle,
+    super.leftSubTitle,
+    super.children,
+    super.leftIconColor,
+    super.rightTitle,
+    super.rightSubtitle1,
+    super.rightSubtitle2,
+    super.rightIcon,
+    super.onTap,
+    super.hideRightOnExpand,
+  }) : super(
+          leftPadding: 16.0,
+          dividerLeftPadding: 0.0,
+          leftTitleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          minHeight: 50,
+        );
+}
+
+/// 第二層のノードクラス
+class Level2Node extends TreeNode {
+  Level2Node({
+    required super.leftTitle,
+    super.leftSubTitle,
+    super.children,
+    super.leftIconColor,
+    super.rightTitle,
+    super.rightSubtitle1,
+    super.rightSubtitle2,
+    super.rightIcon,
+    super.onTap,
+  }) : super(
+          leftIconSize: 6,
+          leftPadding: 32.0,
+          dividerLeftPadding: 32.0,
+          leftTitleStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          minHeight: 50,
+        );
+}
+
+/// 第三層のノードクラス
+class Level3Node extends TreeNode {
+  Level3Node({
+    required super.leftTitle,
+    super.leftSubTitle,
+    super.rightTitle,
+    super.rightSubtitle1,
+    super.rightSubtitle2,
+    super.rightIcon,
+    super.onTap,
+  }) : super(
+          leftPadding: 56.0,
+          dividerLeftPadding: 32.0,
+          leftTitleStyle: const TextStyle(fontSize: 13),
+          minHeight: 50,
+        );
 }
