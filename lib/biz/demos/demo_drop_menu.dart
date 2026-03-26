@@ -18,10 +18,11 @@ class DemoDropMenu extends StatelessWidget {
         actions: [
           CommonOverlayMenu(
             title: 'Menu Title',
-            titleStyle: const TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
-            closeIcon: Icons.cancel_outlined,
             width: 200,
             showScrim: true,
+            offset: const Offset(-20, 0),
+            targetAnchor: Alignment.bottomRight,
+            followerAnchor: Alignment.topRight,
             triggerBuilder: (context, isOpen, toggle) => IconButton(
               icon: Icon(isOpen ? Icons.close : Icons.more_vert),
               onPressed: toggle,
@@ -39,9 +40,6 @@ class DemoDropMenu extends StatelessWidget {
               widthFactor: 0.6,
               maxHeight: 250,
               backgroundColor: Colors.grey.shade50,
-              showScrim: true,
-              targetAnchor: Alignment.bottomCenter,
-              followerAnchor: Alignment.topCenter,
               triggerBuilder: (context, isOpen, toggle) => ElevatedButton.icon(
                 onPressed: toggle,
                 icon: Icon(isOpen ? Icons.expand_less : Icons.expand_more),
@@ -56,8 +54,6 @@ class DemoDropMenu extends StatelessWidget {
               titleStyle: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
               closeIcon: Icons.cancel,
               offset: const Offset(0, -10),
-              targetAnchor: Alignment.bottomCenter,
-              followerAnchor: Alignment.topCenter,
               triggerBuilder: (context, isOpen, toggle) => GestureDetector(
                 onTap: toggle,
                 child: Text(
@@ -91,19 +87,47 @@ class DemoDropMenu extends StatelessWidget {
   }
 }
 
+/// 汎用的なオーバーレイメニューコンポーネント
 class CommonOverlayMenu extends StatefulWidget {
+  /// メニューの上部に表示されるタイトルテキスト
   final String title;
+
+  /// タイトルのテキストスタイル
   final TextStyle? titleStyle;
+
+  /// 右上の閉じるボタンに使用するアイコンデータ
   final IconData? closeIcon;
+
+  /// メニューを表示するためのトリガーとなるウィジェットを構築するビルダー
+  /// [isOpen] はメニューが開いているかどうか、[toggle] はメニューの表示/非表示を切り替える関数
   final Widget Function(BuildContext context, bool isOpen, VoidCallback toggle) triggerBuilder;
+
+  /// メニュー内のコンテンツを構築するビルダー
+  /// [closeMenu] はメニューを閉じるための関数
   final Widget Function(BuildContext context, VoidCallback closeMenu) contentBuilder;
+
+  /// メニューの固定幅（指定された場合、widthFactorより優先されます）
   final double? width;
+
+  /// 画面幅に対するメニュー幅の割合（0.0から1.0の間）
   final double widthFactor;
+
+  /// メニューの最大高さ
   final double? maxHeight;
+
+  /// メニューの背景色
   final Color? backgroundColor;
+
+  /// トリガーウィジェットに対するメニューの表示位置のオフセット
   final Offset offset;
+
+  /// トリガーウィジェット側の位置合わせ基準点
   final Alignment targetAnchor;
+
+  /// メニューウィジェット側の位置合わせ基準点
   final Alignment followerAnchor;
+
+  /// メニュー表示時に背景を暗くする（スクリム）を表示するかどうか
   final bool showScrim;
 
   const CommonOverlayMenu({
@@ -118,8 +142,8 @@ class CommonOverlayMenu extends StatefulWidget {
     this.maxHeight,
     this.backgroundColor,
     this.offset = const Offset(0, 8),
-    this.targetAnchor = Alignment.bottomRight,
-    this.followerAnchor = Alignment.topRight,
+    this.targetAnchor = Alignment.bottomCenter,
+    this.followerAnchor = Alignment.topCenter,
     this.showScrim = false,
   });
 
@@ -207,13 +231,12 @@ class _CommonOverlayMenuState extends State<CommonOverlayMenu> with SingleTicker
                     maxHeight: widget.maxHeight ?? MediaQuery.of(context).size.height * 0.6,
                   ),
                   decoration: BoxDecoration(
-                    color: widget.backgroundColor ?? Theme.of(context).cardColor,
+                    color: widget.backgroundColor ?? Colors.white,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Header with Centered Title
                       SizedBox(
                         height: 48,
                         child: Stack(
@@ -231,9 +254,10 @@ class _CommonOverlayMenuState extends State<CommonOverlayMenu> with SingleTicker
                               ),
                             ),
                             Positioned(
-                              right: 4,
+                              right: 0,
                               child: IconButton(
                                 visualDensity: VisualDensity.compact,
+                                padding: EdgeInsets.zero,
                                 icon: Icon(widget.closeIcon ?? Icons.close, size: 18),
                                 onPressed: _hideMenu,
                               ),
@@ -241,7 +265,6 @@ class _CommonOverlayMenuState extends State<CommonOverlayMenu> with SingleTicker
                           ],
                         ),
                       ),
-                      const Divider(height: 1),
                       Flexible(
                         child: SingleChildScrollView(
                           child: widget.contentBuilder(context, _hideMenu),
