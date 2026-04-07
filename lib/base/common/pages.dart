@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery_next/biz/demos/demo_app_purchase.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_auth.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_imports.dart';
 import 'package:flutter_gallery_next/biz/demos/demo_intl.dart';
@@ -41,6 +42,7 @@ class Routers {
   static const String dbSp = "db sp";
   static const String proxy = "proxy";
   static const String auth = "auth";
+  static const String pay = "pay";
   static const String image = "image";
   static const String awsUserList = "aws user list";
 }
@@ -73,7 +75,11 @@ class Constant {
   static final List<DemoConfig> demoConfigs = [
     // Core & Theme
     DemoConfig(
-        route: Routers.theme, title: "Theme", icon: Icons.color_lens, category: catCore, builder: (context) => const DemoTheme()),
+        route: Routers.theme,
+        title: "Theme",
+        icon: Icons.color_lens,
+        category: catCore,
+        builder: (context) => const DemoTheme()),
     DemoConfig(
         route: Routers.statusBar,
         title: "Status Bar",
@@ -94,9 +100,18 @@ class Constant {
         icon: Icons.brush,
         category: catUI,
         builder: (context) => const DemoRepaint()),
-    DemoConfig(route: Routers.tab, title: "TabBar", icon: Icons.tab, category: catUI, builder: (context) => const DemoTabBar()),
     DemoConfig(
-        route: Routers.drawer, title: "Drawer", icon: Icons.menu_open, category: catUI, builder: (context) => const DemoDrawer()),
+        route: Routers.tab,
+        title: "TabBar",
+        icon: Icons.tab,
+        category: catUI,
+        builder: (context) => const DemoTabBar()),
+    DemoConfig(
+        route: Routers.drawer,
+        title: "Drawer",
+        icon: Icons.menu_open,
+        category: catUI,
+        builder: (context) => const DemoDrawer()),
     DemoConfig(
         route: Routers.parallax,
         title: "Parallax Scroll",
@@ -104,8 +119,17 @@ class Constant {
         category: catUI,
         builder: (context) => const ExampleParallaxPage()),
     DemoConfig(
-        route: Routers.grid, title: "Grid", icon: Icons.grid_view, category: catUI, builder: (context) => const DemoGrid()),
-    DemoConfig(route: Routers.list, title: "List", icon: Icons.list, category: catUI, builder: (context) => const DemoList()),
+        route: Routers.grid,
+        title: "Grid",
+        icon: Icons.grid_view,
+        category: catUI,
+        builder: (context) => const DemoGrid()),
+    DemoConfig(
+        route: Routers.list,
+        title: "List",
+        icon: Icons.list,
+        category: catUI,
+        builder: (context) => const DemoList()),
 
     // Interaction & Logic
     DemoConfig(
@@ -159,9 +183,23 @@ class Constant {
         category: catStorage,
         builder: (context) => const DemoProxy()),
     DemoConfig(
-        route: Routers.auth, title: "Auth", icon: Icons.security, category: catStorage, builder: (context) => const DemoAuth()),
+        route: Routers.auth,
+        title: "Auth",
+        icon: Icons.security,
+        category: catStorage,
+        builder: (context) => const DemoAuth()),
     DemoConfig(
-        route: Routers.home, title: "MVVM", icon: Icons.home_outlined, category: catStorage, builder: (context) => HomePage()),
+        route: Routers.home,
+        title: "MVVM",
+        icon: Icons.home_outlined,
+        category: catStorage,
+        builder: (context) => HomePage()),
+    DemoConfig(
+        route: Routers.auth,
+        title: "Pay",
+        icon: Icons.payment,
+        category: catStorage,
+        builder: (context) => const DemoAppPurchase()),
 
     // AWS Services
     DemoConfig(
