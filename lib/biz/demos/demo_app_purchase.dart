@@ -37,7 +37,9 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
 
   static const Set<String> _productIds = {
     'subscription_1', // サブスクリプション例
+    'subscription_11',
     'subscription_2',
+    'subscription_21',
     'good_1', // 消耗品例
   };
 
