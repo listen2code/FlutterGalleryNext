@@ -22,6 +22,7 @@ class ConnectivityUtil {
       case ConnectivityResult.ethernet:
       case ConnectivityResult.vpn:
       case ConnectivityResult.other:
+      case ConnectivityResult.satellite:
         return ConnectType.unknow;
     }
   }
