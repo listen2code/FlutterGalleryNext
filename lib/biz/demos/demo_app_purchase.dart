@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -27,36 +26,15 @@ class DemoAppPurchase extends StatefulWidget {
 }
 
 class _DemoAppPurchaseState extends State<DemoAppPurchase> {
-  /// [InAppPurchase.instance]
-  /// アプリ内課金のメインエントリポイント（シングルトン）。
-  /// 全てのストア操作（商品取得、購入、リストア）はこのインスタンスを通じて行います。
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
-
-  /// [StreamSubscription]
-  /// 購入状態の更新を監視するためのサブスクリプション。
-  /// アプリ起動中はずっと監視し、dispose 時に必ず cancel する必要があります。
   late StreamSubscription<List<PurchaseDetails>> _subscription;
-
-  /// [ProductDetails]
-  /// ストア（App Store/Google Play）から取得した「商品情報」のリスト。
-  /// タイトル、説明、価格（通貨記号付き）などが含まれます。
   List<ProductDetails> _products = [];
+  final List<PurchaseDetails> _purchases = [];
 
-  /// [PurchaseDetails]
-  /// 過去の購入履歴や現在の購入状態を保持するオブジェクト。
-  List<PurchaseDetails> _purchases = [];
-
-  /// 読み込み中フラグ
   bool _loading = true;
-
-  /// ストアが利用可能かどうか（決済権限やストアの有効性）
   bool _isAvailable = false;
-
-  /// エラーメッセージ保持用
   String? _errorMessage;
 
-  /// 【編集が必要】実際にストアで登録したプロダクトIDを指定してください。
-  /// ここが間違っていると商品は表示されません。
   static const Set<String> _productIds = {
     'subscription_1', // サブスクリプション例
     'subscription_2',
@@ -121,10 +99,6 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
       return;
     }
 
-    if (productDetailResponse.notFoundIDs.isNotEmpty) {
-      debugPrint('Warning: IDs not found: ${productDetailResponse.notFoundIDs}');
-    }
-
     setState(() {
       _isAvailable = isAvailable;
       _products = productDetailResponse.productDetails;
@@ -134,7 +108,7 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
 
   /// 3. 購入ステータスが変化した時のリスナー
   /// 購入ボタンを押した後、またはアプリ起動時に未完了の決済がある場合に呼ばれます。
-  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+  Future<void> _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) async {
     for (var purchaseDetails in purchaseDetailsList) {
       /// [PurchaseStatus.pending]
       /// 決済処理中（ユーザーの承認待ちなど）。ローディングを表示するなどの処理を行います。
@@ -145,21 +119,34 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
         /// 決済失敗（キャンセル、カードエラー、通信エラーなど）。
         if (purchaseDetails.status == PurchaseStatus.error) {
           _handleError(purchaseDetails.error!);
-        }
-
-        /// [PurchaseStatus.purchased] / [PurchaseStatus.restored]
-        /// 購入成功、またはリストア（再取得）成功。
-        else if (purchaseDetails.status == PurchaseStatus.purchased ||
+        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
             purchaseDetails.status == PurchaseStatus.restored) {
-          _deliverProduct(purchaseDetails);
+          /// [PurchaseStatus.purchased] / [PurchaseStatus.restored]
+          /// 購入成功、またはリストア（再取得）成功。
+          // サーバ検証と付与
+          bool deliverSuccess = await _deliverProduct(purchaseDetails);
+
+          if (deliverSuccess) {
+            if (purchaseDetails.pendingCompletePurchase) {
+              // 検証成功、または既に他プラットフォームで処理済みの場合は completePurchase を呼んでキューを消去
+              await _inAppPurchase.completePurchase(purchaseDetails);
+              debugPrint('Transaction Finished: ${purchaseDetails.productID}');
+            }
+          } else {
+            // 一時的なエラー（タイムアウト等）の場合はリトライを期待して保留
+            debugPrint('Delivery Failed: Retry on next launch.');
+          }
         }
 
         /// [pendingCompletePurchase] & [completePurchase]
         /// 【最重要】決済完了をストアに通知します。
         /// これを行わないと、ストア側で「未完了の購入」として残り、
         /// 数日後に自動返金されたり、次の購入ができなくなります。
-        if (purchaseDetails.pendingCompletePurchase) {
-          _inAppPurchase.completePurchase(purchaseDetails);
+        // 失敗したトランザクションもキューから消去する必要がある
+        if (purchaseDetails.status == PurchaseStatus.error) {
+          if (purchaseDetails.pendingCompletePurchase) {
+            await _inAppPurchase.completePurchase(purchaseDetails);
+          }
         }
       }
     }
@@ -170,14 +157,7 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
     /// [PurchaseParam]
     /// 購入に必要なパラメータ。商品詳細情報をラップします。
     late PurchaseParam purchaseParam;
-
-    if (Platform.isAndroid) {
-      // Android 特有の追加パラメータが必要な場合はここで設定
-      purchaseParam = PurchaseParam(productDetails: product);
-    } else {
-      // iOS 特有の追加パラメータ
-      purchaseParam = PurchaseParam(productDetails: product);
-    }
+    purchaseParam = PurchaseParam(productDetails: product);
 
     /// [buyConsumable] / [buyNonConsumable]
     /// - Consumable (消耗品): 何回でも買えるもの（コイン、石など）。
@@ -189,124 +169,103 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
     }
   }
 
-  /// 商品の付与処理
-  void _deliverProduct(PurchaseDetails purchaseDetails) {
-    debugPrint('Product Delivered: ${purchaseDetails.productID}');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('購入が完了しました: ${purchaseDetails.productID}')),
-    );
+  /// 5. サーバ検証ロジック
+  Future<bool> _deliverProduct(PurchaseDetails purchaseDetails) async {
+    final String productId = purchaseDetails.productID;
+    final String? token = purchaseDetails.verificationData.serverVerificationData;
+
+    debugPrint('Verifying $productId...');
+
+    try {
+      // 【擬似的なサーバ通信】
+      await Future.delayed(const Duration(seconds: 1));
+
+      // 実際の実装ではここでバックエンドAPIを叩く
+      // 例: if (apiResponse.code == 'ALREADY_OWNED_ON_IOS') return true;
+
+      bool isVerified = true;
+
+      if (isVerified) {
+        setState(() {
+          if (!_purchases.any((p) => p.productID == productId)) {
+            _purchases.add(purchaseDetails);
+          }
+        });
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
 
+  /// 決済エラーのハンドリング
   void _handleError(IAPError error) {
-    debugPrint('Purchase Error: ${error.message} (Code: ${error.code})');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('エラーが発生しました: ${error.message}')),
+    debugPrint('IAP Error: [${error.code}] ${error.message}');
+
+    // 1. ユーザーによるキャンセルは無視する (iOS: purchase_cancelled, Android: 1)
+    if (error.code == 'purchase_cancelled' || error.code == '1' || error.code == 'payment_cancelled') {
+      debugPrint('User cancelled the purchase.');
+      return;
+    }
+
+    String displayMessage = '決済エラーが発生しました。';
+
+    // 2. 特定のエラーコードに対するメッセージ切り分け
+    if (error.code == 'payment_not_allowed') {
+      displayMessage = 'このデバイスではアプリ内課金が許可されていません。ペアレンタルコントロールの設定を確認してください。';
+    } else if (error.code == 'billing_unavailable') {
+      displayMessage = 'ストアサービスが利用できません。アカウントの設定を確認してください。';
+    } else if (error.code == '7') {
+      // ITEM_ALREADY_OWNED (Android)
+      displayMessage = 'この商品は既に所有しています。購入情報を復元してください。';
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('決済エラー'),
+        content: Text(displayMessage),
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+      ),
     );
   }
 
   void _showPendingUI() {
-    debugPrint('Purchase Pending...');
+    debugPrint('Processing...');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('In App Purchase Demo'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: initStoreInfo,
-            tooltip: '再読み込み',
-          ),
-          IconButton(
-            icon: const Icon(Icons.restore),
-            onPressed: () {
-              /// [restorePurchases]
-              /// iOS で必須の機能。過去の非消耗品の購入履歴を復元します。
-              _inAppPurchase.restorePurchases();
-            },
-            tooltip: '購入情報の復元',
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('In App Purchase Demo')),
       body: _buildBody(),
     );
   }
 
   Widget _buildBody() {
-    if (_loading) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('ストアから商品情報を取得中...'),
-          ],
-        ),
-      );
-    }
-
-    if (_errorMessage != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, color: Colors.red, size: 60),
-              const SizedBox(height: 16),
-              Text(_errorMessage!, textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              ElevatedButton(onPressed: initStoreInfo, child: const Text('リトライ')),
-            ],
-          ),
-        ),
-      );
-    }
-
-    if (!_isAvailable) {
-      return const Center(child: Text('このデバイスでは決済が利用できません。'));
-    }
-
-    if (_products.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('表示できる商品がありません。'),
-            const SizedBox(height: 8),
-            const Text(
-              '注: ストアコンソールで設定した ID と\nコード内の ID が一致しているか確認してください。',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-            const SizedBox(height: 16),
-            Text('現在の検索対象 ID: $_productIds', style: const TextStyle(fontSize: 10)),
-            const SizedBox(height: 16),
-            ElevatedButton(onPressed: initStoreInfo, child: const Text('再読み込み')),
-          ],
-        ),
-      );
-    }
+    if (_loading) return const Center(child: CircularProgressIndicator());
+    if (!_isAvailable) return const Center(child: Text('ストアが利用できません'));
+    if (_products.isEmpty) return const Center(child: Text('商品がありません'));
 
     return ListView.builder(
       itemCount: _products.length,
       itemBuilder: (context, index) {
         final product = _products[index];
+        final bool alreadyPurchased = _purchases.any((p) => p.productID == product.id);
+
         return Card(
           margin: const EdgeInsets.all(8.0),
           child: ListTile(
             title: Text(product.id, style: const TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text(product.currencyCode),
+            subtitle: Text(product.description),
             trailing: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: alreadyPurchased ? Colors.grey : Colors.blue,
                 foregroundColor: Colors.white,
               ),
-              onPressed: () => _buyProduct(product),
-              child: Text(product.price), // ストアで設定された通貨で表示されます
+              onPressed: alreadyPurchased ? null : () => _buyProduct(product),
+              child: Text(alreadyPurchased ? '購入済み' : product.price),
             ),
           ),
         );
