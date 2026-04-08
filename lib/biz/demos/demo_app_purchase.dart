@@ -26,21 +26,38 @@ class DemoAppPurchase extends StatefulWidget {
 }
 
 class _DemoAppPurchaseState extends State<DemoAppPurchase> {
+  /// [InAppPurchase.instance]
+  /// アプリ内課金のメインエントリポイント。
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
+
+  /// [StreamSubscription]
+  /// 購入状態の更新を監視するためのサブスクリプション。
   late StreamSubscription<List<PurchaseDetails>> _subscription;
+
+  /// [ProductDetails]
+  /// ストアから取得した商品情報のリスト。
   List<ProductDetails> _products = [];
+
+  /// [PurchaseDetails]
+  /// 今回のセッションで検証・付与が完了した購入情報のリスト。
   final List<PurchaseDetails> _purchases = [];
 
   bool _loading = true;
   bool _isAvailable = false;
   String? _errorMessage;
 
+  /// 【設定】ストアで登録したすべてのプロダクトID
   static const Set<String> _productIds = {
-    'subscription_1', // サブスクリプション例
+    'subscription_1',
     'subscription_11',
     'subscription_2',
     'subscription_21',
-    'good_1', // 消耗品例
+  };
+
+  /// 【設定】消耗品（何度も買えるアイテム）のIDリスト
+  /// ここに含まれないIDはすべて非消耗品（またはサブスク）として扱われます。
+  static const Set<String> _consumableIds = {
+    'good_1',
   };
 
   @override
@@ -82,7 +99,7 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
       setState(() {
         _isAvailable = isAvailable;
         _loading = false;
-        _errorMessage = 'ストアに接続できません。通信環境やデバイスの設定を確認してください。';
+        _errorMessage = 'ストアに接続できません。';
       });
       return;
     }
@@ -129,6 +146,7 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
           bool deliverSuccess = await _deliverProduct(purchaseDetails);
 
           if (deliverSuccess) {
+            // 検証成功時のみ completePurchase を呼び、トランザクションを終了させる
             if (purchaseDetails.pendingCompletePurchase) {
               // 検証成功、または既に他プラットフォームで処理済みの場合は completePurchase を呼んでキューを消去
               await _inAppPurchase.completePurchase(purchaseDetails);
@@ -154,37 +172,37 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
     }
   }
 
-  /// 4. 購入処理の開始（ボタン押下時）
+  /// 4. 購入処理の開始（消耗品かどうかの自動判別付き）
   void _buyProduct(ProductDetails product) {
     /// [PurchaseParam]
     /// 購入に必要なパラメータ。商品詳細情報をラップします。
     late PurchaseParam purchaseParam;
     purchaseParam = PurchaseParam(productDetails: product);
 
-    /// [buyConsumable] / [buyNonConsumable]
-    /// - Consumable (消耗品): 何回でも買えるもの（コイン、石など）。
-    /// - Non-Consumable (非消耗品): 一回買えば永久に有効なもの（広告削除、機能解放）。
-    if (product.id == 'good_1') {
+    /// IDリストに含まれているか、特定の接頭辞を持つ場合は消耗品とみなす
+    final bool isConsumable = _consumableIds.contains(product.id) || product.id.startsWith('good_');
+
+    if (isConsumable) {
+      // 消耗品として購入（Androidでは自動的にconsumeされる）
       _inAppPurchase.buyConsumable(purchaseParam: purchaseParam);
     } else {
+      // 非消耗品・サブスクリプションとして購入
       _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
     }
   }
 
-  /// 5. サーバ検証ロジック
+  /// サーバ検証ロジック
   Future<bool> _deliverProduct(PurchaseDetails purchaseDetails) async {
     final String productId = purchaseDetails.productID;
+    // サーバー検証用のトークン/レシート
     final String? token = purchaseDetails.verificationData.serverVerificationData;
 
-    debugPrint('Verifying $productId...');
+    debugPrint('Verifying $productId with token: ${token?.substring(0, 5)}...');
 
     try {
-      // 【擬似的なサーバ通信】
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1)); // ネットワーク擬似遅延
 
-      // 実際の実装ではここでバックエンドAPIを叩く
-      // 例: if (apiResponse.code == 'ALREADY_OWNED_ON_IOS') return true;
-
+      // ここで自社サーバの検証結果を判定
       bool isVerified = true;
 
       if (isVerified) {
@@ -212,8 +230,6 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
     }
 
     String displayMessage = '決済エラーが発生しました。';
-
-    // 2. 特定のエラーコードに対するメッセージ切り分け
     if (error.code == 'payment_not_allowed') {
       displayMessage = 'このデバイスではアプリ内課金が許可されていません。ペアレンタルコントロールの設定を確認してください。';
     } else if (error.code == 'billing_unavailable') {
@@ -240,7 +256,16 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('In App Purchase Demo')),
+      appBar: AppBar(
+        title: const Text('In App Purchase Demo'),
+        actions: [
+          IconButton(icon: const Icon(Icons.refresh), onPressed: initStoreInfo),
+          IconButton(
+            icon: const Icon(Icons.restore),
+            onPressed: () => _inAppPurchase.restorePurchases(),
+          ),
+        ],
+      ),
       body: _buildBody(),
     );
   }
@@ -248,7 +273,7 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
   Widget _buildBody() {
     if (_loading) return const Center(child: CircularProgressIndicator());
     if (!_isAvailable) return const Center(child: Text('ストアが利用できません'));
-    if (_products.isEmpty) return const Center(child: Text('商品がありません'));
+    if (_products.isEmpty) return const Center(child: Text('商品が見つかりません'));
 
     return ListView.builder(
       itemCount: _products.length,
@@ -257,7 +282,7 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
         final bool alreadyPurchased = _purchases.any((p) => p.productID == product.id);
 
         return Card(
-          margin: const EdgeInsets.all(8.0),
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: ListTile(
             title: Text(product.id, style: const TextStyle(fontWeight: FontWeight.bold)),
             subtitle: Text(product.description),
