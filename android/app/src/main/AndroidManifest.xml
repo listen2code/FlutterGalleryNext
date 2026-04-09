@@ -2,7 +2,6 @@
     package="com.flutter.gallery.flutter_gallery_next">
     <!-- Required to fetch data from the internet. -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
         android:name="${applicationName}"

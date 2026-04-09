@@ -48,6 +48,7 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
 
   /// 【設定】ストアで登録したすべてのプロダクトID
   static const Set<String> _productIds = {
+    'good_1',
     'subscription_1',
     'subscription_11',
     'subscription_2',
@@ -108,7 +109,7 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
     /// 指定した ID セットに基づいて、ストアから詳細な商品情報を取得します。
     /// ここで有効な ID が一つも見つからない場合、UI は空になります。
     final ProductDetailsResponse productDetailResponse =
-        await _inAppPurchase.queryProductDetails(_productIds);
+    await _inAppPurchase.queryProductDetails(_productIds);
 
     if (productDetailResponse.error != null) {
       setState(() {
@@ -231,7 +232,8 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
 
     String displayMessage = '決済エラーが発生しました。';
     if (error.code == 'payment_not_allowed') {
-      displayMessage = 'このデバイスではアプリ内課金が許可されていません。ペアレンタルコントロールの設定を確認してください。';
+      displayMessage =
+      'このデバイスではアプリ内課金が許可されていません。ペアレンタルコントロールの設定を確認してください。';
     } else if (error.code == 'billing_unavailable') {
       displayMessage = 'ストアサービスが利用できません。アカウントの設定を確認してください。';
     } else if (error.code == '7') {
@@ -241,11 +243,12 @@ class _DemoAppPurchaseState extends State<DemoAppPurchase> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('決済エラー'),
-        content: Text(displayMessage),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
-      ),
+      builder: (context) =>
+          AlertDialog(
+            title: const Text('決済エラー'),
+            content: Text(displayMessage),
+            actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+          ),
     );
   }
 
