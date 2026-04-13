@@ -64,7 +64,6 @@ class MyVerticalHeader extends Header {
   const MyVerticalHeader({
     super.triggerOffset = 70,
     super.clamping = false,
-    super.position = IndicatorPosition.above,
     super.processedDuration = Duration.zero,
     this.secondaryText,
   });
