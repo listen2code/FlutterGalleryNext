@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart'; // Schedulerをインポートする必要があります
 
 void main() {
   runApp(const MaterialApp(
@@ -33,10 +34,9 @@ class _MarqueeDemoState extends State<MarqueeDemo> {
         setState(() {
           _stocks = _stocks.map((stock) {
             final double randomMove = (Random().nextDouble() * 2 - 1);
-            final double newPrice = stock["price"] + randomMove;
             return {
               "symbol": stock["symbol"],
-              "price": newPrice,
+              "price": stock["price"] + randomMove,
               "change": randomMove > 0 ? (Random().nextDouble() * 5) : -(Random().nextDouble() * 5),
             };
           }).toList();
@@ -65,14 +65,14 @@ class _MarqueeDemoState extends State<MarqueeDemo> {
           height: 60,
           color: Colors.black,
           child: MarqueeWidget(
-            velocity: 60,
-            resumeAfterTouch: true,
+            velocity: 100,
             child: Text(
               stockText,
               style: const TextStyle(
                 fontSize: 18,
                 color: Colors.greenAccent,
                 fontWeight: FontWeight.bold,
+                // 重要：等幅フォントを使用して、数字の変化による幅のガタつきを防ぎます
                 fontFamily: 'monospace',
               ),
             ),
@@ -83,135 +83,118 @@ class _MarqueeDemoState extends State<MarqueeDemo> {
   }
 }
 
-/// 独自のマーキー（電光掲示板）ウィジェット
 class MarqueeWidget extends StatefulWidget {
-  /// [child]
-  /// スクロールさせたいコンテンツ（通常は Text ウィジェット）。
+  /// スクロールさせたいウィジェット（通常はText）
   final Widget child;
 
-  /// [velocity]
-  /// スクロールの速度（ピクセル/秒）。数値が大きいほど速く動きます。
+  /// スクロール速度（ピクセル/秒）
   final double velocity;
 
-  /// [gap]
-  /// コンテンツがループする際の、末尾と先頭の間の空白距離（ピクセル）。
+  /// ループ時の隙間（ピクセル）
   final double gap;
-
-  /// [resumeAfterTouch]
-  /// ユーザーがタッチ（ドラッグ）を止めた後に、自動再生を再開するかどうか。
-  final bool resumeAfterTouch;
 
   const MarqueeWidget({
     super.key,
     required this.child,
     this.velocity = 50.0,
     this.gap = 50.0,
-    this.resumeAfterTouch = true,
   });
 
   @override
   State<MarqueeWidget> createState() => _MarqueeWidgetState();
 }
 
-class _MarqueeWidgetState extends State<MarqueeWidget> {
-  final ScrollController _scrollController = ScrollController();
+// SingleTickerProviderStateMixinを使用してVSync信号を取得します
+class _MarqueeWidgetState extends State<MarqueeWidget> with SingleTickerProviderStateMixin {
+  late Ticker _ticker;
+  Duration _lastElapsed = Duration.zero;
+  final ValueNotifier<double> _offsetNotifier = ValueNotifier(0.0);
   final GlobalKey _childKey = GlobalKey();
-  Timer? _timer;
   double _childWidth = 0;
   bool _isPaused = false;
 
   @override
   void initState() {
     super.initState();
-    // 最初のフレーム描画後に初期化を行う
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initScrolling());
+    // 1. Timerの代わりにTickerを使用し、VSync（垂直同期）に完全に一致させます
+    _ticker = createTicker(_onTick)..start();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
   }
 
-  /// ウィジェットが更新された際に呼ばれる
-  /// (例: 親ウィジェットの setState により child のテキストが変更された場合)
-  @override
-  void didUpdateWidget(covariant MarqueeWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // テキスト内容が変わった可能性があるため、描画後に再度幅を計測する
-    // didUpdateWidget 時点ではまだ新しいレイアウトが確定していないため addPostFrameCallback が必要
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final box = _childKey.currentContext?.findRenderObject() as RenderBox?;
-      if (box != null && mounted) {
-        setState(() {
-          _childWidth = box.size.width;
-        });
-      }
-    });
+  void _onTick(Duration elapsed) {
+    if (_isPaused || _childWidth <= 0) {
+      _lastElapsed = elapsed;
+      return;
+    }
+
+    // 前回のフレームからの経過時間（Delta Time）を計算
+    final Duration delta = elapsed - _lastElapsed;
+    final double dt = delta.inMicroseconds / Duration.microsecondsPerSecond;
+    _lastElapsed = elapsed;
+
+    // 速度(velocity) × 経過時間(dt) で移動距離を算出
+    final double threshold = _childWidth + widget.gap;
+    _offsetNotifier.value = (_offsetNotifier.value + widget.velocity * dt) % threshold;
   }
 
-  void _initScrolling() {
+  void _measure() {
     final box = _childKey.currentContext?.findRenderObject() as RenderBox?;
     if (box != null && mounted) {
-      setState(() {
-        _childWidth = box.size.width;
-      });
-      _startTimer();
+      // コンテンツの幅を測定。setStateを呼ばないことで、不要なビルドを回避します
+      _childWidth = box.size.width;
     }
   }
 
-  /// [Timer.periodic]
-  /// 一定間隔（ここでは16ms、約60fps）で処理を繰り返すタイマー。
-  /// フレームごとに offset を加算して jumpTo することで滑らかな動きを実現します。
-  void _startTimer() {
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
-      if (!_isPaused && _scrollController.hasClients && _childWidth > 0) {
-        double currentOffset = _scrollController.offset;
-
-        // 速度計算: velocity は 1秒あたりの移動量なので、16ms分の移動量を計算
-        double pixelsPerFrame = widget.velocity * 0.016;
-
-        double newOffset = currentOffset + pixelsPerFrame;
-        double loopThreshold = _childWidth + widget.gap;
-
-        // ループ処理: コンテンツ＋隙間分を移動したら先頭に戻す
-        if (newOffset >= loopThreshold) {
-          _scrollController.jumpTo(newOffset - loopThreshold);
-        } else {
-          _scrollController.jumpTo(newOffset);
-        }
-      }
-    });
+  @override
+  void didUpdateWidget(covariant MarqueeWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 3. データ（child）更新後に最新の幅を測定します
+    WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
-    _scrollController.dispose();
+    _ticker.dispose();
+    _offsetNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // GestureDetector でタッチ操作を検知
-    // onTap ではなく onPan を使うことで、ドラッグ開始時も確実に一時停止させる
-    return GestureDetector(
-      onPanDown: (_) => setState(() => _isPaused = true),
-      onPanEnd: (_) {
-        if (widget.resumeAfterTouch) setState(() => _isPaused = false);
+    // GestureDetectorよりも反応が速いListenerを使用して、タッチ時の即時停止を実現します
+    return Listener(
+      behavior: HitTestBehavior.opaque,
+      // 空白エリアでもクリックに反応するように設定
+      onPointerDown: (_) {
+        _isPaused = true;
       },
-      onPanCancel: () {
-        if (widget.resumeAfterTouch) setState(() => _isPaused = false);
+      onPointerUp: (_) {
+        _isPaused = false;
       },
-      child: SingleChildScrollView(
-        controller: _scrollController,
-        scrollDirection: Axis.horizontal,
-        // ユーザーによる自由なスクロールを禁止し、タイマー制御のみにする
-        physics: const NeverScrollableScrollPhysics(),
-        child: Row(
-          children: [
-            // コンテンツ本体（幅計測用）
-            Container(key: _childKey, child: widget.child),
-            SizedBox(width: widget.gap),
-            // ループを途切れさせないための複製
-            widget.child,
-            SizedBox(width: widget.gap),
-          ],
+      onPointerCancel: (_) {
+        _isPaused = false;
+      },
+      child: ClipRect(
+        child: AnimatedBuilder(
+          animation: _offsetNotifier,
+          builder: (context, _) {
+            // Transformを使用して描画レイヤーのみを移動させるため、非常にスムーズです
+            return Transform.translate(
+              offset: Offset(-_offsetNotifier.value, 0),
+              child: OverflowBox(
+                alignment: Alignment.centerLeft,
+                maxWidth: double.infinity,
+                child: Row(
+                  children: [
+                    Container(key: _childKey, child: widget.child),
+                    SizedBox(width: widget.gap),
+                    widget.child,
+                    SizedBox(width: widget.gap),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
