@@ -106,7 +106,19 @@ class MarqueeWidget extends StatefulWidget {
 
 // SingleTickerProviderStateMixinを使用してVSync信号を取得します
 class _MarqueeWidgetState extends State<MarqueeWidget> with SingleTickerProviderStateMixin {
+  /// [Ticker] を使用する理由とメリット:
+  /// 1. **VSync（垂直同期）との同期**:
+  ///    Tickerはデバイスの画面リフレッシュレート（60Hz, 90Hz, 120Hzなど）に完全に同期して実行されます。
+  ///    これにより、Timerで発生しがちな「描画タイミングのズレ」による微細なカクつき（ジャダー）を排除し、
+  ///    極めて滑らかなアニメーションを実現します。
+  /// 2. **フレーム間タイムスタンプの正確性**:
+  ///    コールバックに渡される `elapsed`（経過時間）により、前回のフレームからの正確な差分を計算できるため、
+  ///    デバイスのパフォーマンスに関わらず、設定した速度（velocity）を一定に保つことができます。
+  /// 3. **リソースとバッテリーの最適化**:
+  ///    Tickerはウィジェットがツリーから外れたり、アプリがバックグラウンドに移動したりすると
+  ///    自動的に一時停止するため、不要なCPU消費やバッテリー消耗を抑えることができます。
   late Ticker _ticker;
+
   Duration _lastElapsed = Duration.zero;
   final ValueNotifier<double> _offsetNotifier = ValueNotifier(0.0);
   final GlobalKey _childKey = GlobalKey();
@@ -134,7 +146,20 @@ class _MarqueeWidgetState extends State<MarqueeWidget> with SingleTickerProvider
 
     // 速度(velocity) × 経過時間(dt) で移動距離を算出
     final double threshold = _childWidth + widget.gap;
-    _offsetNotifier.value = (_offsetNotifier.value + widget.velocity * dt) % threshold;
+    final double oldOffset = _offsetNotifier.value;
+    final double newOffset = oldOffset + widget.velocity * dt;
+
+    // ループ処理（余り計算）
+    _offsetNotifier.value = newOffset % threshold;
+
+    // 数値をログに出力 (16msごとのため大量に出力されます)
+    debugPrint('Ticker Log: dt=${dt.toStringAsFixed(4)}s, '
+        'offset=${_offsetNotifier.value.toStringAsFixed(2)}, '
+        'threshold=${threshold.toStringAsFixed(2)}');
+
+    if (newOffset >= threshold) {
+      debugPrint('Ticker Log: >>> Loop! Reset to: ${_offsetNotifier.value.toStringAsFixed(2)}');
+    }
   }
 
   void _measure() {
@@ -163,6 +188,8 @@ class _MarqueeWidgetState extends State<MarqueeWidget> with SingleTickerProvider
   Widget build(BuildContext context) {
     // GestureDetectorよりも反応が速いListenerを使用して、タッチ時の即時停止を実現します
     return Listener(
+      // ヒットテストの挙動を「不透明」に設定します。
+      // これにより、テキストがない空白領域（隙間）をタップしても、イベントを確実にキャッチできます。
       behavior: HitTestBehavior.opaque,
       // 空白エリアでもクリックに反応するように設定
       onPointerDown: (_) {
